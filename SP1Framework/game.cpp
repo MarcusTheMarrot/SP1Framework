@@ -14,6 +14,8 @@ using namespace std;
 double  g_dElapsedTime;
 double  g_dDeltaTime;
 bool    g_abKeyPressed[K_COUNT];
+bool	mapExtract = false;
+bool	mapRender = false;
 
 //string one[1] = {" _____                           _   _                                    "};
 //string two[1] = { "|  ___|                         | | | |                                   " };
@@ -24,8 +26,9 @@ bool    g_abKeyPressed[K_COUNT];
 //string seven[1] = { "                   | |                                                    " };
 //string eight[1] = { "                   |_" };
 
-char txt[61][21];
-char wall = 178;
+char	txt[61][21];
+char	wall = 178;
+string	teleport;
 
 // Game specific variables here
 SGameChar   g_sChar;
@@ -158,6 +161,25 @@ void gameplay()            // gameplay logic
                         // sound can be played here too.
 }
 
+void teleportation()
+{
+	for (int i = 0; i < teleport.size() / 4; i++)
+	{
+		int j = 4;
+		if (g_sChar.m_cLocation.X == teleport[i * j] && g_sChar.m_cLocation.Y == teleport[i * j + 1])
+		{
+			g_sChar.m_cLocation.X = teleport[i * j + 2];
+			g_sChar.m_cLocation.Y = teleport[i * j + 3];
+		}
+		else if (g_sChar.m_cLocation.X == teleport[i * j + 2] && g_sChar.m_cLocation.Y == teleport[i * j + 3])
+		{
+			g_sChar.m_cLocation.X = teleport[i * j];
+			g_sChar.m_cLocation.Y = teleport[i * j + 1];
+		}
+		j++;
+	}
+}
+
 void moveCharacter()
 {
     bool bSomethingHappened = false;
@@ -210,11 +232,13 @@ void moveCharacter()
 
     if (bSomethingHappened)
     {
+		teleportation();
         // set the bounce time to some time in the future to prevent accidental triggers
         g_dBounceTime = g_dElapsedTime; // 125ms should not be enough
-        g_dBounceTime = g_dElapsedTime + 0.05; // 125ms should be enough
+        g_dBounceTime = g_dElapsedTime + 0.1; // 125ms should be enough
     }
 }
+
 void processUserInput()
 {
     // quits the game if player hits the escape key
@@ -277,8 +301,39 @@ void renderSplashScreen()  // renders the splash screen
 
 void renderGame()
 {
-    renderMap();        // renders the map to the buffer first
+	if (mapRender == false)
+	{
+		renderMap();// renders the map to the buffer first
+		mapRender = true;
+	}
     renderCharacter();  // renders the character into the buffer
+}
+
+void extractMap()
+{
+	int i = 0;
+	int j = 0;
+	ifstream file("test.txt");
+	if (file.is_open())
+	{
+		while (j <= 19)
+		{
+			while (i <= 59)
+			{
+				file >> txt[i][j];
+				if (txt[i][j] == 'p')
+				{
+					teleport += i;
+					teleport += j + 1;
+				}
+				i++;
+			}
+			i = 0;
+			j++;
+		}
+		file.close();
+	}
+	mapExtract = true;
 }
 
 void renderMap()
@@ -297,38 +352,28 @@ void renderMap()
         colour(colors[i]);
         g_Console.writeToBuffer(c, " °±²Û", colors[i]);
     }*/
-	int i = 0;
-	int j = 0;
-	ifstream file("test.txt");
-	COORD c;
-	if (file.is_open())
+	if (mapExtract == false)
 	{
-		while (j <= 19)
-		{
-			while (i <= 59)
-			{
-				file >> txt[i][j];
-				i++;
-			}
-			i = 0;
-			j++;
-		}
-		file.close();
+		extractMap();
 	}
+	COORD c;
 	for (int y = 0; y <= 19; y++)
 	{
 		c.Y = y + 1;
 		for (int x = 0; x <= 59; x++)
 		{
 			c.X = x;
-			if (txt[x][y] != '-')
-			{
-				if (txt[x][y] == 'x')
-				g_Console.writeToBuffer(c, wall);
-			}
-			else
+			if (txt[x][y] == '-')
 			{
 				g_Console.writeToBuffer(c, wall, 0x05);
+			}
+			if (txt[x][y] == 'x')
+			{
+				g_Console.writeToBuffer(c, wall);
+			}
+			if (txt[x][y] == 'p')
+			{
+				g_Console.writeToBuffer(c, wall, 0x01);
 			}
 		}
 	}
