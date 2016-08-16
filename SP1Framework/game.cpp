@@ -14,6 +14,8 @@ using namespace std;
 double  g_dElapsedTime;
 double  g_dDeltaTime;
 bool    g_abKeyPressed[K_COUNT];
+bool	mapExtract = false;
+bool	mapRender = false;
 
 //string one[1] = {" _____                           _   _                                    "};
 //string two[1] = { "|  ___|                         | | | |                                   " };
@@ -24,8 +26,9 @@ bool    g_abKeyPressed[K_COUNT];
 //string seven[1] = { "                   | |                                                    " };
 //string eight[1] = { "                   |_" };
 
-char txt[61][21];
-char wall = 178;
+char	txt[61][21];
+char	wall = 178;
+string	teleport;
 
 // Game specific variables here
 SGameChar   g_sChar;
@@ -93,11 +96,6 @@ void getInput( void )
     g_abKeyPressed[K_SPACE]  = isKeyPressed(VK_SPACE);
     g_abKeyPressed[K_ESCAPE] = isKeyPressed(VK_ESCAPE);
 	g_abKeyPressed[K_RETURN] = isKeyPressed(VK_RETURN);
-	g_abKeyPressed[K_NUMPADONE] = isKeyPressed(VK_NUMPAD1);
-	g_abKeyPressed[K_NUMPADTWO] = isKeyPressed(VK_NUMPAD2);
-	g_abKeyPressed[K_NUMPADTHREE] = isKeyPressed(VK_NUMPAD3);
-	g_abKeyPressed[K_NUMPADFOUR] = isKeyPressed(VK_NUMPAD4);
-	g_abKeyPressed[K_NUMPADFIVE] = isKeyPressed(VK_NUMPAD5);
 }
 
 //--------------------------------------------------------------
@@ -143,8 +141,6 @@ void render()
     {
         case S_SPLASHSCREEN: renderSplashScreen();
             break;
-		case S_MAINMENU: renderToMainMenu();
-			break;
         case S_GAME: renderGame();
             break;
     }
@@ -155,14 +151,7 @@ void render()
 void splashScreenWait()    // waits for time to pass in splash screen
 {
 	if (g_abKeyPressed[K_RETURN]) // press enter to start game
-        g_eGameState = S_MAINMENU;
-}
-void mainmenuchoice()
-{
-	if (g_abKeyPressed[K_NUMPADONE])
-	{
-		g_eGameState = S_GAME;
-	}
+        g_eGameState = S_GAME;
 }
 
 void gameplay()            // gameplay logic
@@ -170,6 +159,25 @@ void gameplay()            // gameplay logic
     processUserInput(); // checks if you should change states or do something else with the game, e.g. pause, exit
     moveCharacter();    // moves the character, collision detection, physics, etc
                         // sound can be played here too.
+}
+
+void teleportation()
+{
+	for (int i = 0; i < teleport.size() / 4; i++)
+	{
+		int j = 4;
+		if (g_sChar.m_cLocation.X == teleport[i * j] && g_sChar.m_cLocation.Y == teleport[i * j + 1])
+		{
+			g_sChar.m_cLocation.X = teleport[i * j + 2];
+			g_sChar.m_cLocation.Y = teleport[i * j + 3];
+		}
+		else if (g_sChar.m_cLocation.X == teleport[i * j + 2] && g_sChar.m_cLocation.Y == teleport[i * j + 3])
+		{
+			g_sChar.m_cLocation.X = teleport[i * j];
+			g_sChar.m_cLocation.Y = teleport[i * j + 1];
+		}
+		j++;
+	}
 }
 
 void moveCharacter()
@@ -224,11 +232,13 @@ void moveCharacter()
 
     if (bSomethingHappened)
     {
+		teleportation();
         // set the bounce time to some time in the future to prevent accidental triggers
         g_dBounceTime = g_dElapsedTime; // 125ms should not be enough
-        g_dBounceTime = g_dElapsedTime + 0.05; // 125ms should be enough
+        g_dBounceTime = g_dElapsedTime + 0.1; // 125ms should be enough
     }
 }
+
 void processUserInput()
 {
     // quits the game if player hits the escape key
@@ -287,14 +297,43 @@ void renderSplashScreen()  // renders the splash screen
     c.Y += 1;
     c.X = g_Console.getConsoleSize().X / 2 - 13;
     g_Console.writeToBuffer(c, "Press 'Esc' to quit", 0x07);
-	if (g_abKeyPressed[K_ESCAPE])
-		g_bQuitGame = true;
 }
 
 void renderGame()
 {
-    renderMap();        // renders the map to the buffer first
+	if (mapRender == false)
+	{
+		renderMap();// renders the map to the buffer first
+		mapRender = true;
+	}
     renderCharacter();  // renders the character into the buffer
+}
+
+void extractMap()
+{
+	int i = 0;
+	int j = 0;
+	ifstream file("test.txt");
+	if (file.is_open())
+	{
+		while (j <= 19)
+		{
+			while (i <= 59)
+			{
+				file >> txt[i][j];
+				if (txt[i][j] == 'p')
+				{
+					teleport += i;
+					teleport += j + 1;
+				}
+				i++;
+			}
+			i = 0;
+			j++;
+		}
+		file.close();
+	}
+	mapExtract = true;
 }
 
 void renderMap()
@@ -313,38 +352,28 @@ void renderMap()
         colour(colors[i]);
         g_Console.writeToBuffer(c, " °±²Û", colors[i]);
     }*/
-	int i = 0;
-	int j = 0;
-	ifstream file("test.txt");
-	COORD c;
-	if (file.is_open())
+	if (mapExtract == false)
 	{
-		while (j <= 19)
-		{
-			while (i <= 59)
-			{
-				file >> txt[i][j];
-				i++;
-			}
-			i = 0;
-			j++;
-		}
-		file.close();
+		extractMap();
 	}
+	COORD c;
 	for (int y = 0; y <= 19; y++)
 	{
 		c.Y = y + 1;
 		for (int x = 0; x <= 59; x++)
 		{
 			c.X = x;
-			if (txt[x][y] != '-')
-			{
-				if (txt[x][y] == 'x')
-				g_Console.writeToBuffer(c, wall);
-			}
-			else
+			if (txt[x][y] == '-')
 			{
 				g_Console.writeToBuffer(c, wall, 0x05);
+			}
+			if (txt[x][y] == 'x')
+			{
+				g_Console.writeToBuffer(c, wall);
+			}
+			if (txt[x][y] == 'p')
+			{
+				g_Console.writeToBuffer(c, wall, 0x01);
 			}
 		}
 	}
@@ -383,47 +412,4 @@ void renderToScreen()
 {
     // Writes the buffer to the console, hence you will see what you have written
     g_Console.flushBufferToConsole();
-}
-void renderToMainMenu()
-{
-	int i = 0;
-	int j = 0;
-	char main[73][12];
-	ifstream file("PickALevel.txt");
-	COORD c;
-	if (file.is_open())
-	{
-		while (j <= 11)
-		{
-			while (i <= 72)
-			{
-				file >> main[i][j];
-				i++;
-			}
-			i = 0;
-			j++;
-		}
-		file.close();
-	}
-	for (int y = 0; y <= 11; y++)
-	{
-		c.Y = y + 4;
-		for (int x = 0; x <= 72; x++)
-		{
-			c.X = x + 3;
-			if (main[x][y] != '~')
-			{
-				g_Console.writeToBuffer(c, main[x][y], 0x09);
-			}
-		}
-	}
-	c = g_Console.getConsoleSize();
-	c.Y /= 3 + 5;
-	c.X = c.X / 2 - 35;
-	c.Y += 15;
-	c.X = g_Console.getConsoleSize().X / 2 - 20;
-	g_Console.writeToBuffer(c, "Enter a number from 1-5 to continue.", 0x03);
-	mainmenuchoice();
-	if (g_abKeyPressed[K_ESCAPE])
-		g_bQuitGame = true;
 }
