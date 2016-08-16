@@ -96,6 +96,11 @@ void getInput( void )
     g_abKeyPressed[K_SPACE]  = isKeyPressed(VK_SPACE);
     g_abKeyPressed[K_ESCAPE] = isKeyPressed(VK_ESCAPE);
 	g_abKeyPressed[K_RETURN] = isKeyPressed(VK_RETURN);
+	g_abKeyPressed[K_NUMPADONE] = isKeyPressed(VK_NUMPAD1);
+	g_abKeyPressed[K_NUMPADTWO] = isKeyPressed(VK_NUMPAD2);
+	g_abKeyPressed[K_NUMPADTHREE] = isKeyPressed(VK_NUMPAD3);
+	g_abKeyPressed[K_NUMPADFOUR] = isKeyPressed(VK_NUMPAD4);
+	g_abKeyPressed[K_NUMPADFIVE] = isKeyPressed(VK_NUMPAD5);
 }
 
 //--------------------------------------------------------------
@@ -141,6 +146,8 @@ void render()
     {
         case S_SPLASHSCREEN: renderSplashScreen();
             break;
+		case S_MAINMENU: renderToMainMenu();
+			break;
         case S_GAME: renderGame();
             break;
     }
@@ -151,7 +158,14 @@ void render()
 void splashScreenWait()    // waits for time to pass in splash screen
 {
 	if (g_abKeyPressed[K_RETURN]) // press enter to start game
-        g_eGameState = S_GAME;
+        g_eGameState = S_MAINMENU;
+}
+void mainmenuchoice()
+{
+	if (g_abKeyPressed[K_NUMPADONE])
+	{
+		g_eGameState = S_GAME;
+	}
 }
 
 void gameplay()            // gameplay logic
@@ -297,6 +311,8 @@ void renderSplashScreen()  // renders the splash screen
     c.Y += 1;
     c.X = g_Console.getConsoleSize().X / 2 - 13;
     g_Console.writeToBuffer(c, "Press 'Esc' to quit", 0x07);
+	if (g_abKeyPressed[K_ESCAPE])
+		g_bQuitGame = true;
 }
 
 void renderGame()
@@ -412,4 +428,47 @@ void renderToScreen()
 {
     // Writes the buffer to the console, hence you will see what you have written
     g_Console.flushBufferToConsole();
+}
+void renderToMainMenu()
+{
+	int i = 0;
+	int j = 0;
+	char main[73][12];
+	ifstream file("PickALevel.txt");
+	COORD c;
+	if (file.is_open())
+	{
+		while (j <= 11)
+		{
+			while (i <= 72)
+			{
+				file >> main[i][j];
+				i++;
+			}
+			i = 0;
+			j++;
+		}
+		file.close();
+	}
+	for (int y = 0; y <= 11; y++)
+	{
+		c.Y = y + 4;
+		for (int x = 0; x <= 72; x++)
+		{
+			c.X = x + 3;
+			if (main[x][y] != '~')
+			{
+				g_Console.writeToBuffer(c, main[x][y], 0x09);
+			}
+		}
+	}
+	c = g_Console.getConsoleSize();
+	c.Y /= 3 + 5;
+	c.X = c.X / 2 - 35;
+	c.Y += 15;
+	c.X = g_Console.getConsoleSize().X / 2 - 20;
+	g_Console.writeToBuffer(c, "Enter a number from 1-5 to continue.", 0x03);
+	mainmenuchoice();
+	if (g_abKeyPressed[K_ESCAPE])
+		g_bQuitGame = true;
 }
