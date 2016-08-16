@@ -24,8 +24,8 @@ bool    g_abKeyPressed[K_COUNT];
 //string seven[1] = { "                   | |                                                    " };
 //string eight[1] = { "                   |_" };
 
-char txt[15][11];
-char ground = 178;
+char txt[61][21];
+char wall = 178;
 
 // Game specific variables here
 SGameChar   g_sChar;
@@ -303,9 +303,9 @@ void renderMap()
 	COORD c;
 	if (file.is_open())
 	{
-		while (j <= 10)
+		while (j <= 19)
 		{
-			while (i <= 14)
+			while (i <= 59)
 			{
 				file >> txt[i][j];
 				i++;
@@ -315,14 +315,21 @@ void renderMap()
 		}
 		file.close();
 	}
-	for (int y = 0; y <= 10; y++)
+	for (int y = 0; y <= 19; y++)
 	{
 		c.Y = y + 1;
-		for (int x = 0; x <= 14; x++)
+		for (int x = 0; x <= 59; x++)
 		{
 			c.X = x;
 			if (txt[x][y] != '-')
-			g_Console.writeToBuffer(c, txt[x][y]);
+			{
+				if (txt[x][y] == 'x')
+				g_Console.writeToBuffer(c, wall);
+			}
+			else
+			{
+				g_Console.writeToBuffer(c, wall, 0x05);
+			}
 		}
 	}
 }
