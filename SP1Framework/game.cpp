@@ -14,6 +14,7 @@ double  g_dElapsedTime;
 double  g_dDeltaTime;
 bool    g_abKeyPressed[K_COUNT];
 char txt[15][11];
+char ground = 178;
 
 // Game specific variables here
 SGameChar   g_sChar;
@@ -274,6 +275,7 @@ void renderMap()
 		for (int x = 0; x <= 14; x++)
 		{
 			c.X = x;
+			if (txt[x][y] != '-')
 			g_Console.writeToBuffer(c, txt[x][y]);
 		}
 	}
