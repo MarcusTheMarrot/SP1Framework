@@ -16,7 +16,12 @@ enum EKEYS
 	K_ESCAPE,
 	K_SPACE,
 	K_COUNT,
-	K_RETURN
+	K_RETURN,
+	K_NUMPADONE,
+	K_NUMPADTWO,
+	K_NUMPADTHREE,
+	K_NUMPADFOUR,
+	K_NUMPADFIVE
 };
 
 // Enumeration for the different screen states
@@ -24,7 +29,13 @@ enum EGAMESTATES
 {
     S_SPLASHSCREEN,
     S_GAME,
-    S_COUNT
+    S_COUNT,
+	S_MAINMENU,
+	S_LEVELONE,
+	S_LEVELTWO,
+	S_LEVELTHREE,
+	S_LEVELFOUR,
+	S_LEVELFIVE
 };
 
 // struct for the game character
@@ -51,5 +62,7 @@ void renderMap();           // renders the map to the buffer first
 void renderCharacter();     // renders the character into the buffer
 void renderFramerate();     // renders debug information, frame rate, elapsed time, etc
 void renderToScreen();      // dump the contents of the buffer to the screen, one frame worth of game
+void mainmenuchoice();
+void renderToMainMenu();
 
 #endif // _GAME_H
