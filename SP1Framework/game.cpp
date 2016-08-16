@@ -8,11 +8,22 @@
 #include <sstream>
 #include <fstream>
 #include <string>
-using namespace std;
+
+using namespace std; 
 
 double  g_dElapsedTime;
 double  g_dDeltaTime;
 bool    g_abKeyPressed[K_COUNT];
+
+//string one[1] = {" _____                           _   _                                    "};
+//string two[1] = { "|  ___|                         | | | |                                   " };
+//string three[1] = { "| |__ ___  ___ __ _ _ __   ___  | |_| |__   ___   _ __ ___   __ _ _______ " };
+//string four[1] = { "|  __/ __|/ __/ _` | '_ \ / _ \ | __| '_ \ / _ \ | '_ ` _ \ / _` |_  / _ \ " };
+//string five[1] = { "| |__\__ \ (_| (_| | |_) |  __/ | |_| | | |  __/ | | | | | | (_| |/ /  __/" };
+//string six[1] = { "\____/___/\___\__,_| .__/ \___|  \__|_| |_|\___| |_| |_| |_|\__,_/___\___|" };
+//string seven[1] = { "                   | |                                                    " };
+//string eight[1] = { "                   |_" };
+
 char txt[15][11];
 char ground = 178;
 
@@ -57,7 +68,7 @@ void init( void )
 void shutdown( void )
 {
     // Reset to white text on black background
-    colour(FOREGROUND_BLUE | FOREGROUND_GREEN | FOREGROUND_RED);
+	colour(FOREGROUND_BLUE | FOREGROUND_GREEN | FOREGROUND_RED);
 
     g_Console.clearBuffer();
 }
@@ -81,6 +92,7 @@ void getInput( void )
     g_abKeyPressed[K_RIGHT]  = isKeyPressed(VK_RIGHT);
     g_abKeyPressed[K_SPACE]  = isKeyPressed(VK_SPACE);
     g_abKeyPressed[K_ESCAPE] = isKeyPressed(VK_ESCAPE);
+	g_abKeyPressed[K_RETURN] = isKeyPressed(VK_RETURN);
 }
 
 //--------------------------------------------------------------
@@ -135,7 +147,7 @@ void render()
 
 void splashScreenWait()    // waits for time to pass in splash screen
 {
-    if (g_dElapsedTime > 3.0) // wait for 3 seconds to switch to game mode, else do nothing
+	if (g_abKeyPressed[K_RETURN]) // press enter to start game
         g_eGameState = S_GAME;
 }
 
@@ -199,6 +211,7 @@ void moveCharacter()
     if (bSomethingHappened)
     {
         // set the bounce time to some time in the future to prevent accidental triggers
+        g_dBounceTime = g_dElapsedTime; // 125ms should not be enough
         g_dBounceTime = g_dElapsedTime + 0.05; // 125ms should be enough
     }
 }
@@ -212,21 +225,54 @@ void processUserInput()
 void clearScreen()
 {
     // Clears the buffer with this colour attribute
-    g_Console.clearBuffer(0x1F);
+    g_Console.clearBuffer(0x00);
 }
 
 void renderSplashScreen()  // renders the splash screen
 {
-    COORD c = g_Console.getConsoleSize();
-    c.Y /= 3;
-    c.X = c.X / 2 - 9;
-    g_Console.writeToBuffer(c, "A game in 3 seconds", 0x03);
+	int i = 0;
+	int j = 0;
+	char splash[74][8];
+	ifstream file("title.txt");
+	COORD c;
+	if (file.is_open())
+	{
+		while (j <= 7)
+		{
+			while (i <= 73)
+			{
+				file >> splash[i][j];
+				i++;
+			}
+			i = 0;
+			j++;
+		}
+		file.close();
+	}
+	for (int y = 0; y <= 7; y++)
+	{
+		c.Y = y + 4;
+		for (int x = 0; x <= 73; x++)
+		{
+			c.X = x + 3;
+			if (splash[x][y] != '~')
+			{
+				g_Console.writeToBuffer(c, splash[x][y], 0x09);
+			}
+		}
+	}
+	c = g_Console.getConsoleSize();
+	c.Y /= 3;
+	c.X = c.X / 2 - 35;
+	c.Y += 5;
+	c.X = g_Console.getConsoleSize().X / 2 - 15;
+    g_Console.writeToBuffer(c, "Press <Enter> to continue", 0x03);
     c.Y += 1;
-    c.X = g_Console.getConsoleSize().X / 2 - 20;
-    g_Console.writeToBuffer(c, "Press <Space> to change character colour", 0x09);
+    c.X = g_Console.getConsoleSize().X / 2 - 22;
+    g_Console.writeToBuffer(c, "Press <Space> to change character colour", 0x07);
     c.Y += 1;
-    c.X = g_Console.getConsoleSize().X / 2 - 9;
-    g_Console.writeToBuffer(c, "Press 'Esc' to quit", 0x09);
+    c.X = g_Console.getConsoleSize().X / 2 - 13;
+    g_Console.writeToBuffer(c, "Press 'Esc' to quit", 0x07);
 }
 
 void renderGame()
@@ -308,7 +354,7 @@ void renderFramerate()
     ss << g_dElapsedTime << "secs";
     c.X = 0;
     c.Y = 0;
-    g_Console.writeToBuffer(c, ss.str(), 0x59);
+    g_Console.writeToBuffer(c, ss.str());
 }
 void renderToScreen()
 {
