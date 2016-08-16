@@ -6,10 +6,14 @@
 #include <iostream>
 #include <iomanip>
 #include <sstream>
+#include <fstream>
+#include <string>
+using namespace std;
 
 double  g_dElapsedTime;
 double  g_dDeltaTime;
 bool    g_abKeyPressed[K_COUNT];
+char txt[15][11];
 
 // Game specific variables here
 SGameChar   g_sChar;
@@ -35,8 +39,8 @@ void init( void )
     // sets the initial state for the game
     g_eGameState = S_SPLASHSCREEN;
 
-    g_sChar.m_cLocation.X = g_Console.getConsoleSize().X / 2;
-    g_sChar.m_cLocation.Y = g_Console.getConsoleSize().Y / 2;
+    g_sChar.m_cLocation.X = 7;
+    g_sChar.m_cLocation.Y = 6;
     g_sChar.m_bActive = true;
     // sets the width, height and the font name to use in the console
     g_Console.setConsoleFont(0, 16, L"Consolas");
@@ -152,26 +156,38 @@ void moveCharacter()
     if (g_abKeyPressed[K_UP] && g_sChar.m_cLocation.Y > 0)
     {
         //Beep(1440, 30);
-        g_sChar.m_cLocation.Y--;
-        bSomethingHappened = true;
+		if (txt[g_sChar.m_cLocation.X][g_sChar.m_cLocation.Y - 2] != 'x')
+		{
+			g_sChar.m_cLocation.Y--;
+			bSomethingHappened = true;
+		}
     }
     if (g_abKeyPressed[K_LEFT] && g_sChar.m_cLocation.X > 0)
     {
         //Beep(1440, 30);
-        g_sChar.m_cLocation.X--;
-        bSomethingHappened = true;
+		if (txt[g_sChar.m_cLocation.X - 1][g_sChar.m_cLocation.Y - 1] != 'x')
+		{
+			g_sChar.m_cLocation.X--;
+			bSomethingHappened = true;
+		}
     }
     if (g_abKeyPressed[K_DOWN] && g_sChar.m_cLocation.Y < g_Console.getConsoleSize().Y - 1)
     {
         //Beep(1440, 30);
-        g_sChar.m_cLocation.Y++;
-        bSomethingHappened = true;
+		if (txt[g_sChar.m_cLocation.X][g_sChar.m_cLocation.Y] != 'x')
+		{
+			g_sChar.m_cLocation.Y++;
+			bSomethingHappened = true;
+		}
     }
     if (g_abKeyPressed[K_RIGHT] && g_sChar.m_cLocation.X < g_Console.getConsoleSize().X - 1)
     {
         //Beep(1440, 30);
-        g_sChar.m_cLocation.X++;
-        bSomethingHappened = true;
+		if (txt[g_sChar.m_cLocation.X + 1][g_sChar.m_cLocation.Y - 1] != 'x')
+		{
+			g_sChar.m_cLocation.X++;
+			bSomethingHappened = true;
+		}
     }
     if (g_abKeyPressed[K_SPACE])
     {
@@ -182,7 +198,7 @@ void moveCharacter()
     if (bSomethingHappened)
     {
         // set the bounce time to some time in the future to prevent accidental triggers
-        g_dBounceTime = g_dElapsedTime + 0.125; // 125ms should be enough
+        g_dBounceTime = g_dElapsedTime + 0.05; // 125ms should be enough
     }
 }
 void processUserInput()
@@ -220,7 +236,7 @@ void renderGame()
 
 void renderMap()
 {
-    // Set up sample colours, and output shadings
+	/*// Set up sample colours, and output shadings
     const WORD colors[] = {
         0x1A, 0x2B, 0x3C, 0x4D, 0x5E, 0x6F,
         0xA1, 0xB2, 0xC3, 0xD4, 0xE5, 0xF6
@@ -233,7 +249,34 @@ void renderMap()
         c.Y = i + 1;
         colour(colors[i]);
         g_Console.writeToBuffer(c, " °±²Û", colors[i]);
-    }
+    }*/
+	int i = 0;
+	int j = 0;
+	ifstream file("test.txt");
+	COORD c;
+	if (file.is_open())
+	{
+		while (j <= 10)
+		{
+			while (i <= 14)
+			{
+				file >> txt[i][j];
+				i++;
+			}
+			i = 0;
+			j++;
+		}
+		file.close();
+	}
+	for (int y = 0; y <= 10; y++)
+	{
+		c.Y = y + 1;
+		for (int x = 0; x <= 14; x++)
+		{
+			c.X = x;
+			g_Console.writeToBuffer(c, txt[x][y]);
+		}
+	}
 }
 
 void renderCharacter()
