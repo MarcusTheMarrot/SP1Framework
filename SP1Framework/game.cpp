@@ -28,6 +28,7 @@ bool	mapRender = false;
 
 char	txt[61][21];
 char	wall = 178;
+unsigned char ground = 176;
 string	teleport;
 
 // Game specific variables here
@@ -365,7 +366,7 @@ void renderMap()
 			c.X = x;
 			if (txt[x][y] == '-')
 			{
-				g_Console.writeToBuffer(c, wall, 0x05);
+				g_Console.writeToBuffer(c, ground, 0x1A);
 			}
 			if (txt[x][y] == 'x')
 			{
@@ -373,7 +374,7 @@ void renderMap()
 			}
 			if (txt[x][y] == 'p')
 			{
-				g_Console.writeToBuffer(c, wall, 0x01);
+				g_Console.writeToBuffer(c, wall, 0x2B);
 			}
 		}
 	}
