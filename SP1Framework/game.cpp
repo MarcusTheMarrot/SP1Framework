@@ -30,6 +30,7 @@ char	txt[61][21];
 char	wall = 178;
 unsigned char ground = 176;
 string	teleport;
+int stage;
 
 // Game specific variables here
 SGameChar   g_sChar;
@@ -152,7 +153,10 @@ void render()
 void splashScreenWait()    // waits for time to pass in splash screen
 {
 	if (g_abKeyPressed[K_RETURN]) // press enter to start game
-        g_eGameState = S_GAME;
+	{
+		stage = 0;
+		g_eGameState = S_GAME;
+	}
 }
 
 void gameplay()            // gameplay logic
@@ -183,61 +187,67 @@ void teleportation()
 
 void moveCharacter()
 {
-    bool bSomethingHappened = false;
-    if (g_dBounceTime > g_dElapsedTime)
-        return;
+	bool bSomethingHappened = false;
+	if (g_dBounceTime > g_dElapsedTime)
+		return;
 
-    // Updating the location of the character based on the key press
-    // providing a beep sound whenver we shift the character
-    if (g_abKeyPressed[K_UP] && g_sChar.m_cLocation.Y > 0)
-    {
-        //Beep(1440, 30);
+	// Updating the location of the character based on the key press
+	// providing a beep sound whenver we shift the character
+	if (g_abKeyPressed[K_UP] && g_sChar.m_cLocation.Y > 0)
+	{
+		//Beep(1440, 30);
 		if (txt[g_sChar.m_cLocation.X][g_sChar.m_cLocation.Y - 2] != 'x')
 		{
 			g_sChar.m_cLocation.Y--;
 			bSomethingHappened = true;
 		}
-    }
-    if (g_abKeyPressed[K_LEFT] && g_sChar.m_cLocation.X > 0)
-    {
-        //Beep(1440, 30);
+	}
+	if (g_abKeyPressed[K_LEFT] && g_sChar.m_cLocation.X > 0)
+	{
+		//Beep(1440, 30);
 		if (txt[g_sChar.m_cLocation.X - 1][g_sChar.m_cLocation.Y - 1] != 'x')
 		{
 			g_sChar.m_cLocation.X--;
 			bSomethingHappened = true;
 		}
-    }
-    if (g_abKeyPressed[K_DOWN] && g_sChar.m_cLocation.Y < g_Console.getConsoleSize().Y - 1)
-    {
-        //Beep(1440, 30);
+	}
+	if (g_abKeyPressed[K_DOWN] && g_sChar.m_cLocation.Y < g_Console.getConsoleSize().Y - 1)
+	{
+		//Beep(1440, 30);
 		if (txt[g_sChar.m_cLocation.X][g_sChar.m_cLocation.Y] != 'x')
 		{
 			g_sChar.m_cLocation.Y++;
 			bSomethingHappened = true;
 		}
-    }
-    if (g_abKeyPressed[K_RIGHT] && g_sChar.m_cLocation.X < g_Console.getConsoleSize().X - 1)
-    {
-        //Beep(1440, 30);
+	}
+	if (g_abKeyPressed[K_RIGHT] && g_sChar.m_cLocation.X < g_Console.getConsoleSize().X - 1)
+	{
+		//Beep(1440, 30);
 		if (txt[g_sChar.m_cLocation.X + 1][g_sChar.m_cLocation.Y - 1] != 'x')
 		{
 			g_sChar.m_cLocation.X++;
 			bSomethingHappened = true;
 		}
-    }
-    if (g_abKeyPressed[K_SPACE])
-    {
-        g_sChar.m_bActive = !g_sChar.m_bActive;
-        bSomethingHappened = true;
-    }
+	}
+	if (g_abKeyPressed[K_SPACE])
+	{
+		g_sChar.m_bActive = !g_sChar.m_bActive;
+		bSomethingHappened = true;
+	}
 
-    if (bSomethingHappened)
-    {
+	if (bSomethingHappened)
+	{
 		teleportation();
-        // set the bounce time to some time in the future to prevent accidental triggers
-        g_dBounceTime = g_dElapsedTime; // 125ms should not be enough
-        g_dBounceTime = g_dElapsedTime + 0.1; // 125ms should be enough
-    }
+		// set the bounce time to some time in the future to prevent accidental triggers
+		g_dBounceTime = g_dElapsedTime; // 125ms should not be enough
+		g_dBounceTime = g_dElapsedTime + 0.1; // 125ms should be enough
+	}
+	if (g_sChar.m_cLocation.X == 60 && g_sChar.m_cLocation.Y == 19)
+	{
+		stage++;
+		mapExtract = false;
+		mapRender = false;
+	}
 }
 
 void processUserInput()
@@ -310,31 +320,60 @@ void renderGame()
     renderCharacter();  // renders the character into the buffer
 }
 
-void extractMap()
+void extractMap(int level)
 {
 	int i = 0;
 	int j = 0;
-	ifstream file("test.txt");
-	if (file.is_open())
+	if (level == 0)
 	{
-		while (j <= 19)
+		ifstream file("test.txt");
+		if (file.is_open())
 		{
-			while (i <= 59)
+			while (j <= 19)
 			{
-				file >> txt[i][j];
-				if (txt[i][j] == 'p')
+				while (i <= 59)
 				{
-					teleport += i;
-					teleport += j + 1;
+					file >> txt[i][j];
+					if (txt[i][j] == 'p')
+					{
+						teleport += i;
+						teleport += j + 1;
+					}
+					i++;
 				}
-				i++;
+				i = 0;
+				j++;
 			}
-			i = 0;
-			j++;
+			file.close();
 		}
-		file.close();
+		mapExtract = true;
 	}
-	mapExtract = true;
+	if (level == 1)
+	{
+		ifstream file("sampleLevel.txt");
+		if (file.is_open())
+		{
+			while (j <= 19)
+			{
+				while (i <= 59)
+				{
+					file >> txt[i][j];
+					if (txt[i][j] == 'p')
+					{
+						teleport += i;
+						teleport += j + 1;
+					}
+					i++;
+				}
+				i = 0;
+				j++;
+			}
+			file.close();
+		}
+		g_sChar.m_cLocation.X = 0;
+		g_sChar.m_cLocation.Y = 19;
+		mapExtract = true;
+	}
 }
 
 void renderMap()
@@ -355,7 +394,7 @@ void renderMap()
     }*/
 	if (mapExtract == false)
 	{
-		extractMap();
+		extractMap(stage);
 	}
 	COORD c;
 	for (int y = 0; y <= 19; y++)

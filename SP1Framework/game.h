@@ -31,11 +31,6 @@ enum EGAMESTATES
     S_GAME,
     S_COUNT,
 	S_MAINMENU,
-	S_LEVELONE,
-	S_LEVELTWO,
-	S_LEVELTHREE,
-	S_LEVELFOUR,
-	S_LEVELFIVE
 };
 
 // struct for the game character
