@@ -1,0 +1,101 @@
+From 2e9f385be2d7e63607e517107245b7eccdecda4f Mon Sep 17 00:00:00 2001
+From: Buttception <spartandevilexdreme@gmail.com>
+Date: Wed, 17 Aug 2016 09:33:35 +0800
+Subject: [PATCH] Sample maze with teleportation
+
+---
+ SP1Framework/game.cpp |  5 +++--
+ SP1Framework/main.cpp |  2 +-
+ SP1Framework/test.txt | 36 ++++++++++++++++++------------------
+ 3 files changed, 22 insertions(+), 21 deletions(-)
+
+diff --git a/SP1Framework/game.cpp b/SP1Framework/game.cpp
+index 45cf093..fdb6373 100644
+--- a/SP1Framework/game.cpp
++++ b/SP1Framework/game.cpp
+@@ -28,6 +28,7 @@ bool	mapRender = false;
+ 
+ char	txt[61][21];
+ char	wall = 178;
++unsigned char ground = 176;
+ string	teleport;
+ 
+ // Game specific variables here
+@@ -365,7 +366,7 @@ void renderMap()
+ 			c.X = x;
+ 			if (txt[x][y] == '-')
+ 			{
+-				g_Console.writeToBuffer(c, wall, 0x05);
++				g_Console.writeToBuffer(c, ground, 0x1A);
+ 			}
+ 			if (txt[x][y] == 'x')
+ 			{
+@@ -373,7 +374,7 @@ void renderMap()
+ 			}
+ 			if (txt[x][y] == 'p')
+ 			{
+-				g_Console.writeToBuffer(c, wall, 0x01);
++				g_Console.writeToBuffer(c, wall, 0x2B);
+ 			}
+ 		}
+ 	}
+diff --git a/SP1Framework/main.cpp b/SP1Framework/main.cpp
+index ef67927..d703cc3 100644
+--- a/SP1Framework/main.cpp
++++ b/SP1Framework/main.cpp
+@@ -5,7 +5,7 @@
+ 
+ CStopWatch g_Timer;                            // Timer function to keep track of time and the frame rate
+ bool g_bQuitGame = false;                    // Set to true if you want to quit the game
+-const unsigned char gc_ucFPS = 100;                // FPS of this game
++const unsigned char gc_ucFPS = 30;                // FPS of this game
+ const unsigned int gc_uFrameTime = 1000 / gc_ucFPS;    // time for each frame
+ 
+ //main loop declaration
+diff --git a/SP1Framework/test.txt b/SP1Framework/test.txt
+index 1fafc4d..85f85bf 100644
+--- a/SP1Framework/test.txt
++++ b/SP1Framework/test.txt
+@@ -1,20 +1,20 @@
+ xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+-x----------------------------------------------------------x
+-x----------------------------------------------------------x
+-x----------------------------------------------------------x
+-x----------------------------------------------------------x
+-x----------------------------------------------------------x
+-x----------------------------------------------------------x
+-x----------------------------------------------------------x
+-x----------------------------------------------------------x
+-x----------------------------------------------------------x
+-x----------------------------------------------------------x
+-x----------------------------------------------------------x
+-x----------------------------------------------------------x
+-x----------------------------------------------------------x
+-x----------------------------------------------------------x
+-x----------------------------------------------------------x
+-x----------------------------------------------------------x
+-x----------------------------------------------------------x
+-x----------------------------------------------------------x
++xp-----x--x---x---x---x------------x---------x-----px--x---x
++xxxx-x-xx-x-x---x---x-xxxxx--xxxxx-x-xxxxxxx-xxxx-xxx--x-xxx
++x-x--x----x-xxxxxxxxx-x--xxx-x---x-x-x-----x-x--x-x----x---x
++x---xxxxx-x--x---x-----------x--xx-xxxxxxx-x----x-x-x--xx--x
++x-xxx---x-xx-x-x-xxxxxxxxxxx-xx----x----x--x-xxxx---x--x---x
++x-x---xxx-x----x----x-x----x--xxx--x-xxxx-xx-x--x-xxxxxx-xxx
++x-x-x-x---x--xxxx---x-x-xxxxx---------x-x----x-xx-x------x-x
++x-xxx---xxxx-x--------x-x--xxxxx-x-xxxx---xx------x-xxxxxxxx
++x---x--------xxxxxxx--x-xx-x---x-x----xxxxx--xxx-----------x
++x-x-xxxxxxx--xx--xxx--x----x-xxx-xxxx-x---xxxx-x--xxxxxxxxxx
++x-x----x----xx--xxx---xxxx-x---x-x------x----x-x--x--------x
++x-xxxx-xx--xx--xxx------------xx-x--xxxxxxxx---x--x--xxxxxxx
++x-x--x-x--xx--xxxxxxxxxx-x--xxxx-------x---xxxxxxxx--x-----x
++x-x-xx---xx--------x-----x----x--xxxxxxxxx-x---------x--x--x
++x-x--xxxxxx-xxxxxx-xxxxxxxxxxxx-xxx-x------x-xxxxx---x--xxxx
++x-xx-x---------x-x----x---x-x-------x-x-x--x-x--xxx--xx----x
++x--x-x-xxxxxxx-x-xxxxxx-x-x-x-xxxxxxx-x-xxxx-xx-x-xx--xxxxxx
++x------x----------------x---x---------x------------xx-------
+ xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+\ No newline at end of file
+-- 
+2.9.2.windows.1
+
