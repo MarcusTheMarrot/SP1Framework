@@ -3,6 +3,7 @@
 //
 #include "game.h"
 #include "Framework\console.h"
+#include "mapInteract.h"
 #include <iostream>
 #include <iomanip>
 #include <sstream>
@@ -171,27 +172,9 @@ void gameplay()            // gameplay logic
                         // sound can be played here too.
 }
 
-void teleportation()
-{
-	for (int i = 0; i < teleport.size() / 4; i++)
-	{
-		int j = 4;
-		if (g_sChar.m_cLocation.X == teleport[i * j] && g_sChar.m_cLocation.Y == teleport[i * j + 1])
-		{
-			g_sChar.m_cLocation.X = teleport[i * j + 2];
-			g_sChar.m_cLocation.Y = teleport[i * j + 3];
-		}
-		else if (g_sChar.m_cLocation.X == teleport[i * j + 2] && g_sChar.m_cLocation.Y == teleport[i * j + 3])
-		{
-			g_sChar.m_cLocation.X = teleport[i * j];
-			g_sChar.m_cLocation.Y = teleport[i * j + 1];
-		}
-		j++;
-	}
-}
-
 void moveCharacter()
 {
+	COORD xy;
 	bool bSomethingHappened = false;
 	if (g_dBounceTime > g_dElapsedTime)
 		return;
@@ -241,7 +224,11 @@ void moveCharacter()
 
 	if (bSomethingHappened)
 	{
-		teleportation();
+		xy = teleportation(teleport, g_sChar.m_cLocation.X, g_sChar.m_cLocation.Y);
+		if (xy.X != 0 && xy.Y != 0)
+		{
+			g_sChar.m_cLocation = xy;
+		}
 		// set the bounce time to some time in the future to prevent accidental triggers
 		g_dBounceTime = g_dElapsedTime; // 125ms should not be enough
 		g_dBounceTime = g_dElapsedTime + 0.1; // 125ms should be enough
