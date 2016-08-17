@@ -28,17 +28,18 @@ bool	mapRender = false;
 
 char	txt[61][21];
 char	wall = 178;
+unsigned char direction;
 unsigned char ground = 176;
 string	teleport;
 int stage;
 
 // Game specific variables here
-SGameChar   g_sChar;
+SGameChar	g_sChar;
 EGAMESTATES g_eGameState = S_SPLASHSCREEN;
 double  g_dBounceTime; // this is to prevent key bouncing, so we won't trigger keypresses more than once
 
 // Console object
-Console g_Console(80, 25, "SP1 Framework");
+Console g_Console(100, 25, "SP1 Framework");
 
 //--------------------------------------------------------------
 // Purpose  : Initialisation function
@@ -195,6 +196,7 @@ void moveCharacter()
 	// providing a beep sound whenver we shift the character
 	if (g_abKeyPressed[K_UP] && g_sChar.m_cLocation.Y > 0)
 	{
+		direction = 'u';
 		//Beep(1440, 30);
 		if (txt[g_sChar.m_cLocation.X][g_sChar.m_cLocation.Y - 2] != 'x')
 		{
@@ -204,6 +206,7 @@ void moveCharacter()
 	}
 	if (g_abKeyPressed[K_LEFT] && g_sChar.m_cLocation.X > 0)
 	{
+		direction = 'l';
 		//Beep(1440, 30);
 		if (txt[g_sChar.m_cLocation.X - 1][g_sChar.m_cLocation.Y - 1] != 'x')
 		{
@@ -213,6 +216,7 @@ void moveCharacter()
 	}
 	if (g_abKeyPressed[K_DOWN] && g_sChar.m_cLocation.Y < g_Console.getConsoleSize().Y - 1)
 	{
+		direction = 'd';
 		//Beep(1440, 30);
 		if (txt[g_sChar.m_cLocation.X][g_sChar.m_cLocation.Y] != 'x')
 		{
@@ -222,6 +226,7 @@ void moveCharacter()
 	}
 	if (g_abKeyPressed[K_RIGHT] && g_sChar.m_cLocation.X < g_Console.getConsoleSize().X - 1)
 	{
+		direction = 'r';
 		//Beep(1440, 30);
 		if (txt[g_sChar.m_cLocation.X + 1][g_sChar.m_cLocation.Y - 1] != 'x')
 		{
@@ -422,12 +427,51 @@ void renderMap()
 void renderCharacter()
 {
     // Draw the location of the character
-    WORD charColor = 0x0C;
-    if (g_sChar.m_bActive)
-    {
-        charColor = 0x0A;
-    }
-    g_Console.writeToBuffer(g_sChar.m_cLocation, (char)1, charColor);
+	if (direction == 'u')
+	{
+		WORD charColor = 0x0C;
+		if (g_sChar.m_bActive)
+		{
+			charColor = 0x0A;
+		}
+		g_Console.writeToBuffer(g_sChar.m_cLocation, (unsigned char)202, charColor);
+	}
+	else if (direction == 'd')
+	{
+		WORD charColor = 0x0C;
+		if (g_sChar.m_bActive)
+		{
+			charColor = 0x0A;
+		}
+		g_Console.writeToBuffer(g_sChar.m_cLocation, (unsigned char)203, charColor);
+	}
+	else if (direction == 'l')
+	{
+		WORD charColor = 0x0C;
+		if (g_sChar.m_bActive)
+		{
+			charColor = 0x0A;
+		}
+		g_Console.writeToBuffer(g_sChar.m_cLocation, (unsigned char)185, charColor);
+	}
+	else if (direction == 'r')
+	{
+		WORD charColor = 0x0C;
+		if (g_sChar.m_bActive)
+		{
+			charColor = 0x0A;
+		}
+		g_Console.writeToBuffer(g_sChar.m_cLocation, (unsigned char)204, charColor);
+	}
+	else
+	{
+		WORD charColor = 0x0C;
+		if (g_sChar.m_bActive)
+		{
+			charColor = 0x0A;
+		}
+		g_Console.writeToBuffer(g_sChar.m_cLocation, (unsigned char)202, charColor);
+	}
 }
 
 void renderFramerate()
