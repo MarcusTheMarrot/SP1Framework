@@ -101,11 +101,11 @@ void getInput( void )
 	g_abKeyPressed[K_RIGHT] = isKeyPressed(VK_RIGHT);
 	g_abKeyPressed[K_SPACE] = isKeyPressed(VK_SPACE);
 	g_abKeyPressed[K_ESCAPE] = isKeyPressed(VK_ESCAPE);
-	g_abKeyPressed[K_ONE] = isKeyPressed(0x31);
-	g_abKeyPressed[K_TWO] = isKeyPressed(0x32);
-	g_abKeyPressed[K_THREE] = isKeyPressed(0x33);
-	g_abKeyPressed[K_FOUR] = isKeyPressed(0x34);
-	g_abKeyPressed[K_FIVE] = isKeyPressed(0x35);
+	g_abKeyPressed[K_ONE] = isKeyPressed(0x31); // assign the one key
+	g_abKeyPressed[K_TWO] = isKeyPressed(0x32); // assign the two key
+	g_abKeyPressed[K_THREE] = isKeyPressed(0x33); // assign the three key
+	g_abKeyPressed[K_FOUR] = isKeyPressed(0x34); // assign the four key
+	g_abKeyPressed[K_FIVE] = isKeyPressed(0x35); // assign the five key
 }
 
 //--------------------------------------------------------------
@@ -276,7 +276,7 @@ void renderSplashScreen()  // renders the splash screen
 	int i = 0;
 	int j = 0;
 	char splash[74][8];
-	ifstream file("title.txt");
+	ifstream file("title.txt"); // read from title.txt to print the ascii art
 	COORD c;
 	if (file.is_open())
 	{
@@ -465,7 +465,7 @@ void renderToMainMenu()
 	int i = 0;
 	int j = 0;
 	char main[73][12];
-	ifstream file("PickALevel.txt");
+	ifstream file("PickALevel.txt"); // read file from PickALevel.txt to print the ascii art
 	COORD c;
 	if (file.is_open())
 	{
@@ -500,7 +500,7 @@ void renderToMainMenu()
 	c.X = g_Console.getConsoleSize().X / 2 - 27;
 	g_Console.writeToBuffer(c, "Enter a number from 1-5 to choose your level (1-5).", 0x03);
 
-	if (g_abKeyPressed[K_ONE])
+	if (g_abKeyPressed[K_ONE]) // press one to go to game
 	{
 		g_eGameState = S_GAME;
 	}
