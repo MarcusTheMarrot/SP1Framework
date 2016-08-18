@@ -36,6 +36,9 @@
     <ClCompile Include="mapInteract.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="extract.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Framework\console.h">
@@ -48,6 +51,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="mapInteract.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="extract.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

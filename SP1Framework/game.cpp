@@ -4,6 +4,7 @@
 #include "game.h"
 #include "Framework\console.h"
 #include "mapInteract.h"
+#include "extract.h"
 #include <iostream>
 #include <iomanip>
 #include <sstream>
@@ -15,7 +16,6 @@ using namespace std;
 double  g_dElapsedTime;
 double  g_dDeltaTime;
 bool    g_abKeyPressed[K_COUNT];
-bool	mapExtract = false;
 
 //string one[1] = {" _____                           _   _                                    "};
 //string two[1] = { "|  ___|                         | | | |                                   " };
@@ -26,11 +26,12 @@ bool	mapExtract = false;
 //string seven[1] = { "                   | |                                                    " };
 //string eight[1] = { "                   |_" };
 
-char	txt[61][21];
-char	wall = 178;
+char	map[61][21];
+unsigned char wall = 178;
 unsigned char direction;
 unsigned char ground = 176;
 string	teleport;
+string	null = { '\0', };
 int stage;
 
 // Game specific variables here
@@ -185,7 +186,7 @@ void moveCharacter()
 	{
 		direction = 'u';
 		//Beep(1440, 30);
-		if (txt[g_sChar.m_cLocation.X][g_sChar.m_cLocation.Y - 2] != 'x')
+		if (map[g_sChar.m_cLocation.X][g_sChar.m_cLocation.Y - 2] != 'x')
 		{
 			g_sChar.m_cLocation.Y--;
 			bSomethingHappened = true;
@@ -195,7 +196,7 @@ void moveCharacter()
 	{
 		direction = 'l';
 		//Beep(1440, 30);
-		if (txt[g_sChar.m_cLocation.X - 1][g_sChar.m_cLocation.Y - 1] != 'x')
+		if (map[g_sChar.m_cLocation.X - 1][g_sChar.m_cLocation.Y - 1] != 'x')
 		{
 			g_sChar.m_cLocation.X--;
 			bSomethingHappened = true;
@@ -205,7 +206,7 @@ void moveCharacter()
 	{
 		direction = 'd';
 		//Beep(1440, 30);
-		if (txt[g_sChar.m_cLocation.X][g_sChar.m_cLocation.Y] != 'x')
+		if (map[g_sChar.m_cLocation.X][g_sChar.m_cLocation.Y] != 'x')
 		{
 			g_sChar.m_cLocation.Y++;
 			bSomethingHappened = true;
@@ -215,7 +216,7 @@ void moveCharacter()
 	{
 		direction = 'r';
 		//Beep(1440, 30);
-		if (txt[g_sChar.m_cLocation.X + 1][g_sChar.m_cLocation.Y - 1] != 'x')
+		if (map[g_sChar.m_cLocation.X + 1][g_sChar.m_cLocation.Y - 1] != 'x')
 		{
 			g_sChar.m_cLocation.X++;
 			bSomethingHappened = true;
@@ -233,10 +234,10 @@ void moveCharacter()
 		g_dBounceTime = g_dElapsedTime; // 125ms should not be enough
 		g_dBounceTime = g_dElapsedTime + 0.1; // 125ms should be enough
 	}
-	if (g_sChar.m_cLocation.X == 60 && g_sChar.m_cLocation.Y == 19)
+	if (g_sChar.m_cLocation.X == 60 && g_sChar.m_cLocation.Y == 19 && stage == 0)
 	{
 		stage++;
-		mapExtract = false;
+		teleport = null;
 	}
 }
 
@@ -297,71 +298,7 @@ void renderSplashScreen()  // renders the splash screen
     g_Console.writeToBuffer(c, "Press 'Esc' to quit", 0x07);
 }
 
-void renderGame()
-{
-	
-	renderMap();// renders the map to the buffer first
-		
-    renderCharacter();  // renders the character into the buffer
-}
-
-void extractMap(int level)
-{
-	int i = 0;
-	int j = 0;
-	if (level == 0)
-	{
-		ifstream file("test.txt");
-		if (file.is_open())
-		{
-			while (j <= 19)
-			{
-				while (i <= 59)
-				{
-					file >> txt[i][j];
-					if (txt[i][j] == 'p')
-					{
-						teleport += i;
-						teleport += j + 1;
-					}
-					i++;
-				}
-				i = 0;
-				j++;
-			}
-			file.close();
-		}
-		mapExtract = true;
-	}
-	if (level == 1)
-	{
-		ifstream file("sampleLevel.txt");
-		if (file.is_open())
-		{
-			while (j <= 19)
-			{
-				while (i <= 59)
-				{
-					file >> txt[i][j];
-					if (txt[i][j] == 'p')
-					{
-						teleport += i;
-						teleport += j + 1;
-					}
-					i++;
-				}
-				i = 0;
-				j++;
-			}
-			file.close();
-		}
-		g_sChar.m_cLocation.X = 0;
-		g_sChar.m_cLocation.Y = 19;
-		mapExtract = true;
-	}
-}
-
-void renderMap()
+void rendermap()
 {
 	/*// Set up sample colours, and output shadings
     const WORD colors[] = {
@@ -377,32 +314,45 @@ void renderMap()
         colour(colors[i]);
         g_Console.writeToBuffer(c, " °±²Û", colors[i]);
     }*/
-	if (mapExtract == false)
+	string stupid = extractMap(stage);
+	int c = 0;
+	for (int a = 0; a < 20; a++)
 	{
-		extractMap(stage);
+		for (int b = 0; b < 60; b++)
+		{
+			map[b][a] = stupid[c];
+			if (map[b][a] == 'p')
+			{
+				teleport += b;
+				teleport += a + 1;
+			}
+			c++;
+		}
+		c = (a + 1) * 60;
 	}
-	COORD c;
+	COORD coord;
 	for (int y = 0; y <= 19; y++)
 	{
-		c.Y = y + 1;
+		coord.Y = y + 1;
 		for (int x = 0; x <= 59; x++)
 		{
-			c.X = x;
-			if (txt[x][y] == '-')
+			coord.X = x;
+			if (map[x][y] == '-')
 			{
-				g_Console.writeToBuffer(c, ground, 0x1A);
+				g_Console.writeToBuffer(coord, ground, 0x1A);
 			}
-			if (txt[x][y] == 'x')
+			if (map[x][y] == 'x')
 			{
-				g_Console.writeToBuffer(c, wall);
+				g_Console.writeToBuffer(coord, wall);
 			}
-			if (txt[x][y] == 'p')
+			if (map[x][y] == 'p')
 			{
-				g_Console.writeToBuffer(c, wall, 0x2B);
+				g_Console.writeToBuffer(coord, wall, 0x2B);
 			}
 		}
 	}
 }
+
 
 void renderCharacter()
 {
@@ -452,6 +402,12 @@ void renderCharacter()
 		}
 		g_Console.writeToBuffer(g_sChar.m_cLocation, (unsigned char)202, charColor);
 	}
+}
+
+void renderGame()
+{
+	rendermap();// renders the map to the buffer first	
+	renderCharacter();  // renders the character into the buffer
 }
 
 void renderFramerate()
