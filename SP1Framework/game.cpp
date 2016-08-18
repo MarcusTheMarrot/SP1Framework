@@ -186,54 +186,43 @@ void moveCharacter()
 	// providing a beep sound whenver we shift the character
 	if (g_abKeyPressed[K_UP] && g_sChar.m_cLocation.Y > 0 )
 	{
-		if (g_abKeyPressed[K_RIGHT] && g_abKeyPressed[K_UP])
-		{
-			direction = 'ur';
-		}
-		else if (g_abKeyPressed[K_LEFT] && g_abKeyPressed[K_UP])
-		{
-			direction = 'ul';
-		}
-		else
-		{
-			direction = 'u';
-		}
 		//Beep(1440, 30);	
-		if (map[g_sChar.m_cLocation.X][g_sChar.m_cLocation.Y - 2] != 'x')
+		if (map[g_sChar.m_cLocation.X][g_sChar.m_cLocation.Y - 2] != 'x' && direction == 'u')
 		{
 			g_sChar.m_cLocation.Y--;
 			bSomethingHappened = true;
 		}
+		direction = 'u';
 	}
 	if (g_abKeyPressed[K_LEFT] && g_sChar.m_cLocation.X > 0)
 	{
-		direction = 'l';
 		//Beep(1440, 30);
-		if (map[g_sChar.m_cLocation.X - 1][g_sChar.m_cLocation.Y - 1] != 'x')
+		if (map[g_sChar.m_cLocation.X - 1][g_sChar.m_cLocation.Y - 1] != 'x' && direction == 'l')
 		{
 			g_sChar.m_cLocation.X--;
 			bSomethingHappened = true;
 		}
+		direction = 'l';
 	}
 	if (g_abKeyPressed[K_DOWN] && g_sChar.m_cLocation.Y < g_Console.getConsoleSize().Y - 1)
 	{
-		direction = 'd';
 		//Beep(1440, 30);
-		if (map[g_sChar.m_cLocation.X][g_sChar.m_cLocation.Y] != 'x')
+		if (map[g_sChar.m_cLocation.X][g_sChar.m_cLocation.Y] != 'x' && direction == 'd')
 		{
 			g_sChar.m_cLocation.Y++;
 			bSomethingHappened = true;
 		}
+		direction = 'd';
 	}
 	if (g_abKeyPressed[K_RIGHT] && g_sChar.m_cLocation.X < g_Console.getConsoleSize().X - 1)
 	{
-		direction = 'r';
 		//Beep(1440, 30);
-		if (map[g_sChar.m_cLocation.X + 1][g_sChar.m_cLocation.Y - 1] != 'x')
+		if (map[g_sChar.m_cLocation.X + 1][g_sChar.m_cLocation.Y - 1] != 'x' && direction == 'r')
 		{
 			g_sChar.m_cLocation.X++;
 			bSomethingHappened = true;
 		}
+		direction = 'r';
 	}
 
 	if (bSomethingHappened)
@@ -245,9 +234,9 @@ void moveCharacter()
 		}
 		// set the bounce time to some time in the future to prevent accidental triggers
 		g_dBounceTime = g_dElapsedTime; // 125ms should not be enough
-		g_dBounceTime = g_dElapsedTime + 0.1; // 125ms should be enough
+		// 125ms should be enough
 	}
-	if (g_sChar.m_cLocation.X == 60 && g_sChar.m_cLocation.Y == 19 && stage == 0)
+	if (g_sChar.m_cLocation.X == 59 && g_sChar.m_cLocation.Y == 19 && stage == 0)
 	{
 		teleport.erase(0, teledel);
 		teledel = 0;
@@ -255,7 +244,7 @@ void moveCharacter()
 		g_sChar.m_cLocation.X = 0;
 		g_sChar.m_cLocation.Y = 19;
 	}
-	if (g_sChar.m_cLocation.X == 60 && g_sChar.m_cLocation.Y == 2 && stage == 1)
+	if (g_sChar.m_cLocation.X == 59 && g_sChar.m_cLocation.Y == 2 && stage == 1)
 	{
 		teleport.erase(0, teledel);
 		teledel = 0;
@@ -394,24 +383,6 @@ void renderCharacter()
 			charColor = 0x0A;
 		}
 		g_Console.writeToBuffer(g_sChar.m_cLocation, '^', charColor);
-	}
-	else if (direction == 'ur')
-	{
-		WORD charColor = 0x0C;
-		if (g_sChar.m_bActive)
-		{
-			charColor = 0x0A;
-		}
-		g_Console.writeToBuffer(g_sChar.m_cLocation, unsigned char(191), charColor);
-	}
-	else if (direction == 'ul')
-	{
-		WORD charColor = 0x0C;
-		if (g_sChar.m_bActive)
-		{
-			charColor = 0x0A;
-		}
-		g_Console.writeToBuffer(g_sChar.m_cLocation, unsigned char(192), charColor);
 	}
 	else if (direction == 'd')
 	{
