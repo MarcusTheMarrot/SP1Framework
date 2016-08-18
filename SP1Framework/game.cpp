@@ -15,7 +15,7 @@ using namespace std;
 
 double  g_dElapsedTime;
 double  g_dDeltaTime;
-bool    g_abKeyPressed[K_COUNT];
+bool    g_abKeyPressed[K_COUNT], teleporter = false;
 
 //string one[1] = {" _____                           _   _                                    "};
 //string two[1] = { "|  ___|                         | | | |                                   " };
@@ -30,9 +30,11 @@ char	map[61][21];
 unsigned char wall = 178;
 unsigned char direction;
 unsigned char ground = 176;
+unsigned char destination = 177;
 string	teleport;
 string	null = { '\0', };
 int stage;
+int teledel = 0;
 
 // Game specific variables here
 SGameChar	g_sChar;
@@ -182,10 +184,21 @@ void moveCharacter()
 
 	// Updating the location of the character based on the key press
 	// providing a beep sound whenver we shift the character
-	if (g_abKeyPressed[K_UP] && g_sChar.m_cLocation.Y > 0)
+	if (g_abKeyPressed[K_UP] && g_sChar.m_cLocation.Y > 0 )
 	{
-		direction = 'u';
-		//Beep(1440, 30);
+		if (g_abKeyPressed[K_RIGHT] && g_abKeyPressed[K_UP])
+		{
+			direction = 'ur';
+		}
+		else if (g_abKeyPressed[K_LEFT] && g_abKeyPressed[K_UP])
+		{
+			direction = 'ul';
+		}
+		else
+		{
+			direction = 'u';
+		}
+		//Beep(1440, 30);	
 		if (map[g_sChar.m_cLocation.X][g_sChar.m_cLocation.Y - 2] != 'x')
 		{
 			g_sChar.m_cLocation.Y--;
@@ -236,8 +249,19 @@ void moveCharacter()
 	}
 	if (g_sChar.m_cLocation.X == 60 && g_sChar.m_cLocation.Y == 19 && stage == 0)
 	{
+		teleport.erase(0, teledel);
+		teledel = 0;
 		stage++;
-		teleport = null;
+		g_sChar.m_cLocation.X = 0;
+		g_sChar.m_cLocation.Y = 19;
+	}
+	if (g_sChar.m_cLocation.X == 60 && g_sChar.m_cLocation.Y == 2 && stage == 1)
+	{
+		teleport.erase(0, teledel);
+		teledel = 0;
+		stage++;
+		g_sChar.m_cLocation.X = 0;
+		g_sChar.m_cLocation.Y = 2;
 	}
 }
 
@@ -323,6 +347,7 @@ void rendermap()
 			map[b][a] = stupid[c];
 			if (map[b][a] == 'p')
 			{
+				teledel += 2;
 				teleport += b;
 				teleport += a + 1;
 			}
@@ -349,6 +374,10 @@ void rendermap()
 			{
 				g_Console.writeToBuffer(coord, wall, 0x2B);
 			}
+			if (map[x][y] == 'e')
+			{
+				g_Console.writeToBuffer(coord, destination, 0x4C);
+			}
 		}
 	}
 }
@@ -364,7 +393,25 @@ void renderCharacter()
 		{
 			charColor = 0x0A;
 		}
-		g_Console.writeToBuffer(g_sChar.m_cLocation, (unsigned char)202, charColor);
+		g_Console.writeToBuffer(g_sChar.m_cLocation, '^', charColor);
+	}
+	else if (direction == 'ur')
+	{
+		WORD charColor = 0x0C;
+		if (g_sChar.m_bActive)
+		{
+			charColor = 0x0A;
+		}
+		g_Console.writeToBuffer(g_sChar.m_cLocation, unsigned char(191), charColor);
+	}
+	else if (direction == 'ul')
+	{
+		WORD charColor = 0x0C;
+		if (g_sChar.m_bActive)
+		{
+			charColor = 0x0A;
+		}
+		g_Console.writeToBuffer(g_sChar.m_cLocation, unsigned char(192), charColor);
 	}
 	else if (direction == 'd')
 	{
@@ -373,7 +420,7 @@ void renderCharacter()
 		{
 			charColor = 0x0A;
 		}
-		g_Console.writeToBuffer(g_sChar.m_cLocation, (unsigned char)203, charColor);
+		g_Console.writeToBuffer(g_sChar.m_cLocation, 'v', charColor);
 	}
 	else if (direction == 'l')
 	{
@@ -382,7 +429,7 @@ void renderCharacter()
 		{
 			charColor = 0x0A;
 		}
-		g_Console.writeToBuffer(g_sChar.m_cLocation, (unsigned char)185, charColor);
+		g_Console.writeToBuffer(g_sChar.m_cLocation, '<', charColor);
 	}
 	else if (direction == 'r')
 	{
@@ -391,7 +438,7 @@ void renderCharacter()
 		{
 			charColor = 0x0A;
 		}
-		g_Console.writeToBuffer(g_sChar.m_cLocation, (unsigned char)204, charColor);
+		g_Console.writeToBuffer(g_sChar.m_cLocation, '>', charColor);
 	}
 	else
 	{
@@ -400,7 +447,7 @@ void renderCharacter()
 		{
 			charColor = 0x0A;
 		}
-		g_Console.writeToBuffer(g_sChar.m_cLocation, (unsigned char)202, charColor);
+		g_Console.writeToBuffer(g_sChar.m_cLocation, '^', charColor);
 	}
 }
 

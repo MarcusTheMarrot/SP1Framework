@@ -14,6 +14,10 @@ string extractMap(int level)
 	{
 		myfile = "test.txt";
 	}
+	else if (level == 2)
+	{
+		myfile = "test2.txt";
+	}
 
 	ifstream file(myfile);
 	if (file.is_open())
