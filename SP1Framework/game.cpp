@@ -187,6 +187,7 @@ void moveCharacter()
 	if (g_abKeyPressed[K_UP] && g_sChar.m_cLocation.Y > 0 )
 	{
 		//Beep(1440, 30);	
+		//only move if player is facing in the direction he wants to move
 		if (map[g_sChar.m_cLocation.X][g_sChar.m_cLocation.Y - 2] != 'x' && direction == 'u')
 		{
 			g_sChar.m_cLocation.Y--;
@@ -227,15 +228,18 @@ void moveCharacter()
 
 	if (bSomethingHappened)
 	{
+		//check if playr moved into a telporter
 		xy = teleportation(teleport, g_sChar.m_cLocation.X, g_sChar.m_cLocation.Y);
 		if (xy.X != 0 && xy.Y != 0)
 		{
+			// move player to other teleporter
 			g_sChar.m_cLocation = xy;
 		}
 		// set the bounce time to some time in the future to prevent accidental triggers
 		g_dBounceTime = g_dElapsedTime; // 125ms should not be enough
 		// 125ms should be enough
 	}
+	//if player reaches exit for stage 0, move to next map
 	if (g_sChar.m_cLocation.X == 59 && g_sChar.m_cLocation.Y == 19 && stage == 0)
 	{
 		teleport.erase(0, teledel);
@@ -327,13 +331,16 @@ void rendermap()
         colour(colors[i]);
         g_Console.writeToBuffer(c, " °±²Û", colors[i]);
     }*/
+	//write everything in txt to stupid
 	string stupid = extractMap(stage);
 	int c = 0;
 	for (int a = 0; a < 20; a++)
 	{
 		for (int b = 0; b < 60; b++)
 		{
+			//transfer it to an array
 			map[b][a] = stupid[c];
+			//record where is the teleporter to the 
 			if (map[b][a] == 'p')
 			{
 				teledel += 2;
@@ -344,6 +351,7 @@ void rendermap()
 		}
 		c = (a + 1) * 60;
 	}
+	//buffer the shit
 	COORD coord;
 	for (int y = 0; y <= 19; y++)
 	{
@@ -351,18 +359,22 @@ void rendermap()
 		for (int x = 0; x <= 59; x++)
 		{
 			coord.X = x;
+			//buffer ground
 			if (map[x][y] == '-')
 			{
 				g_Console.writeToBuffer(coord, ground, 0x1A);
 			}
+			//buffer wall
 			if (map[x][y] == 'x')
 			{
 				g_Console.writeToBuffer(coord, wall);
 			}
+			//buffer portal
 			if (map[x][y] == 'p')
 			{
 				g_Console.writeToBuffer(coord, wall, 0x2B);
 			}
+			//buffer exit
 			if (map[x][y] == 'e')
 			{
 				g_Console.writeToBuffer(coord, destination, 0x4C);
@@ -374,10 +386,11 @@ void rendermap()
 
 void renderCharacter()
 {
+	WORD charColor = 0x0C;
     // Draw the location of the character
+	//change player direction
 	if (direction == 'u')
 	{
-		WORD charColor = 0x0C;
 		if (g_sChar.m_bActive)
 		{
 			charColor = 0x0A;
@@ -386,7 +399,6 @@ void renderCharacter()
 	}
 	else if (direction == 'd')
 	{
-		WORD charColor = 0x0C;
 		if (g_sChar.m_bActive)
 		{
 			charColor = 0x0A;
@@ -395,7 +407,6 @@ void renderCharacter()
 	}
 	else if (direction == 'l')
 	{
-		WORD charColor = 0x0C;
 		if (g_sChar.m_bActive)
 		{
 			charColor = 0x0A;
@@ -404,7 +415,6 @@ void renderCharacter()
 	}
 	else if (direction == 'r')
 	{
-		WORD charColor = 0x0C;
 		if (g_sChar.m_bActive)
 		{
 			charColor = 0x0A;
@@ -413,7 +423,6 @@ void renderCharacter()
 	}
 	else
 	{
-		WORD charColor = 0x0C;
 		if (g_sChar.m_bActive)
 		{
 			charColor = 0x0A;
