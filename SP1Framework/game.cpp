@@ -269,14 +269,14 @@ void renderSplashScreen()  // renders the splash screen
 {
 	int i = 0;
 	int j = 0;
-	char splash[74][8];
+	char splash[58][10];
 	ifstream file("title.txt"); // read from title.txt to print the ascii art
 	COORD c;
 	if (file.is_open())
 	{
-		while (j <= 7)
+		while (j <= 9)
 		{
-			while (i <= 73)
+			while (i <= 57)
 			{
 				file >> splash[i][j];
 				i++;
@@ -286,12 +286,12 @@ void renderSplashScreen()  // renders the splash screen
 		}
 		file.close();
 	}
-	for (int y = 0; y <= 7; y++)
+	for (int y = 0; y <= 9; y++)
 	{
 		c.Y = y + 4;
-		for (int x = 0; x <= 73; x++)
+		for (int x = 0; x <= 57; x++)
 		{
-			c.X = x + 3;
+			c.X = x + 10;
 			if (splash[x][y] != '~')
 			{
 				g_Console.writeToBuffer(c, splash[x][y], 0x09);
