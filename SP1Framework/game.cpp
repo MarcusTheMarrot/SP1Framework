@@ -5,6 +5,7 @@
 #include "Framework\console.h"
 #include "mapInteract.h"
 #include "extract.h"
+#include "levelTransition.h"
 #include <iostream>
 #include <iomanip>
 #include <sstream>
@@ -24,7 +25,7 @@ unsigned char ground = 176;
 unsigned char destination = 177;
 string	teleport;
 string	null = { '\0', };
-int stage;
+int level;
 int teledel = 0;
 
 // Game specific variables here
@@ -158,55 +159,9 @@ void render()
 
 void splashScreenWait()    // waits for time to pass in splash screen
 {
-	if (g_abKeyPressed[K_SPACE]) // press enter to start game
+	if (g_abKeyPressed[K_SPACE]) // press space to start game
 	{
 		g_eGameState = S_MAINMENU;
-	}
-}
-
-void renderToMainMenu()
-{
-	int i = 0;
-	int j = 0;
-	char main[73][12];
-	ifstream file("PickALevel.txt"); // read file from PickALevel.txt to print the ascii art
-	COORD c;
-	if (file.is_open())
-	{
-		while (j <= 11)
-		{
-			while (i <= 72)
-			{
-				file >> main[i][j];
-				i++;
-			}
-			i = 0;
-			j++;
-		}
-		file.close();
-	}
-	for (int y = 0; y <= 11; y++)
-	{
-		c.Y = y + 4;
-		for (int x = 0; x <= 72; x++)
-		{
-			c.X = x + 3;
-			if (main[x][y] != '~')
-			{
-				g_Console.writeToBuffer(c, main[x][y], 0x09);
-			}
-		}
-	}
-	c = g_Console.getConsoleSize();
-	c.Y /= 3 + 5;
-	c.X = c.X / 2 - 35;
-	c.Y += 15;
-	c.X = g_Console.getConsoleSize().X / 2 - 27;
-	g_Console.writeToBuffer(c, "Enter a number from 1-5 to choose your level (1-5).", 0x03);
-
-	if (g_abKeyPressed[K_ONE]) // press one to go to game
-	{
-		g_eGameState = S_GAME;
 	}
 
 	if (g_abKeyPressed[K_ESCAPE])
@@ -283,23 +238,10 @@ void moveCharacter()
 		// set the bounce time to some time in the future to prevent accidental triggers
 		g_dBounceTime = g_dElapsedTime; // 125ms should not be enough
 		// 125ms should be enough
-	}
-	//if player reaches exit for stage 0, move to next map
-	if (g_sChar.m_cLocation.X == 59 && g_sChar.m_cLocation.Y == 19 && stage == 0)
-	{
+		//if player reaches exit for stage 0, move to next map
+		g_sChar.m_cLocation = mapTransition(g_sChar.m_cLocation, g_sChar.m_cLocation.X, g_sChar.m_cLocation.Y, &level);
 		teleport.erase(0, teledel);
 		teledel = 0;
-		stage++;
-		g_sChar.m_cLocation.X = 0;
-		g_sChar.m_cLocation.Y = 19;
-	}
-	if (g_sChar.m_cLocation.X == 59 && g_sChar.m_cLocation.Y == 2 && stage == 1)
-	{
-		teleport.erase(0, teledel);
-		teledel = 0;
-		stage++;
-		g_sChar.m_cLocation.X = 0;
-		g_sChar.m_cLocation.Y = 2;
 	}
 }
 
@@ -377,7 +319,7 @@ void rendermap()
 	g_Console.writeToBuffer(c, " °±²Û", colors[i]);
 	}*/
 	//write everything in txt to stupid
-	string stupid = extractMap(stage);
+	string stupid = extractMap(&level);
 	int c = 0;
 	for (int a = 0; a < 20; a++)
 	{
@@ -407,12 +349,12 @@ void rendermap()
 			//buffer ground
 			if (map[x][y] == '-')
 			{
-				g_Console.writeToBuffer(coord, ground, 0x1A);
+				g_Console.writeToBuffer(coord, ground, 0x88);
 			}
 			//buffer wall
 			if (map[x][y] == 'x')
 			{
-				g_Console.writeToBuffer(coord, wall);
+				g_Console.writeToBuffer(coord, wall, 0x80);
 			}
 			//buffer portal
 			if (map[x][y] == 'p')
@@ -422,7 +364,7 @@ void rendermap()
 			//buffer exit
 			if (map[x][y] == 'e')
 			{
-				g_Console.writeToBuffer(coord, destination, 0x4C);
+				g_Console.writeToBuffer(coord, destination, 0xA0);
 			}
 		}
 	}
@@ -436,47 +378,27 @@ void renderGame()
 
 void renderCharacter()
 {
-	WORD charColor = 0x0C;
+	WORD charColor = 0x89;
     // Draw the location of the character
 	//change player direction
 	if (direction == 'u')
 	{
-		if (g_sChar.m_bActive)
-		{
-			charColor = 0x0A;
-		}
 		g_Console.writeToBuffer(g_sChar.m_cLocation, '^', charColor);
 	}
 	else if (direction == 'd')
 	{
-		if (g_sChar.m_bActive)
-		{
-			charColor = 0x0A;
-		}
 		g_Console.writeToBuffer(g_sChar.m_cLocation, 'v', charColor);
 	}
 	else if (direction == 'l')
 	{
-		if (g_sChar.m_bActive)
-		{
-			charColor = 0x0A;
-		}
 		g_Console.writeToBuffer(g_sChar.m_cLocation, '<', charColor);
 	}
 	else if (direction == 'r')
 	{
-		if (g_sChar.m_bActive)
-		{
-			charColor = 0x0A;
-		}
 		g_Console.writeToBuffer(g_sChar.m_cLocation, '>', charColor);
 	}
 	else
 	{
-		if (g_sChar.m_bActive)
-		{
-			charColor = 0x0A;
-		}
 		g_Console.writeToBuffer(g_sChar.m_cLocation, '^', charColor);
 	}
 }
@@ -504,4 +426,56 @@ void renderToScreen()
 {
     // Writes the buffer to the console, hence you will see what you have written
     g_Console.flushBufferToConsole();
+}
+
+void renderToMainMenu()
+{
+	int i = 0;
+	int j = 0;
+	char main[73][12];
+	ifstream file("PickALevel.txt"); // read file from PickALevel.txt to print the ascii art
+	COORD c;
+	if (file.is_open())
+	{
+		while (j <= 11)
+		{
+			while (i <= 72)
+			{
+				file >> main[i][j];
+				i++;
+			}
+			i = 0;
+			j++;
+		}
+		file.close();
+	}
+	for (int y = 0; y <= 11; y++)
+	{
+		c.Y = y + 4;
+		for (int x = 0; x <= 72; x++)
+		{
+			c.X = x + 3;
+			if (main[x][y] != '~')
+			{
+				g_Console.writeToBuffer(c, main[x][y], 0x09);
+			}
+		}
+	}
+	c = g_Console.getConsoleSize();
+	c.Y /= 3 + 5;
+	c.X = c.X / 2 - 35;
+	c.Y += 15;
+	c.X = g_Console.getConsoleSize().X / 2 - 27;
+	g_Console.writeToBuffer(c, "Enter a number from 1-5 to choose your level (1-5).", 0x03);
+
+	if (g_abKeyPressed[K_ONE]) // press one to go to game
+	{
+		g_sChar.m_cLocation.X = 5;
+		g_sChar.m_cLocation.Y = 10;
+		level = 0;
+		g_eGameState = S_GAME;
+	}
+
+	if (g_abKeyPressed[K_ESCAPE])
+		g_bQuitGame = true;
 }
