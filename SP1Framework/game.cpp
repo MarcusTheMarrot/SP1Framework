@@ -292,9 +292,21 @@ void renderSplashScreen()  // renders the splash screen
 		for (int x = 0; x <= 57; x++)
 		{
 			c.X = x + 10;
-			if (splash[x][y] != '~')
+			if (splash[x][y] != '~' && x < 11)
 			{
-				g_Console.writeToBuffer(c, splash[x][y], 0x09);
+				g_Console.writeToBuffer(c, splash[x][y], 0x0B);
+			}
+			else if (splash[x][y] != '~' && x > 46)
+			{
+				g_Console.writeToBuffer(c, splash[x][y], 0x0B);
+			}
+			else if (splash[x][y] != '~' && y > 5)
+			{
+				g_Console.writeToBuffer(c, splash[x][y], 0x0B);
+			}
+			else if (splash[x][y] != '~')
+			{
+				g_Console.writeToBuffer(c, splash[x][y], 0x07);
 			}
 		}
 	}
