@@ -229,6 +229,15 @@ void moveCharacter()
 
 	if (bSomethingHappened)
 	{
+		//restart player at start point(sample level)
+		if (map[g_sChar.m_cLocation.X][g_sChar.m_cLocation.Y - 1] == 'f')
+		{
+			g_sChar.m_cLocation.X = 5;
+			g_sChar.m_cLocation.Y = 10;
+			direction = 'u';
+
+		}
+
 		//check if playr moved into a telporter
 		xy = teleportation(teleport, g_sChar.m_cLocation.X, g_sChar.m_cLocation.Y);
 		if (xy.X != 0 && xy.Y != 0)
@@ -409,6 +418,11 @@ void rendermap()
 			{
 				g_Console.writeToBuffer(coord, destination, 0x1F);
 			}
+			if (map[x][y] == 'f')
+			{
+				g_Console.writeToBuffer(coord, ground, 0xC3);
+			}
+
 		}
 	}
 }
