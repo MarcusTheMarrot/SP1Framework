@@ -17,15 +17,6 @@ double  g_dElapsedTime;
 double  g_dDeltaTime;
 bool    g_abKeyPressed[K_COUNT], teleporter = false;
 
-//string one[1] = {" _____                           _   _                                    "};
-//string two[1] = { "|  ___|                         | | | |                                   " };
-//string three[1] = { "| |__ ___  ___ __ _ _ __   ___  | |_| |__   ___   _ __ ___   __ _ _______ " };
-//string four[1] = { "|  __/ __|/ __/ _` | '_ \ / _ \ | __| '_ \ / _ \ | '_ ` _ \ / _` |_  / _ \ " };
-//string five[1] = { "| |__\__ \ (_| (_| | |_) |  __/ | |_| | | |  __/ | | | | | | (_| |/ /  __/" };
-//string six[1] = { "\____/___/\___\__,_| .__/ \___|  \__|_| |_|\___| |_| |_| |_|\__,_/___\___|" };
-//string seven[1] = { "                   | |                                                    " };
-//string eight[1] = { "                   |_" };
-
 char	map[61][21];
 unsigned char wall = 178;
 unsigned char direction;
@@ -74,6 +65,7 @@ void init( void )
 // Input    : Void
 // Output   : void
 //--------------------------------------------------------------
+
 void shutdown( void )
 {
     // Reset to white text on black background
@@ -93,6 +85,7 @@ void shutdown( void )
 // Input    : Void
 // Output   : void
 //--------------------------------------------------------------
+
 void getInput( void )
 {    
 	g_abKeyPressed[K_UP] = isKeyPressed(VK_UP);
@@ -122,6 +115,7 @@ void getInput( void )
 // Input    : dt = deltatime
 // Output   : void
 //--------------------------------------------------------------
+
 void update(double dt)
 {
     // get the delta time
@@ -136,6 +130,7 @@ void update(double dt)
             break;
     }
 }
+
 //--------------------------------------------------------------
 // Purpose  : Render function is to update the console screen
 //            At this point, you should know exactly what to draw onto the screen.
@@ -144,6 +139,7 @@ void update(double dt)
 // Input    : void
 // Output   : void
 //--------------------------------------------------------------
+
 void render()
 {
     clearScreen();      // clears the current screen and draw from scratch 
@@ -166,6 +162,55 @@ void splashScreenWait()    // waits for time to pass in splash screen
 	{
 		g_eGameState = S_MAINMENU;
 	}
+}
+
+void renderToMainMenu()
+{
+	int i = 0;
+	int j = 0;
+	char main[73][12];
+	ifstream file("PickALevel.txt"); // read file from PickALevel.txt to print the ascii art
+	COORD c;
+	if (file.is_open())
+	{
+		while (j <= 11)
+		{
+			while (i <= 72)
+			{
+				file >> main[i][j];
+				i++;
+			}
+			i = 0;
+			j++;
+		}
+		file.close();
+	}
+	for (int y = 0; y <= 11; y++)
+	{
+		c.Y = y + 4;
+		for (int x = 0; x <= 72; x++)
+		{
+			c.X = x + 3;
+			if (main[x][y] != '~')
+			{
+				g_Console.writeToBuffer(c, main[x][y], 0x09);
+			}
+		}
+	}
+	c = g_Console.getConsoleSize();
+	c.Y /= 3 + 5;
+	c.X = c.X / 2 - 35;
+	c.Y += 15;
+	c.X = g_Console.getConsoleSize().X / 2 - 27;
+	g_Console.writeToBuffer(c, "Enter a number from 1-5 to choose your level (1-5).", 0x03);
+
+	if (g_abKeyPressed[K_ONE]) // press one to go to game
+	{
+		g_eGameState = S_GAME;
+	}
+
+	if (g_abKeyPressed[K_ESCAPE])
+		g_bQuitGame = true;
 }
 
 void gameplay()            // gameplay logic
@@ -318,19 +363,19 @@ void renderSplashScreen()  // renders the splash screen
 void rendermap()
 {
 	/*// Set up sample colours, and output shadings
-    const WORD colors[] = {
-        0x1A, 0x2B, 0x3C, 0x4D, 0x5E, 0x6F,
-        0xA1, 0xB2, 0xC3, 0xD4, 0xE5, 0xF6
-    };
+	const WORD colors[] = {
+	0x1A, 0x2B, 0x3C, 0x4D, 0x5E, 0x6F,
+	0xA1, 0xB2, 0xC3, 0xD4, 0xE5, 0xF6
+	};
 
-    COORD c;
-    for (int i = 0; i < 12; ++i)
-    {
-        c.X = 5 * i;
-        c.Y = i + 1;
-        colour(colors[i]);
-        g_Console.writeToBuffer(c, " °±²Û", colors[i]);
-    }*/
+	COORD c;
+	for (int i = 0; i < 12; ++i)
+	{
+	c.X = 5 * i;
+	c.Y = i + 1;
+	colour(colors[i]);
+	g_Console.writeToBuffer(c, " °±²Û", colors[i]);
+	}*/
 	//write everything in txt to stupid
 	string stupid = extractMap(stage);
 	int c = 0;
@@ -383,6 +428,11 @@ void rendermap()
 	}
 }
 
+void renderGame()
+{
+	rendermap();// renders the map to the buffer first	
+	renderCharacter();  // renders the character into the buffer
+}
 
 void renderCharacter()
 {
@@ -431,12 +481,6 @@ void renderCharacter()
 	}
 }
 
-void renderGame()
-{
-	rendermap();// renders the map to the buffer first	
-	renderCharacter();  // renders the character into the buffer
-}
-
 void renderFramerate()
 {
     COORD c;
@@ -455,56 +499,9 @@ void renderFramerate()
     c.Y = 0;
     g_Console.writeToBuffer(c, ss.str());
 }
+
 void renderToScreen()
 {
     // Writes the buffer to the console, hence you will see what you have written
     g_Console.flushBufferToConsole();
-}
-void renderToMainMenu()
-{
-	int i = 0;
-	int j = 0;
-	char main[73][12];
-	ifstream file("PickALevel.txt"); // read file from PickALevel.txt to print the ascii art
-	COORD c;
-	if (file.is_open())
-	{
-		while (j <= 11)
-		{
-			while (i <= 72)
-			{
-				file >> main[i][j];
-				i++;
-			}
-			i = 0;
-			j++;
-		}
-		file.close();
-	}
-	for (int y = 0; y <= 11; y++)
-	{
-		c.Y = y + 4;
-		for (int x = 0; x <= 72; x++)
-		{
-			c.X = x + 3;
-			if (main[x][y] != '~')
-			{
-				g_Console.writeToBuffer(c, main[x][y], 0x09);
-			}
-		}
-	}
-	c = g_Console.getConsoleSize();
-	c.Y /= 3 + 5;
-	c.X = c.X / 2 - 35;
-	c.Y += 15;
-	c.X = g_Console.getConsoleSize().X / 2 - 27;
-	g_Console.writeToBuffer(c, "Enter a number from 1-5 to choose your level (1-5).", 0x03);
-
-	if (g_abKeyPressed[K_ONE]) // press one to go to game
-	{
-		g_eGameState = S_GAME;
-	}
-
-	if (g_abKeyPressed[K_ESCAPE])
-		g_bQuitGame = true;
 }
