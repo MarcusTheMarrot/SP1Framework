@@ -18,15 +18,6 @@ double  g_dElapsedTime;
 double  g_dDeltaTime;
 bool    g_abKeyPressed[K_COUNT], teleporter = false, gateOpen = false;
 
-//string one[1] = {" _____                           _   _                                    "};
-//string two[1] = { "|  ___|                         | | | |                                   " };
-//string three[1] = { "| |__ ___  ___ __ _ _ __   ___  | |_| |__   ___   _ __ ___   __ _ _______ " };
-//string four[1] = { "|  __/ __|/ __/ _` | '_ \ / _ \ | __| '_ \ / _ \ | '_ ` _ \ / _` |_  / _ \ " };
-//string five[1] = { "| |__\__ \ (_| (_| | |_) |  __/ | |_| | | |  __/ | | | | | | (_| |/ /  __/" };
-//string six[1] = { "\____/___/\___\__,_| .__/ \___|  \__|_| |_|\___| |_| |_| |_|\__,_/___\___|" };
-//string seven[1] = { "                   | |                                                    " };
-//string eight[1] = { "                   |_" };
-
 char	map[61][21];
 char	door[2][1];
 unsigned char wall = 178;
@@ -76,6 +67,7 @@ void init( void )
 // Input    : Void
 // Output   : void
 //--------------------------------------------------------------
+
 void shutdown( void )
 {
     // Reset to white text on black background
@@ -95,6 +87,7 @@ void shutdown( void )
 // Input    : Void
 // Output   : void
 //--------------------------------------------------------------
+
 void getInput( void )
 {    
 	g_abKeyPressed[K_UP] = isKeyPressed(VK_UP);
@@ -124,6 +117,7 @@ void getInput( void )
 // Input    : dt = deltatime
 // Output   : void
 //--------------------------------------------------------------
+
 void update(double dt)
 {
     // get the delta time
@@ -138,6 +132,7 @@ void update(double dt)
             break;
     }
 }
+
 //--------------------------------------------------------------
 // Purpose  : Render function is to update the console screen
 //            At this point, you should know exactly what to draw onto the screen.
@@ -146,6 +141,7 @@ void update(double dt)
 // Input    : void
 // Output   : void
 //--------------------------------------------------------------
+
 void render()
 {
     clearScreen();      // clears the current screen and draw from scratch 
@@ -164,10 +160,13 @@ void render()
 
 void splashScreenWait()    // waits for time to pass in splash screen
 {
-	if (g_abKeyPressed[K_SPACE]) // press enter to start game
+	if (g_abKeyPressed[K_SPACE]) // press space to start game
 	{
 		g_eGameState = S_MAINMENU;
 	}
+
+	if (g_abKeyPressed[K_ESCAPE])
+		g_bQuitGame = true;
 }
 
 void gameplay()            // gameplay logic
@@ -313,19 +312,19 @@ void renderSplashScreen()  // renders the splash screen
 void rendermap()
 {
 	/*// Set up sample colours, and output shadings
-    const WORD colors[] = {
-        0x1A, 0x2B, 0x3C, 0x4D, 0x5E, 0x6F,
-        0xA1, 0xB2, 0xC3, 0xD4, 0xE5, 0xF6
-    };
+	const WORD colors[] = {
+	0x1A, 0x2B, 0x3C, 0x4D, 0x5E, 0x6F,
+	0xA1, 0xB2, 0xC3, 0xD4, 0xE5, 0xF6
+	};
 
-    COORD c;
-    for (int i = 0; i < 12; ++i)
-    {
-        c.X = 5 * i;
-        c.Y = i + 1;
-        colour(colors[i]);
-        g_Console.writeToBuffer(c, " °±²Û", colors[i]);
-    }*/
+	COORD c;
+	for (int i = 0; i < 12; ++i)
+	{
+	c.X = 5 * i;
+	c.Y = i + 1;
+	colour(colors[i]);
+	g_Console.writeToBuffer(c, " °±²Û", colors[i]);
+	}*/
 	//write everything in txt to stupid
 	string stupid = extractMap(&level);
 	int c = 0;
@@ -402,6 +401,11 @@ void rendermap()
 	}
 }
 
+void renderGame()
+{
+	rendermap();// renders the map to the buffer first	
+	renderCharacter();  // renders the character into the buffer
+}
 
 void renderCharacter()
 {
@@ -430,12 +434,6 @@ void renderCharacter()
 	}
 }
 
-void renderGame()
-{
-	rendermap();// renders the map to the buffer first	
-	renderCharacter();  // renders the character into the buffer
-}
-
 void renderFramerate()
 {
     COORD c;
@@ -454,11 +452,13 @@ void renderFramerate()
     c.Y = 0;
     g_Console.writeToBuffer(c, ss.str());
 }
+
 void renderToScreen()
 {
     // Writes the buffer to the console, hence you will see what you have written
     g_Console.flushBufferToConsole();
 }
+
 void renderToMainMenu()
 {
 	int i = 0;
