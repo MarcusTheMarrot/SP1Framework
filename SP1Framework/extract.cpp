@@ -1,20 +1,20 @@
 #include "extract.h"
 
-string extractMap(int level)
+string extractMap(int *level)
 {
 	string myfile;
 	string row;
 	string master;
 
-	if (level == 0)
+	if (*level == 0)
 	{
 		myfile = "sampleLevel.txt";
 	}
-	else if (level == 1)
+	else if (*level == 1)
 	{
 		myfile = "test.txt";
 	}
-	else if (level == 2)
+	else if (*level == 2)
 	{
 		myfile = "test2.txt";
 	}
