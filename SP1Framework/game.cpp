@@ -16,7 +16,7 @@ using namespace std;
 
 double  g_dElapsedTime;
 double  g_dDeltaTime;
-bool    g_abKeyPressed[K_COUNT], teleporter = false;
+bool    g_abKeyPressed[K_COUNT], teleporter = false, gateOpen = false;
 
 //string one[1] = {" _____                           _   _                                    "};
 //string two[1] = { "|  ___|                         | | | |                                   " };
@@ -28,6 +28,7 @@ bool    g_abKeyPressed[K_COUNT], teleporter = false;
 //string eight[1] = { "                   |_" };
 
 char	map[61][21];
+char	door[2][1];
 unsigned char wall = 178;
 unsigned char direction;
 unsigned char ground = 176;
@@ -189,7 +190,7 @@ void moveCharacter()
 	{
 		//Beep(1440, 30);	
 		//only move if player is facing in the direction he wants to move
-		if (map[g_sChar.m_cLocation.X][g_sChar.m_cLocation.Y - 2] != 'x' && direction == 'u')
+		if (map[g_sChar.m_cLocation.X][g_sChar.m_cLocation.Y - 2] != 'x' && map[g_sChar.m_cLocation.X][g_sChar.m_cLocation.Y - 2] != 'd' && direction == 'u')
 		{
 			g_sChar.m_cLocation.Y--;
 			bSomethingHappened = true;
@@ -199,7 +200,7 @@ void moveCharacter()
 	if (g_abKeyPressed[K_LEFT] && g_sChar.m_cLocation.X > 0)
 	{
 		//Beep(1440, 30);
-		if (map[g_sChar.m_cLocation.X - 1][g_sChar.m_cLocation.Y - 1] != 'x' && direction == 'l')
+		if (map[g_sChar.m_cLocation.X - 1][g_sChar.m_cLocation.Y - 1] != 'x' && map[g_sChar.m_cLocation.X - 1][g_sChar.m_cLocation.Y - 1] != 'd' && direction == 'l')
 		{
 			g_sChar.m_cLocation.X--;
 			bSomethingHappened = true;
@@ -209,7 +210,7 @@ void moveCharacter()
 	if (g_abKeyPressed[K_DOWN] && g_sChar.m_cLocation.Y < g_Console.getConsoleSize().Y - 1)
 	{
 		//Beep(1440, 30);
-		if (map[g_sChar.m_cLocation.X][g_sChar.m_cLocation.Y] != 'x' && direction == 'd')
+		if (map[g_sChar.m_cLocation.X][g_sChar.m_cLocation.Y] != 'x' && map[g_sChar.m_cLocation.X][g_sChar.m_cLocation.Y] != 'd' && direction == 'd')
 		{
 			g_sChar.m_cLocation.Y++;
 			bSomethingHappened = true;
@@ -219,7 +220,7 @@ void moveCharacter()
 	if (g_abKeyPressed[K_RIGHT] && g_sChar.m_cLocation.X < g_Console.getConsoleSize().X - 1)
 	{
 		//Beep(1440, 30);
-		if (map[g_sChar.m_cLocation.X + 1][g_sChar.m_cLocation.Y - 1] != 'x' && direction == 'r')
+		if (map[g_sChar.m_cLocation.X + 1][g_sChar.m_cLocation.Y - 1] != 'x' && map[g_sChar.m_cLocation.X + 1][g_sChar.m_cLocation.Y - 1] != 'd' && direction == 'r')
 		{
 			g_sChar.m_cLocation.X++;
 			bSomethingHappened = true;
@@ -235,6 +236,12 @@ void moveCharacter()
 		{
 			// move player to other teleporter
 			g_sChar.m_cLocation = xy;
+		}
+		//if player location is l
+		if (map[g_sChar.m_cLocation.X][g_sChar.m_cLocation.Y - 1] == 'l')
+		{
+			//set door to open
+			gateOpen = true;
 		}
 		// set the bounce time to some time in the future to prevent accidental triggers
 		g_dBounceTime = g_dElapsedTime; // 125ms should not be enough
@@ -322,6 +329,10 @@ void rendermap()
 	//write everything in txt to stupid
 	string stupid = extractMap(&level);
 	int c = 0;
+	int d = 0;
+	int e = 0;
+	int f = 0;
+	int g = 0;
 	for (int a = 0; a < 20; a++)
 	{
 		for (int b = 0; b < 60; b++)
@@ -334,6 +345,18 @@ void rendermap()
 				teledel += 2;
 				teleport += b;
 				teleport += a + 1;
+			}
+			//record where door is, only when door not opened
+			if (map[b][a] == 'd' && gateOpen == false)
+			{
+				door[d][e] = b;
+				d++;
+				door[d][e] = a;
+			}
+			//if player stepped on lever, treat door as open tile
+			else if (map[b][a] == 'd')
+			{
+				map[b][a] = '-';
 			}
 			c++;
 		}
@@ -354,10 +377,10 @@ void rendermap()
 			}
 			//buffer wall
 			if (map[x][y] == 'x')
+			//buffer teleportal
 			{
 				g_Console.writeToBuffer(coord, wall, 0x80);
 			}
-			//buffer portal
 			if (map[x][y] == 'p')
 			{
 				g_Console.writeToBuffer(coord, wall, 0x2B);
@@ -366,6 +389,14 @@ void rendermap()
 			if (map[x][y] == 'e')
 			{
 				g_Console.writeToBuffer(coord, destination, 0xA0);
+			}
+			if (map[x][y] == 'd')
+			{
+				g_Console.writeToBuffer(coord, wall, 0x11);
+			}
+			if (map[x][y] == 'l')
+			{
+				g_Console.writeToBuffer(coord, destination, 0x1F);
 			}
 		}
 	}
