@@ -296,7 +296,7 @@ void renderSplashScreen()  // renders the splash screen
 			{
 				g_Console.writeToBuffer(c, splash[x][y], 0x0B);
 			}
-			else if (splash[x][y] != '~' && x > 46)
+			else if (splash[x][y] != '~' && x > 47)
 			{
 				g_Console.writeToBuffer(c, splash[x][y], 0x0B);
 			}
