@@ -730,11 +730,11 @@ void rendermap()
 			}
 			if (shotPortal == false)
 			{
-				g_Console.writeToBuffer(portal1, 'o', 0x25);
+				g_Console.writeToBuffer(portal1, 'O', 0x8C);
 			}
 			if (shotPortal2 == false)
 			{
-				g_Console.writeToBuffer(portal2, 'O', 0x25);
+				g_Console.writeToBuffer(portal2, 'O', 0x81);
 			}
 
 		}
@@ -766,6 +766,7 @@ void renderCharacter()
 			if (map[cord1.X][cord1.Y - 2] != 'x')
 			{
 				cord1.Y--;
+				g_Console.writeToBuffer(cord1, '|', 0x8C);
 			}
 			else
 			{
@@ -781,6 +782,7 @@ void renderCharacter()
 			if (map[cord2.X][cord2.Y - 2] != 'x')
 			{
 				cord2.Y--;
+				g_Console.writeToBuffer(cord1, '|', 0x81);
 			}
 			else
 			{
@@ -804,6 +806,7 @@ void renderCharacter()
 			if (map[cord1.X][cord1.Y] != 'x')
 			{
 				cord1.Y++;
+				g_Console.writeToBuffer(cord1, '|', 0x8C);
 			}
 			else
 			{
@@ -819,6 +822,7 @@ void renderCharacter()
 			if (map[cord2.X][cord2.Y] != 'x')
 			{
 				cord2.Y++;
+				g_Console.writeToBuffer(cord1, '|', 0x81);
 			}
 			else
 			{
@@ -842,6 +846,7 @@ void renderCharacter()
 			if (map[cord1.X - 1][cord1.Y] != 'x')
 			{
 				cord1.X--;
+				g_Console.writeToBuffer(cord1, '-', 0x8C);
 			}
 			else
 			{
@@ -857,6 +862,7 @@ void renderCharacter()
 			if (map[cord2.X - 1][cord2.Y] != 'x')
 			{
 				cord2.X--;
+				g_Console.writeToBuffer(cord1, '-', 0x81);
 			}
 			else
 			{
@@ -880,6 +886,7 @@ void renderCharacter()
 			if (map[cord1.X + 1][cord1.Y] != 'x')
 			{
 				cord1.X++;
+				g_Console.writeToBuffer(cord1, '-', 0x8C);
 			}
 			else
 			{
@@ -895,6 +902,7 @@ void renderCharacter()
 			if (map[cord2.X + 1][cord2.Y] != 'x')
 			{
 				cord2.X++;
+				g_Console.writeToBuffer(cord1, '-', 0x81);
 			}
 			else
 			{
