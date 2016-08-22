@@ -96,6 +96,7 @@ void getInput( void )
 	g_abKeyPressed[K_RIGHT] = isKeyPressed(VK_RIGHT);
 	g_abKeyPressed[K_SPACE] = isKeyPressed(VK_SPACE);
 	g_abKeyPressed[K_ESCAPE] = isKeyPressed(VK_ESCAPE);
+	g_abKeyPressed[K_RETURN] = isKeyPressed(VK_RETURN);
 	g_abKeyPressed[K_ONE] = isKeyPressed(0x31); // assign the one key
 	g_abKeyPressed[K_TWO] = isKeyPressed(0x32); // assign the two key
 	g_abKeyPressed[K_THREE] = isKeyPressed(0x33); // assign the three key
@@ -150,6 +151,14 @@ void render()
 	case S_SPLASHSCREEN: renderSplashScreen();
 		break;
 	case S_MAINMENU: renderToMainMenu();
+		break;
+	case S_MAINMENU2: renderToMainMenu2();
+		break;
+	case S_MAINMENU3: renderToMainMenu3();
+		break;
+	case S_MAINMENU4: renderToMainMenu4();
+		break;
+	case S_MAINMENU5: renderToMainMenu5();
 		break;
 	case S_GAME: renderGame();
 		break;
@@ -269,14 +278,14 @@ void renderSplashScreen()  // renders the splash screen
 {
 	int i = 0;
 	int j = 0;
-	char splash[58][10];
+	char splash[59][10];
 	ifstream file("title.txt"); // read from title.txt to print the ascii art
 	COORD c;
 	if (file.is_open())
 	{
 		while (j <= 9)
 		{
-			while (i <= 57)
+			while (i <= 58)
 			{
 				file >> splash[i][j];
 				i++;
@@ -289,7 +298,7 @@ void renderSplashScreen()  // renders the splash screen
 	for (int y = 0; y <= 9; y++)
 	{
 		c.Y = y + 4;
-		for (int x = 0; x <= 57; x++)
+		for (int x = 0; x <= 58; x++)
 		{
 			c.X = x + 10;
 			if (splash[x][y] != '~' && x < 11)
@@ -505,18 +514,286 @@ void renderToMainMenu()
 		}
 	}
 	c = g_Console.getConsoleSize();
-	c.Y /= 3 + 5;
+	c.Y /= 3 + 10;
 	c.X = c.X / 2 - 35;
 	c.Y += 15;
-	c.X = g_Console.getConsoleSize().X / 2 - 27;
-	g_Console.writeToBuffer(c, "Enter a number from 1-5 to choose your level (1-5).", 0x03);
+	c.X = g_Console.getConsoleSize().X / 2 - 20;
+	g_Console.writeToBuffer(c, "Press enter to choose your level (1-5).", 0x03);
+	c.Y += 1;
+	c.X = g_Console.getConsoleSize().X / 2 - 7;
+	g_Console.writeToBuffer(c, "Level 1", 0x73);
+	c.Y += 1;
+	g_Console.writeToBuffer(c, "Level 2", 0x03);
+	c.Y += 1;
+	g_Console.writeToBuffer(c, "Level 3", 0x03);
+	c.Y += 1;
+	g_Console.writeToBuffer(c, "Level 4", 0x03);
+	c.Y += 1;
+	g_Console.writeToBuffer(c, "Level 5", 0x03);
 
-	if (g_abKeyPressed[K_ONE]) // press one to go to game
+	if (g_abKeyPressed[K_DOWN])
 	{
-		g_sChar.m_cLocation.X = 5;
-		g_sChar.m_cLocation.Y = 10;
-		level = 0;
+		g_eGameState = S_MAINMENU2;
+	}
+
+	if (g_abKeyPressed[K_RETURN])
+	{
 		g_eGameState = S_GAME;
+	}
+
+	if (g_abKeyPressed[K_ESCAPE])
+		g_bQuitGame = true;
+}
+
+void renderToMainMenu2()
+{
+	int i = 0;
+	int j = 0;
+	char main[73][12];
+	ifstream file("PickALevel.txt"); // read file from PickALevel.txt to print the ascii art
+	COORD c;
+	if (file.is_open())
+	{
+		while (j <= 11)
+		{
+			while (i <= 72)
+			{
+				file >> main[i][j];
+				i++;
+			}
+			i = 0;
+			j++;
+		}
+		file.close();
+	}
+	for (int y = 0; y <= 11; y++)
+	{
+		c.Y = y + 4;
+		for (int x = 0; x <= 72; x++)
+		{
+			c.X = x + 3;
+			if (main[x][y] != '~')
+			{
+				g_Console.writeToBuffer(c, main[x][y], 0x09);
+			}
+		}
+	}
+	c = g_Console.getConsoleSize();
+	c.Y /= 3 + 10;
+	c.X = c.X / 2 - 35;
+	c.Y += 15;
+	c.X = g_Console.getConsoleSize().X / 2 - 20;
+	g_Console.writeToBuffer(c, "Press enter to choose your level (1-5).", 0x03);
+	c.Y += 1;
+	c.X = g_Console.getConsoleSize().X / 2 - 7;
+	g_Console.writeToBuffer(c, "Level 1", 0x03);
+	c.Y += 1;
+	g_Console.writeToBuffer(c, "Level 2", 0x73);
+	c.Y += 1;
+	g_Console.writeToBuffer(c, "Level 3", 0x03);
+	c.Y += 1;
+	g_Console.writeToBuffer(c, "Level 4", 0x03);
+	c.Y += 1;
+	g_Console.writeToBuffer(c, "Level 5", 0x03);
+
+	if (g_abKeyPressed[K_UP])
+	{
+		g_eGameState = S_MAINMENU;
+	}
+
+	if (g_abKeyPressed[K_DOWN])
+	{
+		g_eGameState = S_MAINMENU3;
+	}
+
+	if (g_abKeyPressed[K_ESCAPE])
+		g_bQuitGame = true;
+}
+
+void renderToMainMenu3()
+{
+	int i = 0;
+	int j = 0;
+	char main[73][12];
+	ifstream file("PickALevel.txt"); // read file from PickALevel.txt to print the ascii art
+	COORD c;
+	if (file.is_open())
+	{
+		while (j <= 11)
+		{
+			while (i <= 72)
+			{
+				file >> main[i][j];
+				i++;
+			}
+			i = 0;
+			j++;
+		}
+		file.close();
+	}
+	for (int y = 0; y <= 11; y++)
+	{
+		c.Y = y + 4;
+		for (int x = 0; x <= 72; x++)
+		{
+			c.X = x + 3;
+			if (main[x][y] != '~')
+			{
+				g_Console.writeToBuffer(c, main[x][y], 0x09);
+			}
+		}
+	}
+	c = g_Console.getConsoleSize();
+	c.Y /= 3 + 10;
+	c.X = c.X / 2 - 35;
+	c.Y += 15;
+	c.X = g_Console.getConsoleSize().X / 2 - 20;
+	g_Console.writeToBuffer(c, "Press enter to choose your level (1-5).", 0x03);
+	c.Y += 1;
+	c.X = g_Console.getConsoleSize().X / 2 - 7;
+	g_Console.writeToBuffer(c, "Level 1", 0x03);
+	c.Y += 1;
+	g_Console.writeToBuffer(c, "Level 2", 0x03);
+	c.Y += 1;
+	g_Console.writeToBuffer(c, "Level 3", 0x73);
+	c.Y += 1;
+	g_Console.writeToBuffer(c, "Level 4", 0x03);
+	c.Y += 1;
+	g_Console.writeToBuffer(c, "Level 5", 0x03);
+
+	if (g_abKeyPressed[K_UP])
+	{
+		g_eGameState = S_MAINMENU2;
+	}
+
+	if (g_abKeyPressed[K_DOWN])
+	{
+		g_eGameState = S_MAINMENU4;
+	}
+
+	if (g_abKeyPressed[K_ESCAPE])
+		g_bQuitGame = true;
+}
+
+void renderToMainMenu4()
+{
+	int i = 0;
+	int j = 0;
+	char main[73][12];
+	ifstream file("PickALevel.txt"); // read file from PickALevel.txt to print the ascii art
+	COORD c;
+	if (file.is_open())
+	{
+		while (j <= 11)
+		{
+			while (i <= 72)
+			{
+				file >> main[i][j];
+				i++;
+			}
+			i = 0;
+			j++;
+		}
+		file.close();
+	}
+	for (int y = 0; y <= 11; y++)
+	{
+		c.Y = y + 4;
+		for (int x = 0; x <= 72; x++)
+		{
+			c.X = x + 3;
+			if (main[x][y] != '~')
+			{
+				g_Console.writeToBuffer(c, main[x][y], 0x09);
+			}
+		}
+	}
+	c = g_Console.getConsoleSize();
+	c.Y /= 3 + 10;
+	c.X = c.X / 2 - 35;
+	c.Y += 15;
+	c.X = g_Console.getConsoleSize().X / 2 - 20;
+	g_Console.writeToBuffer(c, "Press enter to choose your level (1-5).", 0x03);
+	c.Y += 1;
+	c.X = g_Console.getConsoleSize().X / 2 - 7;
+	g_Console.writeToBuffer(c, "Level 1", 0x03);
+	c.Y += 1;
+	g_Console.writeToBuffer(c, "Level 2", 0x03);
+	c.Y += 1;
+	g_Console.writeToBuffer(c, "Level 3", 0x03);
+	c.Y += 1;
+	g_Console.writeToBuffer(c, "Level 4", 0x73);
+	c.Y += 1;
+	g_Console.writeToBuffer(c, "Level 5", 0x03);
+
+	if (g_abKeyPressed[K_UP])
+	{
+		g_eGameState = S_MAINMENU3;
+	}
+
+	if (g_abKeyPressed[K_DOWN])
+	{
+		g_eGameState = S_MAINMENU5;
+	}
+
+	if (g_abKeyPressed[K_ESCAPE])
+		g_bQuitGame = true;
+}
+
+void renderToMainMenu5()
+{
+	int i = 0;
+	int j = 0;
+	char main[73][12];
+	ifstream file("PickALevel.txt"); // read file from PickALevel.txt to print the ascii art
+	COORD c;
+	if (file.is_open())
+	{
+		while (j <= 11)
+		{
+			while (i <= 72)
+			{
+				file >> main[i][j];
+				i++;
+			}
+			i = 0;
+			j++;
+		}
+		file.close();
+	}
+	for (int y = 0; y <= 11; y++)
+	{
+		c.Y = y + 4;
+		for (int x = 0; x <= 72; x++)
+		{
+			c.X = x + 3;
+			if (main[x][y] != '~')
+			{
+				g_Console.writeToBuffer(c, main[x][y], 0x09);
+			}
+		}
+	}
+	c = g_Console.getConsoleSize();
+	c.Y /= 3 + 10;
+	c.X = c.X / 2 - 35;
+	c.Y += 15;
+	c.X = g_Console.getConsoleSize().X / 2 - 20;
+	g_Console.writeToBuffer(c, "Press enter to choose your level (1-5).", 0x03);
+	c.Y += 1;
+	c.X = g_Console.getConsoleSize().X / 2 - 7;
+	g_Console.writeToBuffer(c, "Level 1", 0x03);
+	c.Y += 1;
+	g_Console.writeToBuffer(c, "Level 2", 0x03);
+	c.Y += 1;
+	g_Console.writeToBuffer(c, "Level 3", 0x03);
+	c.Y += 1;
+	g_Console.writeToBuffer(c, "Level 4", 0x03);
+	c.Y += 1;
+	g_Console.writeToBuffer(c, "Level 5", 0x73);
+
+	if (g_abKeyPressed[K_UP])
+	{
+		g_eGameState = S_MAINMENU4;
 	}
 
 	if (g_abKeyPressed[K_ESCAPE])

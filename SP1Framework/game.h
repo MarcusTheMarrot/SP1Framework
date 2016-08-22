@@ -15,6 +15,7 @@ enum EKEYS
 	K_RIGHT,
 	K_ESCAPE,
 	K_SPACE,
+	K_RETURN,
 	K_ONE,
 	K_TWO,
 	K_THREE,
@@ -29,6 +30,10 @@ enum EGAMESTATES
 	S_SPLASHSCREEN,
 	S_GAME,
 	S_MAINMENU,
+	S_MAINMENU2,
+	S_MAINMENU3,
+	S_MAINMENU4,
+	S_MAINMENU5,
 	S_LEVELONE,
 	S_LEVELTWO,
 	S_LEVELTHREE,
@@ -63,5 +68,9 @@ void renderFramerate();     // renders debug information, frame rate, elapsed ti
 void renderToScreen();      // dump the contents of the buffer to the screen, one frame worth of game
 void mainmenuchoice();
 void renderToMainMenu();
+void renderToMainMenu2();
+void renderToMainMenu3();
+void renderToMainMenu4();
+void renderToMainMenu5();
 
 #endif // _GAME_H
