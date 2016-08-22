@@ -1,4 +1,4 @@
-// This is the main file for the game logic and function
+	// This is the main file for the game logic and function
 //
 //
 #include "game.h"
@@ -31,6 +31,7 @@ int teledel = 0;
 
 // Game specific variables here
 SGameChar	g_sChar;
+SGameChar2   g_sChar2;
 EGAMESTATES g_eGameState = S_SPLASHSCREEN;
 double  g_dBounceTime; // this is to prevent key bouncing, so we won't trigger keypresses more than once
 
@@ -56,6 +57,9 @@ void init( void )
     g_sChar.m_cLocation.X = 7;
     g_sChar.m_cLocation.Y = 6;
     g_sChar.m_bActive = true;
+	g_sChar2.m_cLocation.X = 1;
+	g_sChar2.m_cLocation.Y = 1;
+	g_sChar2.m_bActive = true;
     // sets the width, height and the font name to use in the console
     g_Console.setConsoleFont(0, 16, L"Consolas");
 }
@@ -90,10 +94,18 @@ void shutdown( void )
 
 void getInput( void )
 {    
-	g_abKeyPressed[K_UP] = isKeyPressed(VK_UP);
-	g_abKeyPressed[K_DOWN] = isKeyPressed(VK_DOWN);
-	g_abKeyPressed[K_LEFT] = isKeyPressed(VK_LEFT);
-	g_abKeyPressed[K_RIGHT] = isKeyPressed(VK_RIGHT);
+	//g_abKeyPressed[K_UP] = isKeyPressed(VK_UP);
+	//g_abKeyPressed[K_DOWN] = isKeyPressed(VK_DOWN);
+	//g_abKeyPressed[K_LEFT] = isKeyPressed(VK_LEFT);
+	//g_abKeyPressed[K_RIGHT] = isKeyPressed(VK_RIGHT);
+	g_abKeyPressed[PLAYER_1_K_UP] = isKeyPressed(0x57); //player 1 control
+	g_abKeyPressed[PLAYER_1_K_DOWN] = isKeyPressed(0x53);
+	g_abKeyPressed[PLAYER_1_K_LEFT] = isKeyPressed(0x41);
+	g_abKeyPressed[PLAYER_1_K_RIGHT] = isKeyPressed(0x44);
+	g_abKeyPressed[PLAYER_2_K_UP] = isKeyPressed(VK_UP); //PLAYER 2 CONTROL
+	g_abKeyPressed[PLAYER_2_K_DOWN] = isKeyPressed(VK_DOWN);
+	g_abKeyPressed[PLAYER_2_K_LEFT] = isKeyPressed(VK_LEFT);
+	g_abKeyPressed[PLAYER_2_K_RIGHT] = isKeyPressed(VK_RIGHT);
 	g_abKeyPressed[K_SPACE] = isKeyPressed(VK_SPACE);
 	g_abKeyPressed[K_ESCAPE] = isKeyPressed(VK_ESCAPE);
 	g_abKeyPressed[K_ONE] = isKeyPressed(0x31); // assign the one key
@@ -172,11 +184,12 @@ void splashScreenWait()    // waits for time to pass in splash screen
 void gameplay()            // gameplay logic
 {
     processUserInput(); // checks if you should change states or do something else with the game, e.g. pause, exit
-    moveCharacter();    // moves the character, collision detection, physics, etc
+    moveCharacter_1(); 
+	moveCharacter_2();// moves the character, collision detection, physics, etc
                         // sound can be played here too.
 }
 
-void moveCharacter()
+void moveCharacter_1()
 {
 	COORD xy;
 	bool bSomethingHappened = false;
@@ -185,7 +198,7 @@ void moveCharacter()
 
 	// Updating the location of the character based on the key press
 	// providing a beep sound whenver we shift the character
-	if (g_abKeyPressed[K_UP] && g_sChar.m_cLocation.Y > 0 )
+	if (g_abKeyPressed[PLAYER_1_K_UP] && g_sChar.m_cLocation.Y > 0)
 	{
 		//Beep(1440, 30);	
 		//only move if player is facing in the direction he wants to move
@@ -196,7 +209,7 @@ void moveCharacter()
 		}
 		direction = 'u';
 	}
-	if (g_abKeyPressed[K_LEFT] && g_sChar.m_cLocation.X > 0)
+	if (g_abKeyPressed[PLAYER_1_K_LEFT] && g_sChar.m_cLocation.X > 0)
 	{
 		//Beep(1440, 30);
 		if (map[g_sChar.m_cLocation.X - 1][g_sChar.m_cLocation.Y - 1] != 'x' && map[g_sChar.m_cLocation.X - 1][g_sChar.m_cLocation.Y - 1] != 'd' && direction == 'l')
@@ -206,7 +219,7 @@ void moveCharacter()
 		}
 		direction = 'l';
 	}
-	if (g_abKeyPressed[K_DOWN] && g_sChar.m_cLocation.Y < g_Console.getConsoleSize().Y - 1)
+	if (g_abKeyPressed[PLAYER_1_K_DOWN] && g_sChar.m_cLocation.Y < g_Console.getConsoleSize().Y - 1)
 	{
 		//Beep(1440, 30);
 		if (map[g_sChar.m_cLocation.X][g_sChar.m_cLocation.Y] != 'x' && map[g_sChar.m_cLocation.X][g_sChar.m_cLocation.Y] != 'd' && direction == 'd')
@@ -216,7 +229,7 @@ void moveCharacter()
 		}
 		direction = 'd';
 	}
-	if (g_abKeyPressed[K_RIGHT] && g_sChar.m_cLocation.X < g_Console.getConsoleSize().X - 1)
+	if (g_abKeyPressed[PLAYER_1_K_RIGHT] && g_sChar.m_cLocation.X < g_Console.getConsoleSize().X - 1)
 	{
 		//Beep(1440, 30);
 		if (map[g_sChar.m_cLocation.X + 1][g_sChar.m_cLocation.Y - 1] != 'x' && map[g_sChar.m_cLocation.X + 1][g_sChar.m_cLocation.Y - 1] != 'd' && direction == 'r')
@@ -226,10 +239,8 @@ void moveCharacter()
 		}
 		direction = 'r';
 	}
-
-	if (bSomethingHappened)
+	if (bSomethingHappened == true)
 	{
-		//restart player at start point(sample level)
 		if (map[g_sChar.m_cLocation.X][g_sChar.m_cLocation.Y - 1] == 'f')
 		{
 			g_sChar.m_cLocation.X = 5;
@@ -253,13 +264,99 @@ void moveCharacter()
 		}
 		// set the bounce time to some time in the future to prevent accidental triggers
 		g_dBounceTime = g_dElapsedTime; // 125ms should not be enough
-		// 125ms should be enough
-		//if player reaches exit for stage 0, move to next map
+										// 125ms should be enough
+										//if player reaches exit for stage 0, move to next map
 		g_sChar.m_cLocation = mapTransition(g_sChar.m_cLocation, g_sChar.m_cLocation.X, g_sChar.m_cLocation.Y, &level);
 		teleport.erase(0, teledel);
 		teledel = 0;
 	}
 }
+
+
+void moveCharacter_2()
+{
+	COORD xy;
+	bool bSomethingHappened_2 = false;
+	if (g_dBounceTime > g_dElapsedTime)
+		return;
+	if (g_abKeyPressed[PLAYER_2_K_UP] && g_sChar2.m_cLocation.Y > 0)
+	{
+		//Beep(1440, 30);
+		//only move if player is facing in the direction he wants to move
+		if (map[g_sChar2.m_cLocation.X][g_sChar.m_cLocation.Y - 2] != 'x' && map[g_sChar2.m_cLocation.X][g_sChar2.m_cLocation.Y - 2] != 'd' && direction == 't')
+		{
+			g_sChar2.m_cLocation.Y--;
+			bSomethingHappened_2 = true;
+		}
+		direction = 't';
+	}
+	if (g_abKeyPressed[PLAYER_2_K_LEFT] && g_sChar2.m_cLocation.X > 0)
+	{
+		//Beep(1440, 30);
+		if (map[g_sChar2.m_cLocation.X - 1][g_sChar2.m_cLocation.Y - 1] != 'x' && map[g_sChar2.m_cLocation.X - 1][g_sChar2.m_cLocation.Y - 1] != 'd' && direction == 'f')
+		{
+			g_sChar2.m_cLocation.X--;
+			bSomethingHappened_2 = true;
+		}
+		direction = 'f';
+	}
+	if (g_abKeyPressed[PLAYER_2_K_DOWN] && g_sChar2.m_cLocation.Y < g_Console.getConsoleSize().Y - 1)
+	{
+		//Beep(1440, 30);
+		if (map[g_sChar2.m_cLocation.X][g_sChar2.m_cLocation.Y] != 'x' && map[g_sChar2.m_cLocation.X][g_sChar2.m_cLocation.Y] != 'd' && direction == 'g')
+		{
+			g_sChar2.m_cLocation.Y++;
+			bSomethingHappened_2 = true;
+		}
+		direction = 'g';
+	}
+	if (g_abKeyPressed[PLAYER_2_K_RIGHT] && g_sChar2.m_cLocation.X < g_Console.getConsoleSize().X - 1)
+	{
+		//Beep(1440, 30);
+		if (map[g_sChar.m_cLocation.X + 1][g_sChar2.m_cLocation.Y - 1] != 'x' && map[g_sChar2.m_cLocation.X + 1][g_sChar2.m_cLocation.Y - 1] != 'd' && direction == 'h')
+		{
+			g_sChar2.m_cLocation.X++;
+			bSomethingHappened_2 = true;
+		}
+		direction = 'h';
+	}
+
+
+	if (bSomethingHappened_2)
+	{
+		//restart player at start point(sample level)
+
+		if (map[g_sChar2.m_cLocation.X][g_sChar2.m_cLocation.Y - 1] == 'f')
+		{
+			g_sChar2.m_cLocation.X = 5;
+			g_sChar2.m_cLocation.Y = 10;
+			direction = 't';
+
+		}
+
+		//check if playr moved into a telporter
+		xy = teleportation(teleport, g_sChar2.m_cLocation.X, g_sChar2.m_cLocation.Y);
+		if (xy.X != 0 && xy.Y != 0)
+		{
+			// move player to other teleporter
+			g_sChar2.m_cLocation = xy;
+		}
+		//if player location is l
+		if (map[g_sChar2.m_cLocation.X][g_sChar2.m_cLocation.Y - 1] == 'l')
+		{
+			//set door to open
+			gateOpen = true;
+		}
+		// set the bounce time to some time in the future to prevent accidental triggers
+		g_dBounceTime = g_dElapsedTime; // 125ms should not be enough
+										// 125ms should be enough
+										//if player reaches exit for stage 0, move to next map
+		g_sChar2.m_cLocation = mapTransition(g_sChar2.m_cLocation, g_sChar2.m_cLocation.X, g_sChar2.m_cLocation.Y, &level);
+		teleport.erase(0, teledel);
+		teledel = 0;
+	}
+}
+
 
 void processUserInput()
 {
@@ -430,7 +527,8 @@ void rendermap()
 void renderGame()
 {
 	rendermap();// renders the map to the buffer first	
-	renderCharacter();  // renders the character into the buffer
+	renderCharacter(); 
+	renderCharacter_2();// renders the character into the buffer
 }
 
 void renderCharacter()
@@ -438,6 +536,7 @@ void renderCharacter()
 	WORD charColor = 0x89;
     // Draw the location of the character
 	//change player direction
+	
 	if (direction == 'u')
 	{
 		g_Console.writeToBuffer(g_sChar.m_cLocation, '^', charColor);
@@ -457,6 +556,33 @@ void renderCharacter()
 	else
 	{
 		g_Console.writeToBuffer(g_sChar.m_cLocation, '^', charColor);
+	}
+}
+void renderCharacter_2()
+{
+	WORD charColor2 = 0x89;
+	// Draw the location of the character
+	//change player direction
+
+	if (direction == 't')
+	{
+		g_Console.writeToBuffer(g_sChar2.m_cLocation, '^', charColor2);
+	}
+	else if (direction == 'g')
+	{
+		g_Console.writeToBuffer(g_sChar2.m_cLocation, 'v', charColor2);
+	}
+	else if (direction == 'f')
+	{
+		g_Console.writeToBuffer(g_sChar2.m_cLocation, '<', charColor2);
+	}
+	else if (direction == 'h')
+	{
+		g_Console.writeToBuffer(g_sChar2.m_cLocation, '>', charColor2);
+	}
+	else
+	{
+		g_Console.writeToBuffer(g_sChar2.m_cLocation, '^', charColor2);
 	}
 }
 
@@ -529,6 +655,8 @@ void renderToMainMenu()
 	{
 		g_sChar.m_cLocation.X = 5;
 		g_sChar.m_cLocation.Y = 10;
+		g_sChar2.m_cLocation.X = 1;
+		g_sChar2.m_cLocation.Y = 3;
 		level = 0;
 		g_eGameState = S_GAME;
 	}

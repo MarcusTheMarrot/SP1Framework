@@ -9,10 +9,14 @@ extern bool g_bQuitGame;
 // Enumeration to store the control keys that your game will have
 enum EKEYS
 {
-	K_UP,
-	K_DOWN,
-	K_LEFT,
-	K_RIGHT,
+	PLAYER_1_K_UP,
+	PLAYER_1_K_DOWN,
+	PLAYER_1_K_LEFT,
+	PLAYER_1_K_RIGHT,
+	PLAYER_2_K_UP,
+	PLAYER_2_K_DOWN,
+	PLAYER_2_K_LEFT,
+	PLAYER_2_K_RIGHT,
 	K_ESCAPE,
 	K_SPACE,
 	K_ONE,
@@ -43,6 +47,11 @@ struct SGameChar
     COORD m_cLocation;
     bool  m_bActive;
 };
+struct SGameChar2
+{
+	COORD m_cLocation;
+	bool  m_bActive;
+};
 
 void init        ( void );      // initialize your variables, allocate memory, etc
 void getInput    ( void );      // get input from player
@@ -52,13 +61,15 @@ void shutdown    ( void );      // do clean up, free memory
 
 void splashScreenWait();    // waits for time to pass in splash screen
 void gameplay();            // gameplay logic
-void moveCharacter();       // moves the character, collision detection, physics, etc
+void moveCharacter_1();
+void moveCharacter_2();// moves the character, collision detection, physics, etc
 void processUserInput();    // checks if you should change states or do something else with the game, e.g. pause, exit
 void clearScreen();         // clears the current screen and draw from scratch 
 void renderSplashScreen();  // renders the splash screen
 void renderGame();          // renders the game stuff
 void renderMap();           // renders the map to the buffer first
 void renderCharacter();     // renders the character into the buffer
+void renderCharacter_2();
 void renderFramerate();     // renders debug information, frame rate, elapsed time, etc
 void renderToScreen();      // dump the contents of the buffer to the screen, one frame worth of game
 void mainmenuchoice();
