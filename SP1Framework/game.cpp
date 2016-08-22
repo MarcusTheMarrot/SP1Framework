@@ -351,7 +351,6 @@ void moveCharacter_1()
 	}
 }
 
-
 void moveCharacter_2()
 {
 	COORD xy;
@@ -449,7 +448,6 @@ void moveCharacter_2()
 	}
 }
 
-
 void processUserInput()
 {
     // quits the game if player hits the escape key
@@ -481,58 +479,118 @@ void clearScreen()
 
 void renderSplashScreen()  // renders the splash screen
 {
-	int i = 0;
-	int j = 0;
-	char splash[59][10];
-	ifstream file("title.txt"); // read from title.txt to print the ascii art
-	COORD c;
-	if (file.is_open())
+	if ((int)(g_dElapsedTime) % 2 == 0)
 	{
-		while (j <= 9)
+		int i = 0;
+		int j = 0;
+		char splash[59][21];
+		ifstream file("title.txt"); // read from title.txt to print the ascii art
+		COORD c;
+		if (file.is_open())
 		{
-			while (i <= 58)
+			while (j <= 20)
 			{
-				file >> splash[i][j];
-				i++;
+				while (i <= 58)
+				{
+					file >> splash[i][j];
+					i++;
+				}
+				i = 0;
+				j++;
 			}
-			i = 0;
-			j++;
+			file.close();
 		}
-		file.close();
+		for (int y = 0; y <= 20; y++)
+		{
+			c.Y = y + 4;
+			for (int x = 0; x <= 58; x++)
+			{
+				c.X = x + 10;
+				if (splash[x][y] != '~' && x < 11)
+				{
+					g_Console.writeToBuffer(c, splash[x][y], 0x0B);
+				}
+				else if (splash[x][y] != '~' && x > 47)
+				{
+					g_Console.writeToBuffer(c, splash[x][y], 0x0B);
+				}
+				else if (splash[x][y] != '~' && y > 5)
+				{
+					g_Console.writeToBuffer(c, splash[x][y], 0x0B);
+				}
+				else if (splash[x][y] != '~')
+				{
+					g_Console.writeToBuffer(c, splash[x][y], 0x07);
+				}
+			}
+		}
+
+		c = g_Console.getConsoleSize();
+		c.Y /= 3;
+		c.X = c.X / 2 - 35;
+		c.Y += 4;
+		c.X = g_Console.getConsoleSize().X / 2 - 15;
+		g_Console.writeToBuffer(c, "Press <Space> to continue", 0x03);
+		c.Y += 1;
+		c.X = g_Console.getConsoleSize().X / 2 - 13;
+		g_Console.writeToBuffer(c, "Press 'Esc' to quit", 0x07);
 	}
-	for (int y = 0; y <= 9; y++)
+	else
 	{
-		c.Y = y + 4;
-		for (int x = 0; x <= 58; x++)
+		int i = 0;
+		int j = 0;
+		char splash[59][21];
+		ifstream file("title2.txt"); // read from title.txt to print the ascii art
+		COORD c;
+		if (file.is_open())
 		{
-			c.X = x + 10;
-			if (splash[x][y] != '~' && x < 11)
+			while (j <= 20)
 			{
-				g_Console.writeToBuffer(c, splash[x][y], 0x0B);
+				while (i <= 58)
+				{
+					file >> splash[i][j];
+					i++;
+				}
+				i = 0;
+				j++;
 			}
-			else if (splash[x][y] != '~' && x > 47)
+			file.close();
+		}
+		for (int y = 0; y <= 20; y++)
+		{
+			c.Y = y + 4;
+			for (int x = 0; x <= 58; x++)
 			{
-				g_Console.writeToBuffer(c, splash[x][y], 0x0B);
-			}
-			else if (splash[x][y] != '~' && y > 5)
-			{
-				g_Console.writeToBuffer(c, splash[x][y], 0x0B);
-			}
-			else if (splash[x][y] != '~')
-			{
-				g_Console.writeToBuffer(c, splash[x][y], 0x07);
+				c.X = x + 10;
+				if (splash[x][y] != '~' && x < 11)
+				{
+					g_Console.writeToBuffer(c, splash[x][y], 0x0B);
+				}
+				else if (splash[x][y] != '~' && x > 47)
+				{
+					g_Console.writeToBuffer(c, splash[x][y], 0x0B);
+				}
+				else if (splash[x][y] != '~' && y > 5)
+				{
+					g_Console.writeToBuffer(c, splash[x][y], 0x0B);
+				}
+				else if (splash[x][y] != '~')
+				{
+					g_Console.writeToBuffer(c, splash[x][y], 0x07);
+				}
 			}
 		}
+
+		c = g_Console.getConsoleSize();
+		c.Y /= 3;
+		c.X = c.X / 2 - 35;
+		c.Y += 4;
+		c.X = g_Console.getConsoleSize().X / 2 - 15;
+		g_Console.writeToBuffer(c, "Press <Space> to continue", 0x03);
+		c.Y += 1;
+		c.X = g_Console.getConsoleSize().X / 2 - 13;
+		g_Console.writeToBuffer(c, "Press 'Esc' to quit", 0x07);
 	}
-	c = g_Console.getConsoleSize();
-	c.Y /= 3;
-	c.X = c.X / 2 - 35;
-	c.Y += 5;
-	c.X = g_Console.getConsoleSize().X / 2 - 15;
-	g_Console.writeToBuffer(c, "Press <Space> to continue", 0x03);
-    c.Y += 1;
-    c.X = g_Console.getConsoleSize().X / 2 - 13;
-    g_Console.writeToBuffer(c, "Press 'Esc' to quit", 0x07);
 }
 
 void rendermap()
@@ -810,6 +868,7 @@ void renderCharacter()
 		g_Console.writeToBuffer(g_sChar.m_cLocation, '^', charColor);
 	}
 }
+
 void renderCharacter_2()
 {
 	WORD charColor2 = 0x89;
