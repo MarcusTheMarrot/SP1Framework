@@ -17,7 +17,7 @@ using namespace std;
 double  g_dElapsedTime;
 double  g_dDeltaTime;
 bool    g_abKeyPressed[K_COUNT], teleporter = false, gateOpen = false, shotPortal = false, shotPortal2 = false;
-bool upcheck = false, downcheck = false, leftcheck = false, rightcheck = false, transisted;
+bool transisted;
 
 char	map[61][21];
 int level;
@@ -782,7 +782,7 @@ void renderCharacter()
 			if (map[cord2.X][cord2.Y - 2] != 'x')
 			{
 				cord2.Y--;
-				g_Console.writeToBuffer(cord1, '|', 0x81);
+				g_Console.writeToBuffer(cord2, '|', 0x81);
 			}
 			else
 			{
@@ -822,7 +822,7 @@ void renderCharacter()
 			if (map[cord2.X][cord2.Y] != 'x')
 			{
 				cord2.Y++;
-				g_Console.writeToBuffer(cord1, '|', 0x81);
+				g_Console.writeToBuffer(cord2, '|', 0x81);
 			}
 			else
 			{
@@ -843,7 +843,7 @@ void renderCharacter()
 		cord2.Y = g_sChar.m_cLocation.Y;
 		while (shotPortal)
 		{
-			if (map[cord1.X - 1][cord1.Y] != 'x')
+			if (map[cord1.X-1][cord1.Y-1] != 'x')
 			{
 				cord1.X--;
 				g_Console.writeToBuffer(cord1, '-', 0x8C);
@@ -859,10 +859,10 @@ void renderCharacter()
 		}
 		while (shotPortal2)
 		{
-			if (map[cord2.X - 1][cord2.Y] != 'x')
+			if (map[cord2.X-1][cord2.Y-1] != 'x')
 			{
 				cord2.X--;
-				g_Console.writeToBuffer(cord1, '-', 0x81);
+				g_Console.writeToBuffer(cord2, '-', 0x81);
 			}
 			else
 			{
@@ -883,7 +883,7 @@ void renderCharacter()
 		cord2.Y = g_sChar.m_cLocation.Y;
 		while (shotPortal)
 		{
-			if (map[cord1.X + 1][cord1.Y] != 'x')
+			if (map[cord1.X + 1][cord1.Y-1] != 'x')
 			{
 				cord1.X++;
 				g_Console.writeToBuffer(cord1, '-', 0x8C);
@@ -899,10 +899,10 @@ void renderCharacter()
 		}
 		while (shotPortal2)
 		{
-			if (map[cord2.X + 1][cord2.Y] != 'x')
+			if (map[cord2.X + 1][cord2.Y-1] != 'x')
 			{
 				cord2.X++;
-				g_Console.writeToBuffer(cord1, '-', 0x81);
+				g_Console.writeToBuffer(cord2, '-', 0x81);
 			}
 			else
 			{
