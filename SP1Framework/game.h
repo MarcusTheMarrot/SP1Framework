@@ -2,6 +2,7 @@
 #define _GAME_H
 
 #include "Framework\timer.h"
+#include "extract.h"
 
 extern CStopWatch g_swTimer;
 extern bool g_bQuitGame;
@@ -74,6 +75,7 @@ void processUserInput();    // checks if you should change states or do somethin
 void clearScreen();         // clears the current screen and draw from scratch 
 void renderSplashScreen();  // renders the splash screen
 void renderGame();          // renders the game stuff
+int load_game(int level);
 void renderMap();           // renders the map to the buffer first
 void renderCharacter();     // renders the character into the buffer
 void renderCharacter_2();

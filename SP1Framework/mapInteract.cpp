@@ -33,3 +33,15 @@ COORD teleportation(string str, int x, int y)
 	}
 	return coord;
 }
+
+bool dooring(COORD lever1, COORD lever2, int x1, int y1, int x2, int y2)
+{
+if ((lever1.X == x1 && lever1.Y == y1 && lever2.X == x2 && lever2.Y == y2) || (lever1.X == x2 && lever1.Y == y2 && lever2.X == x1 && lever2.Y == y1))
+	{
+		return true;
+	}
+	else
+	{
+		return false;
+	}
+}

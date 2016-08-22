@@ -1,5 +1,7 @@
 // This is the main file to hold everthing together
 
+#include <string>
+
 #include "Framework\timer.h"
 #include "game.h"
 
@@ -8,8 +10,11 @@ bool g_bQuitGame = false;                    // Set to true if you want to quit 
 const unsigned char gc_ucFPS = 10;                // FPS of this game
 const unsigned int gc_uFrameTime = 1000 / gc_ucFPS;    // time for each frame
 
+extern char	map[61][21];
+
 //main loop declaration
 void mainLoop( void );
+int load_game(int);
 
 // TODO:
 // Bug in waitUntil. it waits for the time from getElapsedTime to waitUntil, but should be insignificant.
@@ -19,10 +24,29 @@ void mainLoop( void );
 int main( void )
 {
     init();      // initialize your variables
+	load_game(0);
     mainLoop();  // main loop
     shutdown();  // do clean up, if any. free memory.
     
     return 0;
+}
+
+int load_game(int level)
+{
+	int c = 0;
+	std::string stupid = extractMap(&level);
+	for (int a = 0; a < 20; a++)
+	{
+		for (int b = 0; b < 60; b++)
+		{
+			//transfer it to an array
+			map[b][a] = stupid[c];
+			c++;
+		}
+		c = (a + 1) * 60;
+	}
+
+	return 1;
 }
 
 //--------------------------------------------------------------

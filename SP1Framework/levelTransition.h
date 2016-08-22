@@ -7,4 +7,4 @@
 #include <string>
 using namespace std;
 
-COORD mapTransition(COORD spawn, int x, int y, int *level);
+COORD mapTransition(COORD spawn, int x, int y, int *level, bool *transisted);

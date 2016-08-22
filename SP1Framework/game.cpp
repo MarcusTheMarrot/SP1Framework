@@ -17,18 +17,21 @@ using namespace std;
 double  g_dElapsedTime;
 double  g_dDeltaTime;
 bool    g_abKeyPressed[K_COUNT], teleporter = false, gateOpen = false, shotPortal = false, shotPortal2 = false;
-bool upcheck = false, downcheck = false, leftcheck = false, rightcheck = false;
+bool upcheck = false, downcheck = false, leftcheck = false, rightcheck = false, transisted;
 
 char	map[61][21];
-char	door[2][1];
+int level;
 unsigned char wall = 178;
 unsigned char direction, direction2;
 unsigned char ground = 176;
 unsigned char destination = 177;
 string	teleport;
 string	null = { '\0', };
-int level;
+
 int teledel = 0;
+COORD door;
+COORD lever1;
+COORD lever2;
 COORD cord1;
 COORD cord2;
 COORD portal1;
@@ -292,16 +295,28 @@ void moveCharacter_1()
 			g_sChar.m_cLocation = xy;
 		}
 		//if player location is l
-		if (map[g_sChar.m_cLocation.X][g_sChar.m_cLocation.Y - 1] == 'l')
+		//if (map[g_sChar.m_cLocation.X][g_sChar.m_cLocation.Y - 1] == 'l')
+		//{
+		//	//set door to open
+		//	gateOpen = true;
+		//}
+		gateOpen = dooring(lever1, lever2, g_sChar.m_cLocation.X, g_sChar.m_cLocation.Y - 1, g_sChar2.m_cLocation.X, g_sChar2.m_cLocation.Y - 1);
+		if (gateOpen == true)
 		{
-			//set door to open
-			gateOpen = true;
+			map[door.X][door.Y] = '-';
 		}
 		// set the bounce time to some time in the future to prevent accidental triggers
-		g_dBounceTime = g_dElapsedTime + 0.115; // 125ms should not be enough
+		g_dBounceTime = g_dElapsedTime + 0.010; // 125ms should not be enough
 										// 125ms should be enough
 										//if player reaches exit for stage 0, move to next map
-		g_sChar.m_cLocation = mapTransition(g_sChar.m_cLocation, g_sChar.m_cLocation.X, g_sChar.m_cLocation.Y, &level);
+		g_sChar.m_cLocation = mapTransition(g_sChar.m_cLocation, g_sChar.m_cLocation.X, g_sChar.m_cLocation.Y, &level, &transisted);
+		if (transisted == true)
+		{
+			load_game(level);
+			g_sChar2.m_cLocation.X = g_sChar.m_cLocation.X + 1;
+			g_sChar2.m_cLocation.Y = g_sChar.m_cLocation.Y;
+			transisted = false;
+		}
 		teleport.erase(0, teledel);
 		teledel = 0;
 
@@ -434,16 +449,28 @@ void moveCharacter_2()
 			g_sChar2.m_cLocation = xy;
 		}
 		//if player location is l
-		if (map[g_sChar2.m_cLocation.X][g_sChar2.m_cLocation.Y - 1] == 'l')
-		{
-			//set door to open
-			gateOpen = true;
-		}
+		//if (map[g_sChar2.m_cLocation.X][g_sChar2.m_cLocation.Y - 1] == 'l')
+		//{
+		//	//set door to open
+		//	gateOpen = true;
+		//}
 		// set the bounce time to some time in the future to prevent accidental triggers
-		g_dBounceTime2 = g_dElapsedTime + 0.115; // 125ms should not be enough
+		gateOpen = dooring(lever1, lever2, g_sChar.m_cLocation.X, g_sChar.m_cLocation.Y - 1, g_sChar2.m_cLocation.X, g_sChar2.m_cLocation.Y - 1);
+		if (gateOpen == true)
+		{
+			map[door.X][door.Y] = '-';
+		}
+		g_dBounceTime2 = g_dElapsedTime + 0.005; // 125ms should not be enough
 										// 125ms should be enough
 										//if player reaches exit for stage 0, move to next map
-		g_sChar2.m_cLocation = mapTransition(g_sChar2.m_cLocation, g_sChar2.m_cLocation.X, g_sChar2.m_cLocation.Y, &level);
+		g_sChar2.m_cLocation = mapTransition(g_sChar2.m_cLocation, g_sChar2.m_cLocation.X, g_sChar2.m_cLocation.Y, &level, &transisted);
+		if (transisted == true)
+		{
+			load_game(level);
+			g_sChar.m_cLocation.X = g_sChar2.m_cLocation.X + 1;
+			g_sChar.m_cLocation.Y = g_sChar2.m_cLocation.Y;
+			transisted = false;
+		}
 		teleport.erase(0, teledel);
 		teledel = 0;
 	}
@@ -552,18 +579,19 @@ void rendermap()
 	g_Console.writeToBuffer(c, " °±²Û", colors[i]);
 	}*/
 	//write everything in txt to stupid
-	string stupid = extractMap(&level);
+	//string stupid = extractMap(&level);
+	//map[b][a] = stupid[c];
 	int c = 0;
-	int d = 0;
-	int e = 0;
-	int f = 0;
-	int g = 0;
+	//int d = 0;
+	//int e = 0;
+	//int f = 0;
+	//int g = 0;
 	for (int a = 0; a < 20; a++)
 	{
 		for (int b = 0; b < 60; b++)
 		{
 			//transfer it to an array
-			map[b][a] = stupid[c];
+			//map[b][a] = stupid[c];
 			//record where is the teleporter to the 
 			if (map[b][a] == 'p')
 			{
@@ -571,18 +599,33 @@ void rendermap()
 				teleport += b;
 				teleport += a + 1;
 			}
+			if (map[b][a] == 'd')
+			{
+				door.X = b;
+				door.Y = a;
+			}
+			if (map[b][a] == 'l')
+			{
+				lever1.X = b;
+				lever1.Y = a;
+			}
+			if (map[b][a] == 'L')
+			{
+				lever2.X = b;
+				lever2.Y = a;
+			}
 			//record where door is, only when door not opened
-			if (map[b][a] == 'd' && gateOpen == false)
-			{
-				door[d][e] = b;
-				d++;
-				door[d][e] = a;
-			}
-			//if player stepped on lever, treat door as open tile
-			else if (map[b][a] == 'd')
-			{
-				map[b][a] = '-';
-			}
+			//if (map[b][a] == 'd' && gateOpen == false)
+			//{
+			//	door[d][e] = b;
+			//	d++;
+			//	door[d][e] = a;
+			//}
+			////if player stepped on lever, treat door as open tile
+			//else if (map[b][a] == 'd')
+			//{
+			//	map[b][a] = '-';
+			//}
 			c++;
 		}
 		c = (a + 1) * 60;
@@ -619,7 +662,7 @@ void rendermap()
 			{
 				g_Console.writeToBuffer(coord, wall, 0x11);
 			}
-			if (map[x][y] == 'l')
+			if (map[x][y] == 'l' || map[x][y] == 'L')
 			{
 				g_Console.writeToBuffer(coord, destination, 0x1F);
 			}
