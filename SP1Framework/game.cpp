@@ -16,24 +16,31 @@ using namespace std;
 
 double  g_dElapsedTime;
 double  g_dDeltaTime;
-bool    g_abKeyPressed[K_COUNT], teleporter = false, gateOpen = false;
+bool    g_abKeyPressed[K_COUNT], teleporter = false, gateOpen = false, shotPortal = false, shotPortal2 = false;
+bool upcheck = false, downcheck = false, leftcheck = false, rightcheck = false;
 
 char	map[61][21];
 char	door[2][1];
 unsigned char wall = 178;
-unsigned char direction;
+unsigned char direction, direction2;
 unsigned char ground = 176;
 unsigned char destination = 177;
 string	teleport;
 string	null = { '\0', };
 int level;
 int teledel = 0;
+COORD cord1;
+COORD cord2;
+COORD portal1;
+COORD portal2;
+COORD teleportTo1;
+COORD teleportTo2;
 
 // Game specific variables here
 SGameChar	g_sChar;
 SGameChar2   g_sChar2;
 EGAMESTATES g_eGameState = S_SPLASHSCREEN;
-double  g_dBounceTime; // this is to prevent key bouncing, so we won't trigger keypresses more than once
+double  g_dBounceTime, g_dBounceTime2;// this is to prevent key bouncing, so we won't trigger keypresses more than once
 
 // Console object
 Console g_Console(80, 25, "SP1 Framework");
@@ -50,6 +57,7 @@ void init( void )
     // Set precision for floating point output
     g_dElapsedTime = 0.0;
     g_dBounceTime = 0.0;
+	g_dBounceTime2 = 0.0;
 
     // sets the initial state for the game
     g_eGameState = S_SPLASHSCREEN;
@@ -57,8 +65,8 @@ void init( void )
     g_sChar.m_cLocation.X = 7;
     g_sChar.m_cLocation.Y = 6;
     g_sChar.m_bActive = true;
-	g_sChar2.m_cLocation.X = 1;
-	g_sChar2.m_cLocation.Y = 1;
+	g_sChar2.m_cLocation.X = 7;
+	g_sChar2.m_cLocation.Y = 6;
 	g_sChar2.m_bActive = true;
     // sets the width, height and the font name to use in the console
     g_Console.setConsoleFont(0, 16, L"Consolas");
@@ -108,11 +116,15 @@ void getInput( void )
 	g_abKeyPressed[PLAYER_2_K_RIGHT] = isKeyPressed(VK_RIGHT);
 	g_abKeyPressed[K_SPACE] = isKeyPressed(VK_SPACE);
 	g_abKeyPressed[K_ESCAPE] = isKeyPressed(VK_ESCAPE);
+	g_abKeyPressed[K_RETURN] = isKeyPressed(VK_RETURN);
 	g_abKeyPressed[K_ONE] = isKeyPressed(0x31); // assign the one key
 	g_abKeyPressed[K_TWO] = isKeyPressed(0x32); // assign the two key
 	g_abKeyPressed[K_THREE] = isKeyPressed(0x33); // assign the three key
 	g_abKeyPressed[K_FOUR] = isKeyPressed(0x34); // assign the four key
 	g_abKeyPressed[K_FIVE] = isKeyPressed(0x35); // assign the five key
+	g_abKeyPressed[K_E] = isKeyPressed(0x45); // assign 'E' key
+	g_abKeyPressed[K_R] = isKeyPressed(0x52); // assige 'R' key
+
 }
 
 //--------------------------------------------------------------
@@ -163,6 +175,14 @@ void render()
 		break;
 	case S_MAINMENU: renderToMainMenu();
 		break;
+	case S_MAINMENU2: renderToMainMenu2();
+		break;
+	case S_MAINMENU3: renderToMainMenu3();
+		break;
+	case S_MAINMENU4: renderToMainMenu4();
+		break;
+	case S_MAINMENU5: renderToMainMenu5();
+		break;
 	case S_GAME: renderGame();
 		break;
 	}
@@ -204,8 +224,11 @@ void moveCharacter_1()
 		//only move if player is facing in the direction he wants to move
 		if (map[g_sChar.m_cLocation.X][g_sChar.m_cLocation.Y - 2] != 'x' && map[g_sChar.m_cLocation.X][g_sChar.m_cLocation.Y - 2] != 'd' && direction == 'u')
 		{
-			g_sChar.m_cLocation.Y--;
-			bSomethingHappened = true;
+			if (g_sChar2.m_cLocation.X != g_sChar.m_cLocation.X || g_sChar.m_cLocation.Y - 1 != g_sChar2.m_cLocation.Y)
+			{
+				g_sChar.m_cLocation.Y--;
+				bSomethingHappened = true;
+			}
 		}
 		direction = 'u';
 	}
@@ -214,8 +237,11 @@ void moveCharacter_1()
 		//Beep(1440, 30);
 		if (map[g_sChar.m_cLocation.X - 1][g_sChar.m_cLocation.Y - 1] != 'x' && map[g_sChar.m_cLocation.X - 1][g_sChar.m_cLocation.Y - 1] != 'd' && direction == 'l')
 		{
-			g_sChar.m_cLocation.X--;
-			bSomethingHappened = true;
+			if (g_sChar2.m_cLocation.X != g_sChar.m_cLocation.X - 1 || g_sChar.m_cLocation.Y != g_sChar2.m_cLocation.Y)
+			{
+				g_sChar.m_cLocation.X--;
+				bSomethingHappened = true;
+			}
 		}
 		direction = 'l';
 	}
@@ -224,8 +250,11 @@ void moveCharacter_1()
 		//Beep(1440, 30);
 		if (map[g_sChar.m_cLocation.X][g_sChar.m_cLocation.Y] != 'x' && map[g_sChar.m_cLocation.X][g_sChar.m_cLocation.Y] != 'd' && direction == 'd')
 		{
-			g_sChar.m_cLocation.Y++;
-			bSomethingHappened = true;
+			if (g_sChar2.m_cLocation.X != g_sChar.m_cLocation.X || g_sChar.m_cLocation.Y + 1 != g_sChar2.m_cLocation.Y)
+			{
+				g_sChar.m_cLocation.Y++;
+				bSomethingHappened = true;
+			}
 		}
 		direction = 'd';
 	}
@@ -234,13 +263,19 @@ void moveCharacter_1()
 		//Beep(1440, 30);
 		if (map[g_sChar.m_cLocation.X + 1][g_sChar.m_cLocation.Y - 1] != 'x' && map[g_sChar.m_cLocation.X + 1][g_sChar.m_cLocation.Y - 1] != 'd' && direction == 'r')
 		{
-			g_sChar.m_cLocation.X++;
-			bSomethingHappened = true;
+			if (g_sChar2.m_cLocation.X != g_sChar.m_cLocation.X + 1 || g_sChar.m_cLocation.Y  != g_sChar2.m_cLocation.Y)
+			{
+				g_sChar.m_cLocation.X++;
+				bSomethingHappened = true;
+			}
 		}
 		direction = 'r';
 	}
+
 	if (bSomethingHappened == true)
 	{
+		
+		
 		if (map[g_sChar.m_cLocation.X][g_sChar.m_cLocation.Y - 1] == 'f')
 		{
 			g_sChar.m_cLocation.X = 5;
@@ -263,12 +298,56 @@ void moveCharacter_1()
 			gateOpen = true;
 		}
 		// set the bounce time to some time in the future to prevent accidental triggers
-		g_dBounceTime = g_dElapsedTime; // 125ms should not be enough
+		g_dBounceTime = g_dElapsedTime + 0.115; // 125ms should not be enough
 										// 125ms should be enough
 										//if player reaches exit for stage 0, move to next map
 		g_sChar.m_cLocation = mapTransition(g_sChar.m_cLocation, g_sChar.m_cLocation.X, g_sChar.m_cLocation.Y, &level);
 		teleport.erase(0, teledel);
 		teledel = 0;
+
+		if (g_sChar.m_cLocation.X == portal1.X && g_sChar.m_cLocation.Y == portal1.Y)
+		{
+			if ((portal2.X - 1) == 'x')
+			{
+				teleportTo2.X + 1;
+			}
+			if ((portal2.X + 1) == 'x')
+			{
+				teleportTo2.X - 1;
+			}
+			if ((portal2.Y - 1) == 'x')
+			{
+				teleportTo2.Y + 1;
+			}
+			if ((portal2.Y + 1) == 'x')
+			{
+				teleportTo2.Y - 1;
+			}
+			g_sChar.m_cLocation.X = teleportTo2.X;
+			g_sChar.m_cLocation.Y = teleportTo2.Y;
+		}
+		else if (g_sChar.m_cLocation.X == portal2.X && g_sChar.m_cLocation.Y == portal2.Y)
+		{
+			if ((portal1.X - 1) == 'x')
+			{
+				teleportTo1.X + 1;
+			}
+			if ((portal1.X + 1) == 'x')
+			{
+				teleportTo1.X - 1;
+			}
+			if ((portal1.Y - 1) == 'x')
+			{
+				teleportTo1.Y + 1;
+			}
+			if ((portal1.Y + 1) == 'x')
+			{
+				teleportTo1.Y - 1;
+			}
+			g_sChar.m_cLocation.X = teleportTo1.X;
+			g_sChar.m_cLocation.Y = teleportTo1.Y;
+		}
+
 	}
 }
 
@@ -277,60 +356,73 @@ void moveCharacter_2()
 {
 	COORD xy;
 	bool bSomethingHappened_2 = false;
-	if (g_dBounceTime > g_dElapsedTime)
+	if (g_dBounceTime2 > g_dElapsedTime)
 		return;
 	if (g_abKeyPressed[PLAYER_2_K_UP] && g_sChar2.m_cLocation.Y > 0)
 	{
 		//Beep(1440, 30);
 		//only move if player is facing in the direction he wants to move
-		if (map[g_sChar2.m_cLocation.X][g_sChar.m_cLocation.Y - 2] != 'x' && map[g_sChar2.m_cLocation.X][g_sChar2.m_cLocation.Y - 2] != 'd' && direction == 't')
+		if (map[g_sChar2.m_cLocation.X][g_sChar2.m_cLocation.Y - 2] != 'x' && map[g_sChar2.m_cLocation.X][g_sChar2.m_cLocation.Y - 2] != 'd' && direction2 == 't')
 		{
-			g_sChar2.m_cLocation.Y--;
-			bSomethingHappened_2 = true;
+			if (g_sChar.m_cLocation.X  != g_sChar2.m_cLocation.X || g_sChar2.m_cLocation.Y - 1 != g_sChar.m_cLocation.Y)
+			{
+				g_sChar2.m_cLocation.Y--;
+				bSomethingHappened_2 = true;
+			}
 		}
-		direction = 't';
+		direction2 = 't';
 	}
 	if (g_abKeyPressed[PLAYER_2_K_LEFT] && g_sChar2.m_cLocation.X > 0)
 	{
 		//Beep(1440, 30);
-		if (map[g_sChar2.m_cLocation.X - 1][g_sChar2.m_cLocation.Y - 1] != 'x' && map[g_sChar2.m_cLocation.X - 1][g_sChar2.m_cLocation.Y - 1] != 'd' && direction == 'f')
+		if (map[g_sChar2.m_cLocation.X - 1][g_sChar2.m_cLocation.Y - 1] != 'x' && map[g_sChar2.m_cLocation.X - 1][g_sChar2.m_cLocation.Y - 1] != 'd' && direction2 == 'f')
 		{
-			g_sChar2.m_cLocation.X--;
-			bSomethingHappened_2 = true;
+			if (g_sChar.m_cLocation.X != g_sChar2.m_cLocation.X - 1 || g_sChar2.m_cLocation.Y != g_sChar.m_cLocation.Y)
+			{
+				g_sChar2.m_cLocation.X--;
+				bSomethingHappened_2 = true;
+			}
 		}
-		direction = 'f';
+		direction2 = 'f';
 	}
 	if (g_abKeyPressed[PLAYER_2_K_DOWN] && g_sChar2.m_cLocation.Y < g_Console.getConsoleSize().Y - 1)
 	{
 		//Beep(1440, 30);
-		if (map[g_sChar2.m_cLocation.X][g_sChar2.m_cLocation.Y] != 'x' && map[g_sChar2.m_cLocation.X][g_sChar2.m_cLocation.Y] != 'd' && direction == 'g')
+		if (map[g_sChar2.m_cLocation.X][g_sChar2.m_cLocation.Y] != 'x' && map[g_sChar2.m_cLocation.X][g_sChar2.m_cLocation.Y] != 'd' && direction2 == 'g')
 		{
-			g_sChar2.m_cLocation.Y++;
-			bSomethingHappened_2 = true;
+			if (g_sChar.m_cLocation.X != g_sChar2.m_cLocation.X || g_sChar2.m_cLocation.Y + 1 != g_sChar.m_cLocation.Y)
+			{
+				g_sChar2.m_cLocation.Y++;
+				bSomethingHappened_2 = true;
+			}
 		}
-		direction = 'g';
+		direction2 = 'g';
 	}
 	if (g_abKeyPressed[PLAYER_2_K_RIGHT] && g_sChar2.m_cLocation.X < g_Console.getConsoleSize().X - 1)
 	{
 		//Beep(1440, 30);
-		if (map[g_sChar.m_cLocation.X + 1][g_sChar2.m_cLocation.Y - 1] != 'x' && map[g_sChar2.m_cLocation.X + 1][g_sChar2.m_cLocation.Y - 1] != 'd' && direction == 'h')
+		if (map[g_sChar2.m_cLocation.X + 1][g_sChar2.m_cLocation.Y - 1] != 'x' && map[g_sChar2.m_cLocation.X + 1][g_sChar2.m_cLocation.Y - 1] != 'd' && direction2 == 'h')
 		{
-			g_sChar2.m_cLocation.X++;
-			bSomethingHappened_2 = true;
+			if (g_sChar.m_cLocation.X != g_sChar2.m_cLocation.X + 1 || g_sChar2.m_cLocation.Y != g_sChar.m_cLocation.Y)
+			{
+				g_sChar2.m_cLocation.X++;
+				bSomethingHappened_2 = true;
+			}
 		}
-		direction = 'h';
+		direction2 = 'h';
 	}
 
 
-	if (bSomethingHappened_2)
+	if (bSomethingHappened_2 == true)
 	{
 		//restart player at start point(sample level)
+		
 
 		if (map[g_sChar2.m_cLocation.X][g_sChar2.m_cLocation.Y - 1] == 'f')
 		{
-			g_sChar2.m_cLocation.X = 5;
-			g_sChar2.m_cLocation.Y = 10;
-			direction = 't';
+			g_sChar2.m_cLocation.X = 7;
+			g_sChar2.m_cLocation.Y = 8;
+			direction2 = 't';
 
 		}
 
@@ -348,7 +440,7 @@ void moveCharacter_2()
 			gateOpen = true;
 		}
 		// set the bounce time to some time in the future to prevent accidental triggers
-		g_dBounceTime = g_dElapsedTime; // 125ms should not be enough
+		g_dBounceTime2 = g_dElapsedTime + 0.115; // 125ms should not be enough
 										// 125ms should be enough
 										//if player reaches exit for stage 0, move to next map
 		g_sChar2.m_cLocation = mapTransition(g_sChar2.m_cLocation, g_sChar2.m_cLocation.X, g_sChar2.m_cLocation.Y, &level);
@@ -362,7 +454,23 @@ void processUserInput()
 {
     // quits the game if player hits the escape key
     if (g_abKeyPressed[K_ESCAPE])
-        g_bQuitGame = true;    
+        g_bQuitGame = true; 
+	if (g_abKeyPressed[K_E] && (g_sChar.m_cLocation.Y - 1) != 'x')
+		shotPortal = true;
+	if (g_abKeyPressed[K_R] && (g_sChar.m_cLocation.Y - 1) != 'x')
+		shotPortal2 = true;
+	if (g_abKeyPressed[K_E] && (g_sChar.m_cLocation.Y + 1) != 'x')
+		shotPortal = true;
+	if (g_abKeyPressed[K_R] && (g_sChar.m_cLocation.Y + 1) != 'x')
+		shotPortal2 = true;
+	if (g_abKeyPressed[K_E] && (g_sChar.m_cLocation.X + 1) != 'x')
+		shotPortal = true;
+	if (g_abKeyPressed[K_R] && (g_sChar.m_cLocation.X + 1) != 'x')
+		shotPortal2 = true;
+	if (g_abKeyPressed[K_E] && (g_sChar.m_cLocation.X - 1) != 'x')
+		shotPortal = true;
+	if (g_abKeyPressed[K_R] && (g_sChar.m_cLocation.X - 1) != 'x')
+		shotPortal2 = true;
 }
 
 void clearScreen()
@@ -375,14 +483,14 @@ void renderSplashScreen()  // renders the splash screen
 {
 	int i = 0;
 	int j = 0;
-	char splash[58][10];
+	char splash[59][10];
 	ifstream file("title.txt"); // read from title.txt to print the ascii art
 	COORD c;
 	if (file.is_open())
 	{
 		while (j <= 9)
 		{
-			while (i <= 57)
+			while (i <= 58)
 			{
 				file >> splash[i][j];
 				i++;
@@ -395,7 +503,7 @@ void renderSplashScreen()  // renders the splash screen
 	for (int y = 0; y <= 9; y++)
 	{
 		c.Y = y + 4;
-		for (int x = 0; x <= 57; x++)
+		for (int x = 0; x <= 58; x++)
 		{
 			c.X = x + 10;
 			if (splash[x][y] != '~' && x < 11)
@@ -519,6 +627,14 @@ void rendermap()
 			{
 				g_Console.writeToBuffer(coord, ground, 0xC3);
 			}
+			if (shotPortal == false)
+			{
+				g_Console.writeToBuffer(portal1, 'o', 0x25);
+			}
+			if (shotPortal2 == false)
+			{
+				g_Console.writeToBuffer(portal2, 'O', 0x25);
+			}
 
 		}
 	}
@@ -540,18 +656,154 @@ void renderCharacter()
 	if (direction == 'u')
 	{
 		g_Console.writeToBuffer(g_sChar.m_cLocation, '^', charColor);
+		cord1.X = g_sChar.m_cLocation.X;
+		cord1.Y = g_sChar.m_cLocation.Y;
+		cord2.X = g_sChar.m_cLocation.X;
+		cord2.Y = g_sChar.m_cLocation.Y;
+		while (shotPortal)
+		{
+			if (map[cord1.X][cord1.Y - 2] != 'x')
+			{
+				cord1.Y--;
+			}
+			else
+			{
+				portal1.X = cord1.X;
+				portal1.Y = cord1.Y;
+				teleportTo1.X = portal1.X;
+				teleportTo1.Y = portal1.Y;
+				shotPortal = false;
+			}
+		}
+		while (shotPortal2)
+		{
+			if (map[cord2.X][cord2.Y - 2] != 'x')
+			{
+				cord2.Y--;
+			}
+			else
+			{
+				portal2.X = cord2.X;
+				portal2.Y = cord2.Y;
+				teleportTo2.X = portal2.X;
+				teleportTo2.Y = portal2.Y;
+				shotPortal2 = false;
+			}
+		}
 	}
 	else if (direction == 'd')
 	{
 		g_Console.writeToBuffer(g_sChar.m_cLocation, 'v', charColor);
+		cord1.X = g_sChar.m_cLocation.X;
+		cord1.Y = g_sChar.m_cLocation.Y;
+		cord2.X = g_sChar.m_cLocation.X;
+		cord2.Y = g_sChar.m_cLocation.Y;
+		while (shotPortal)
+		{
+			if (map[cord1.X][cord1.Y] != 'x')
+			{
+				cord1.Y++;
+			}
+			else
+			{
+				portal1.X = cord1.X;
+				portal1.Y = cord1.Y;
+				teleportTo1.X = portal1.X;
+				teleportTo1.Y = portal1.Y;
+				shotPortal = false;
+			}
+		}
+		while (shotPortal2)
+		{
+			if (map[cord2.X][cord2.Y] != 'x')
+			{
+				cord2.Y++;
+			}
+			else
+			{
+				portal2.X = cord2.X;
+				portal2.Y = cord2.Y;
+				teleportTo2.X = portal2.X;
+				teleportTo2.Y = portal2.Y;
+				shotPortal2 = false;
+			}
+		}
 	}
 	else if (direction == 'l')
 	{
 		g_Console.writeToBuffer(g_sChar.m_cLocation, '<', charColor);
+		cord1.X = g_sChar.m_cLocation.X;
+		cord1.Y = g_sChar.m_cLocation.Y;
+		cord2.X = g_sChar.m_cLocation.X;
+		cord2.Y = g_sChar.m_cLocation.Y;
+		while (shotPortal)
+		{
+			if (map[cord1.X - 1][cord1.Y] != 'x')
+			{
+				cord1.X--;
+			}
+			else
+			{
+				portal1.X = cord1.X;
+				portal1.Y = cord1.Y;
+				teleportTo1.X = portal1.X;
+				teleportTo1.Y = portal1.Y;
+				shotPortal = false;
+			}
+		}
+		while (shotPortal2)
+		{
+			if (map[cord2.X - 1][cord2.Y] != 'x')
+			{
+				cord2.X--;
+			}
+			else
+			{
+				portal2.X = cord2.X;
+				portal2.Y = cord2.Y;
+				teleportTo2.X = portal2.X;
+				teleportTo2.Y = portal2.Y;
+				shotPortal2 = false;
+			}
+		}
 	}
 	else if (direction == 'r')
 	{
 		g_Console.writeToBuffer(g_sChar.m_cLocation, '>', charColor);
+		cord1.X = g_sChar.m_cLocation.X;
+		cord1.Y = g_sChar.m_cLocation.Y;
+		cord2.X = g_sChar.m_cLocation.X;
+		cord2.Y = g_sChar.m_cLocation.Y;
+		while (shotPortal)
+		{
+			if (map[cord1.X + 1][cord1.Y] != 'x')
+			{
+				cord1.X++;
+			}
+			else
+			{
+				portal1.X = cord1.X;
+				portal1.Y = cord1.Y;
+				teleportTo1.X = portal1.X;
+				teleportTo1.Y = portal1.Y;
+				shotPortal = false;
+			}
+		}
+		while (shotPortal2)
+		{
+			if (map[cord2.X + 1][cord2.Y] != 'x')
+			{
+				cord2.X++;
+			}
+			else
+			{
+				portal2.X = cord2.X;
+				portal2.Y = cord2.Y;
+				teleportTo2.X = portal2.X;
+				teleportTo2.Y = portal2.Y;
+				shotPortal2 = false;
+			}
+		}
 	}
 	else
 	{
@@ -564,19 +816,19 @@ void renderCharacter_2()
 	// Draw the location of the character
 	//change player direction
 
-	if (direction == 't')
+	if (direction2 == 't')
 	{
 		g_Console.writeToBuffer(g_sChar2.m_cLocation, '^', charColor2);
 	}
-	else if (direction == 'g')
+	else if (direction2 == 'g')
 	{
 		g_Console.writeToBuffer(g_sChar2.m_cLocation, 'v', charColor2);
 	}
-	else if (direction == 'f')
+	else if (direction2 == 'f')
 	{
 		g_Console.writeToBuffer(g_sChar2.m_cLocation, '<', charColor2);
 	}
-	else if (direction == 'h')
+	else if (direction2 == 'h')
 	{
 		g_Console.writeToBuffer(g_sChar2.m_cLocation, '>', charColor2);
 	}
@@ -645,20 +897,293 @@ void renderToMainMenu()
 		}
 	}
 	c = g_Console.getConsoleSize();
-	c.Y /= 3 + 5;
+	c.Y /= 3 + 10;
 	c.X = c.X / 2 - 35;
 	c.Y += 15;
-	c.X = g_Console.getConsoleSize().X / 2 - 27;
-	g_Console.writeToBuffer(c, "Enter a number from 1-5 to choose your level (1-5).", 0x03);
+	c.X = g_Console.getConsoleSize().X / 2 - 20;
+	g_Console.writeToBuffer(c, "Press enter to choose your level (1-5).", 0x03);
+	c.Y += 1;
+	c.X = g_Console.getConsoleSize().X / 2 - 7;
+	g_Console.writeToBuffer(c, "Level 1", 0x73);
+	c.Y += 1;
+	g_Console.writeToBuffer(c, "Level 2", 0x03);
+	c.Y += 1;
+	g_Console.writeToBuffer(c, "Level 3", 0x03);
+	c.Y += 1;
+	g_Console.writeToBuffer(c, "Level 4", 0x03);
+	c.Y += 1;
+	g_Console.writeToBuffer(c, "Level 5", 0x03);
 
-	if (g_abKeyPressed[K_ONE]) // press one to go to game
+	if (g_abKeyPressed[PLAYER_2_K_DOWN])
 	{
+		g_eGameState = S_MAINMENU2;
+	}
+
+	if (g_abKeyPressed[K_RETURN])
+	{
+
 		g_sChar.m_cLocation.X = 5;
 		g_sChar.m_cLocation.Y = 10;
-		g_sChar2.m_cLocation.X = 1;
-		g_sChar2.m_cLocation.Y = 3;
+		g_sChar2.m_cLocation.X = 7;
+		g_sChar2.m_cLocation.Y = 8;
 		level = 0;
+
 		g_eGameState = S_GAME;
+	}
+
+	if (g_abKeyPressed[K_ESCAPE])
+		g_bQuitGame = true;
+}
+
+void renderToMainMenu2()
+{
+	int i = 0;
+	int j = 0;
+	char main[73][12];
+	ifstream file("PickALevel.txt"); // read file from PickALevel.txt to print the ascii art
+	COORD c;
+	if (file.is_open())
+	{
+		while (j <= 11)
+		{
+			while (i <= 72)
+			{
+				file >> main[i][j];
+				i++;
+			}
+			i = 0;
+			j++;
+		}
+		file.close();
+	}
+	for (int y = 0; y <= 11; y++)
+	{
+		c.Y = y + 4;
+		for (int x = 0; x <= 72; x++)
+		{
+			c.X = x + 3;
+			if (main[x][y] != '~')
+			{
+				g_Console.writeToBuffer(c, main[x][y], 0x09);
+			}
+		}
+	}
+	c = g_Console.getConsoleSize();
+	c.Y /= 3 + 10;
+	c.X = c.X / 2 - 35;
+	c.Y += 15;
+	c.X = g_Console.getConsoleSize().X / 2 - 20;
+	g_Console.writeToBuffer(c, "Press enter to choose your level (1-5).", 0x03);
+	c.Y += 1;
+	c.X = g_Console.getConsoleSize().X / 2 - 7;
+	g_Console.writeToBuffer(c, "Level 1", 0x03);
+	c.Y += 1;
+	g_Console.writeToBuffer(c, "Level 2", 0x73);
+	c.Y += 1;
+	g_Console.writeToBuffer(c, "Level 3", 0x03);
+	c.Y += 1;
+	g_Console.writeToBuffer(c, "Level 4", 0x03);
+	c.Y += 1;
+	g_Console.writeToBuffer(c, "Level 5", 0x03);
+
+	if (g_abKeyPressed[PLAYER_2_K_UP])
+	{
+		g_eGameState = S_MAINMENU;
+	}
+
+	if (g_abKeyPressed[PLAYER_2_K_DOWN])
+	{
+		g_eGameState = S_MAINMENU3;
+	}
+
+	if (g_abKeyPressed[K_ESCAPE])
+		g_bQuitGame = true;
+}
+
+void renderToMainMenu3()
+{
+	int i = 0;
+	int j = 0;
+	char main[73][12];
+	ifstream file("PickALevel.txt"); // read file from PickALevel.txt to print the ascii art
+	COORD c;
+	if (file.is_open())
+	{
+		while (j <= 11)
+		{
+			while (i <= 72)
+			{
+				file >> main[i][j];
+				i++;
+			}
+			i = 0;
+			j++;
+		}
+		file.close();
+	}
+	for (int y = 0; y <= 11; y++)
+	{
+		c.Y = y + 4;
+		for (int x = 0; x <= 72; x++)
+		{
+			c.X = x + 3;
+			if (main[x][y] != '~')
+			{
+				g_Console.writeToBuffer(c, main[x][y], 0x09);
+			}
+		}
+	}
+	c = g_Console.getConsoleSize();
+	c.Y /= 3 + 10;
+	c.X = c.X / 2 - 35;
+	c.Y += 15;
+	c.X = g_Console.getConsoleSize().X / 2 - 20;
+	g_Console.writeToBuffer(c, "Press enter to choose your level (1-5).", 0x03);
+	c.Y += 1;
+	c.X = g_Console.getConsoleSize().X / 2 - 7;
+	g_Console.writeToBuffer(c, "Level 1", 0x03);
+	c.Y += 1;
+	g_Console.writeToBuffer(c, "Level 2", 0x03);
+	c.Y += 1;
+	g_Console.writeToBuffer(c, "Level 3", 0x73);
+	c.Y += 1;
+	g_Console.writeToBuffer(c, "Level 4", 0x03);
+	c.Y += 1;
+	g_Console.writeToBuffer(c, "Level 5", 0x03);
+
+	if (g_abKeyPressed[PLAYER_2_K_UP])
+	{
+		g_eGameState = S_MAINMENU2;
+	}
+
+	if (g_abKeyPressed[PLAYER_2_K_DOWN])
+	{
+		g_eGameState = S_MAINMENU4;
+	}
+
+	if (g_abKeyPressed[K_ESCAPE])
+		g_bQuitGame = true;
+}
+
+void renderToMainMenu4()
+{
+	int i = 0;
+	int j = 0;
+	char main[73][12];
+	ifstream file("PickALevel.txt"); // read file from PickALevel.txt to print the ascii art
+	COORD c;
+	if (file.is_open())
+	{
+		while (j <= 11)
+		{
+			while (i <= 72)
+			{
+				file >> main[i][j];
+				i++;
+			}
+			i = 0;
+			j++;
+		}
+		file.close();
+	}
+	for (int y = 0; y <= 11; y++)
+	{
+		c.Y = y + 4;
+		for (int x = 0; x <= 72; x++)
+		{
+			c.X = x + 3;
+			if (main[x][y] != '~')
+			{
+				g_Console.writeToBuffer(c, main[x][y], 0x09);
+			}
+		}
+	}
+	c = g_Console.getConsoleSize();
+	c.Y /= 3 + 10;
+	c.X = c.X / 2 - 35;
+	c.Y += 15;
+	c.X = g_Console.getConsoleSize().X / 2 - 20;
+	g_Console.writeToBuffer(c, "Press enter to choose your level (1-5).", 0x03);
+	c.Y += 1;
+	c.X = g_Console.getConsoleSize().X / 2 - 7;
+	g_Console.writeToBuffer(c, "Level 1", 0x03);
+	c.Y += 1;
+	g_Console.writeToBuffer(c, "Level 2", 0x03);
+	c.Y += 1;
+	g_Console.writeToBuffer(c, "Level 3", 0x03);
+	c.Y += 1;
+	g_Console.writeToBuffer(c, "Level 4", 0x73);
+	c.Y += 1;
+	g_Console.writeToBuffer(c, "Level 5", 0x03);
+
+	if (g_abKeyPressed[PLAYER_2_K_UP])
+	{
+		g_eGameState = S_MAINMENU3;
+	}
+
+	if (g_abKeyPressed[PLAYER_2_K_DOWN])
+	{
+		g_eGameState = S_MAINMENU5;
+	}
+
+	if (g_abKeyPressed[K_ESCAPE])
+		g_bQuitGame = true;
+}
+
+void renderToMainMenu5()
+{
+	int i = 0;
+	int j = 0;
+	char main[73][12];
+	ifstream file("PickALevel.txt"); // read file from PickALevel.txt to print the ascii art
+	COORD c;
+	if (file.is_open())
+	{
+		while (j <= 11)
+		{
+			while (i <= 72)
+			{
+				file >> main[i][j];
+				i++;
+			}
+			i = 0;
+			j++;
+		}
+		file.close();
+	}
+	for (int y = 0; y <= 11; y++)
+	{
+		c.Y = y + 4;
+		for (int x = 0; x <= 72; x++)
+		{
+			c.X = x + 3;
+			if (main[x][y] != '~')
+			{
+				g_Console.writeToBuffer(c, main[x][y], 0x09);
+			}
+		}
+	}
+	c = g_Console.getConsoleSize();
+	c.Y /= 3 + 10;
+	c.X = c.X / 2 - 35;
+	c.Y += 15;
+	c.X = g_Console.getConsoleSize().X / 2 - 20;
+	g_Console.writeToBuffer(c, "Press enter to choose your level (1-5).", 0x03);
+	c.Y += 1;
+	c.X = g_Console.getConsoleSize().X / 2 - 7;
+	g_Console.writeToBuffer(c, "Level 1", 0x03);
+	c.Y += 1;
+	g_Console.writeToBuffer(c, "Level 2", 0x03);
+	c.Y += 1;
+	g_Console.writeToBuffer(c, "Level 3", 0x03);
+	c.Y += 1;
+	g_Console.writeToBuffer(c, "Level 4", 0x03);
+	c.Y += 1;
+	g_Console.writeToBuffer(c, "Level 5", 0x73);
+
+	if (g_abKeyPressed[PLAYER_2_K_UP])
+	{
+		g_eGameState = S_MAINMENU4;
 	}
 
 	if (g_abKeyPressed[K_ESCAPE])
