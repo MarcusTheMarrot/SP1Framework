@@ -667,17 +667,38 @@ void rendermap()
 			//buffer ground
 			if (map[x][y] == '-')
 			{
-				g_Console.writeToBuffer(coord, ground, 0x88);
+				if ((g_sChar.m_cLocation.X + 7) >= x && x >= (g_sChar.m_cLocation.X - 7) && (g_sChar.m_cLocation.Y - 5) <= (y + 1) && (g_sChar.m_cLocation.Y + 5) >= (y + 1))
+				{
+					g_Console.writeToBuffer(coord, ground, 0x88);
+				}
+				if ((g_sChar2.m_cLocation.X + 7) >= x && x >= (g_sChar2.m_cLocation.X - 7) && (g_sChar2.m_cLocation.Y - 5) <= (y + 1) && (g_sChar2.m_cLocation.Y + 5) >= (y + 1))
+				{
+					g_Console.writeToBuffer(coord, ground, 0x88);
+				}
 			}
 			//buffer wall
 			if (map[x][y] == 'x')
 			//buffer teleportal
 			{
-				g_Console.writeToBuffer(coord, wall, 0x80);
+				if ((g_sChar.m_cLocation.X + 5) >= x && x >= (g_sChar.m_cLocation.X - 5) && (g_sChar.m_cLocation.Y - 5) <= (y + 1) && (g_sChar.m_cLocation.Y + 5) >= (y + 1))
+				{
+					g_Console.writeToBuffer(coord, wall, 0x80);
+				}
+				if ((g_sChar2.m_cLocation.X + 5) >= x && x >= (g_sChar2.m_cLocation.X - 5) && (g_sChar2.m_cLocation.Y - 5) <= (y + 1) && (g_sChar2.m_cLocation.Y + 5) >= (y + 1))
+				{
+					g_Console.writeToBuffer(coord, wall, 0x80);
+				}
 			}
 			if (map[x][y] == 'p')
 			{
-				g_Console.writeToBuffer(coord, wall, 0x2B);
+				if ((g_sChar.m_cLocation.X + 5) >= x && x >= (g_sChar.m_cLocation.X - 5) && (g_sChar.m_cLocation.Y - 5) <= (y + 1) && (g_sChar.m_cLocation.Y + 5) >= (y + 1))
+				{
+					g_Console.writeToBuffer(coord, wall, 0x2B);
+				}
+				if ((g_sChar2.m_cLocation.X + 5) >= x && x >= (g_sChar2.m_cLocation.X - 5) && (g_sChar2.m_cLocation.Y - 5) <= (y + 1) && (g_sChar2.m_cLocation.Y + 5) >= (y + 1))
+				{
+					g_Console.writeToBuffer(coord, wall, 0x2B);
+				}
 			}
 			//buffer exit
 			if (map[x][y] == 'e')
@@ -686,15 +707,37 @@ void rendermap()
 			}
 			if (map[x][y] == 'd')
 			{
-				g_Console.writeToBuffer(coord, wall, 0x11);
+				if ((g_sChar.m_cLocation.X + 5) >= x && x >= (g_sChar.m_cLocation.X - 5) && (g_sChar.m_cLocation.Y - 5) <= (y + 1) && (g_sChar.m_cLocation.Y + 5) >= (y + 1))
+				{
+					g_Console.writeToBuffer(coord, wall, 0x11);
+				}
+				if ((g_sChar2.m_cLocation.X + 5) >= x && x >= (g_sChar2.m_cLocation.X - 5) && (g_sChar2.m_cLocation.Y - 5) <= (y + 1) && (g_sChar2.m_cLocation.Y + 5) >= (y + 1))
+				{
+					g_Console.writeToBuffer(coord, wall, 0x11);
+				}
 			}
 			if (map[x][y] == 'l' || map[x][y] == 'L')
 			{
-				g_Console.writeToBuffer(coord, destination, 0x1F);
+				if ((g_sChar.m_cLocation.X + 5) >= x && x >= (g_sChar.m_cLocation.X - 5) && (g_sChar.m_cLocation.Y - 5) <= (y + 1) && (g_sChar.m_cLocation.Y + 5) >= (y + 1))
+				{
+					g_Console.writeToBuffer(coord, destination, 0x1F);
+				}
+				if ((g_sChar2.m_cLocation.X + 5) >= x && x >= (g_sChar2.m_cLocation.X - 5) && (g_sChar2.m_cLocation.Y - 5) <= (y + 1) && (g_sChar2.m_cLocation.Y + 5) >= (y + 1))
+				{
+					g_Console.writeToBuffer(coord, destination, 0x1F);
+				}
 			}
 			if (map[x][y] == 'f')
 			{
-				g_Console.writeToBuffer(coord, ground, 0xC3);
+				if ((g_sChar.m_cLocation.X + 5) >= x && x >= (g_sChar.m_cLocation.X - 5) && (g_sChar.m_cLocation.Y - 5) <= (y + 1) && (g_sChar.m_cLocation.Y + 5) >= (y + 1))
+				{
+					g_Console.writeToBuffer(coord, ground, 0xC3);
+				}
+				if ((g_sChar2.m_cLocation.X + 5) >= x && x >= (g_sChar2.m_cLocation.X - 5) && (g_sChar2.m_cLocation.Y - 5) <= (y + 1) && (g_sChar2.m_cLocation.Y + 5) >= (y + 1))
+				{
+					g_Console.writeToBuffer(coord, ground, 0xC3);
+				}
+
 			}
 			if (shotPortal == false)
 			{
