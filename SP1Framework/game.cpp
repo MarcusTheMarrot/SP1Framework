@@ -11,20 +11,24 @@
 #include <sstream>
 #include <fstream>
 #include <string>
+#include <vector>
 
 using namespace std; 
 
 double  g_dElapsedTime;
 double  g_dDeltaTime;
-bool    g_abKeyPressed[K_COUNT], teleporter = false, gateOpen = false, shotPortal = false, shotPortal2 = false, PortActive1 = false, PortActive2 = false;
+bool    g_abKeyPressed[K_COUNT], teleporter = false, gateOpen = false, shotPortal = false, shotPortal2 = false, PortActive1 = false, PortActive2 = false, block = false;
 bool transisted;
 
 char	map[61][21];
-int level;
+char	something = '1', thingthing = '1';
+int		level;
 unsigned char wall = 178;
+unsigned char box = 219;
 unsigned char direction, direction2;
 unsigned char ground = 176;
 unsigned char destination = 177;
+vector<int> box_location;
 string	teleport;
 string	null = { '\0', };
 
@@ -38,6 +42,7 @@ COORD portal1;
 COORD portal2;
 COORD teleportTo1;
 COORD teleportTo2;
+COORD boxx;
 
 // Game specific variables here
 SGameChar	g_sChar;
@@ -229,8 +234,28 @@ void moveCharacter_1()
 		{
 			if (g_sChar2.m_cLocation.X != g_sChar.m_cLocation.X || g_sChar.m_cLocation.Y - 1 != g_sChar2.m_cLocation.Y)
 			{
-				g_sChar.m_cLocation.Y--;
-				bSomethingHappened = true;
+				if (g_sChar.m_cLocation.X == boxx.X && g_sChar.m_cLocation.Y - 2 == boxx.Y && map[boxx.X][boxx.Y - 1] != 'x' && boxx.Y && map[boxx.X][boxx.Y - 1] != 'd' && boxx.Y && map[boxx.X][boxx.Y - 1] != 'f')
+				{
+
+					boxx.Y--;
+					thingthing = something;
+					something = map[boxx.X][boxx.Y];
+					map[boxx.X][boxx.Y] = 'n';
+					if (thingthing != '1')
+					{
+						map[boxx.X][boxx.Y + 1] = thingthing;
+					}
+					else
+					{
+						map[boxx.X][boxx.Y + 1] = '-';
+					}
+					g_sChar.m_cLocation.Y--;
+				}
+				else
+				{
+					g_sChar.m_cLocation.Y--;
+					bSomethingHappened = true;
+				}
 			}
 		}
 		direction = 'u';
@@ -242,8 +267,28 @@ void moveCharacter_1()
 		{
 			if (g_sChar2.m_cLocation.X != g_sChar.m_cLocation.X - 1 || g_sChar.m_cLocation.Y != g_sChar2.m_cLocation.Y)
 			{
-				g_sChar.m_cLocation.X--;
-				bSomethingHappened = true;
+				if (g_sChar.m_cLocation.X - 1 == boxx.X && g_sChar.m_cLocation.Y - 1 == boxx.Y && map[boxx.X - 1][boxx.Y] != 'x' && boxx.Y && map[boxx.X - 1][boxx.Y] != 'd' && boxx.Y && map[boxx.X - 1][boxx.Y] != 'f')
+				{
+
+					boxx.X--;
+					thingthing = something;
+					something = map[boxx.X][boxx.Y];
+					map[boxx.X][boxx.Y] = 'n';
+					if (thingthing != '1')
+					{
+						map[boxx.X + 1][boxx.Y] = thingthing;
+					}
+					else
+					{
+						map[boxx.X + 1][boxx.Y] = '-';
+					}
+					g_sChar.m_cLocation.X--;
+				}
+				else
+				{	
+					g_sChar.m_cLocation.X--;
+					bSomethingHappened = true;
+				}
 			}
 		}
 		direction = 'l';
@@ -255,8 +300,28 @@ void moveCharacter_1()
 		{
 			if (g_sChar2.m_cLocation.X != g_sChar.m_cLocation.X || g_sChar.m_cLocation.Y + 1 != g_sChar2.m_cLocation.Y)
 			{
-				g_sChar.m_cLocation.Y++;
-				bSomethingHappened = true;
+				if (g_sChar.m_cLocation.X == boxx.X && g_sChar.m_cLocation.Y == boxx.Y && map[boxx.X][boxx.Y + 1] != 'x' && boxx.Y && map[boxx.X][boxx.Y + 1] != 'd' && boxx.Y && map[boxx.X][boxx.Y + 1] != 'f')
+				{
+
+					boxx.Y++;
+					thingthing = something;
+					something = map[boxx.X][boxx.Y];
+					map[boxx.X][boxx.Y] = 'n';
+					if (thingthing != '1')
+					{
+						map[boxx.X][boxx.Y - 1] = thingthing;
+					}
+					else
+					{
+						map[boxx.X][boxx.Y - 1] = '-';
+					}
+					g_sChar.m_cLocation.Y++;
+				}
+				else
+				{
+					g_sChar.m_cLocation.Y++;
+					bSomethingHappened = true;
+				}
 			}
 		}
 		direction = 'd';
@@ -266,10 +331,30 @@ void moveCharacter_1()
 		//Beep(1440, 30);
 		if (map[g_sChar.m_cLocation.X + 1][g_sChar.m_cLocation.Y - 1] != 'x' && map[g_sChar.m_cLocation.X + 1][g_sChar.m_cLocation.Y - 1] != 'd' && direction == 'r')
 		{
-			if (g_sChar2.m_cLocation.X != g_sChar.m_cLocation.X + 1 || g_sChar.m_cLocation.Y  != g_sChar2.m_cLocation.Y)
+			if (g_sChar2.m_cLocation.X != g_sChar.m_cLocation.X + 1 || g_sChar.m_cLocation.Y != g_sChar2.m_cLocation.Y)
 			{
-				g_sChar.m_cLocation.X++;
-				bSomethingHappened = true;
+				if (g_sChar.m_cLocation.X + 1 == boxx.X && g_sChar.m_cLocation.Y - 1 == boxx.Y && map[boxx.X + 1][boxx.Y] != 'x' && boxx.Y && map[boxx.X + 1][boxx.Y] != 'd' && boxx.Y && map[boxx.X + 1][boxx.Y] != 'f')
+				{
+					
+					boxx.X++;
+					thingthing = something;
+					something = map[boxx.X][boxx.Y];
+					map[boxx.X][boxx.Y] = 'n';
+					if (thingthing != '1')
+					{
+						map[boxx.X - 1][boxx.Y] = thingthing;
+					}
+					else
+					{
+						map[boxx.X - 1][boxx.Y] = '-';
+					}
+					g_sChar.m_cLocation.X++;
+				}
+				else
+				{
+					g_sChar.m_cLocation.X++;
+					bSomethingHappened = true;
+				}
 			}
 		}
 		direction = 'r';
@@ -348,8 +433,28 @@ void moveCharacter_2()
 		{
 			if (g_sChar.m_cLocation.X  != g_sChar2.m_cLocation.X || g_sChar2.m_cLocation.Y - 1 != g_sChar.m_cLocation.Y)
 			{
-				g_sChar2.m_cLocation.Y--;
-				bSomethingHappened_2 = true;
+				if (g_sChar2.m_cLocation.X == boxx.X && g_sChar2.m_cLocation.Y - 2 == boxx.Y && map[boxx.X][boxx.Y - 1] != 'x' && boxx.Y && map[boxx.X][boxx.Y - 1] != 'd' && boxx.Y && map[boxx.X][boxx.Y - 1] != 'f')
+				{
+
+					boxx.Y--;
+					thingthing = something;
+					something = map[boxx.X][boxx.Y];
+					map[boxx.X][boxx.Y] = 'n';
+					if (thingthing != '1')
+					{
+						map[boxx.X][boxx.Y + 1] = thingthing;
+					}
+					else
+					{
+						map[boxx.X][boxx.Y + 1] = '-';
+					}
+					g_sChar2.m_cLocation.Y--;
+				}
+				else
+				{
+					g_sChar2.m_cLocation.Y--;
+					bSomethingHappened_2 = true;
+				}
 			}
 		}
 		direction2 = 't';
@@ -361,8 +466,28 @@ void moveCharacter_2()
 		{
 			if (g_sChar.m_cLocation.X != g_sChar2.m_cLocation.X - 1 || g_sChar2.m_cLocation.Y != g_sChar.m_cLocation.Y)
 			{
-				g_sChar2.m_cLocation.X--;
-				bSomethingHappened_2 = true;
+				if (g_sChar2.m_cLocation.X - 1 == boxx.X && g_sChar2.m_cLocation.Y - 1 == boxx.Y && map[boxx.X - 1][boxx.Y] != 'x' && boxx.Y && map[boxx.X - 1][boxx.Y] != 'd' && boxx.Y && map[boxx.X - 1][boxx.Y] != 'f')
+				{
+
+					boxx.X--;
+					thingthing = something;
+					something = map[boxx.X][boxx.Y];
+					map[boxx.X][boxx.Y] = 'n';
+					if (thingthing != '1')
+					{
+						map[boxx.X + 1][boxx.Y] = thingthing;
+					}
+					else
+					{
+						map[boxx.X + 1][boxx.Y] = '-';
+					}
+					g_sChar2.m_cLocation.X--;
+				}
+				else
+				{
+					g_sChar2.m_cLocation.X--;
+					bSomethingHappened_2 = true;
+				}
 			}
 		}
 		direction2 = 'f';
@@ -374,8 +499,28 @@ void moveCharacter_2()
 		{
 			if (g_sChar.m_cLocation.X != g_sChar2.m_cLocation.X || g_sChar2.m_cLocation.Y + 1 != g_sChar.m_cLocation.Y)
 			{
-				g_sChar2.m_cLocation.Y++;
-				bSomethingHappened_2 = true;
+				if (g_sChar2.m_cLocation.X == boxx.X && g_sChar2.m_cLocation.Y == boxx.Y && map[boxx.X][boxx.Y + 1] != 'x' && boxx.Y && map[boxx.X][boxx.Y + 1] != 'd' && boxx.Y && map[boxx.X][boxx.Y + 1] != 'f')
+				{
+
+					boxx.Y++;
+					thingthing = something;
+					something = map[boxx.X][boxx.Y];
+					map[boxx.X][boxx.Y] = 'n';
+					if (thingthing != '1')
+					{
+						map[boxx.X][boxx.Y - 1] = thingthing;
+					}
+					else
+					{
+						map[boxx.X][boxx.Y - 1] = '-';
+					}
+					g_sChar2.m_cLocation.Y++;
+				}
+				else
+				{
+					g_sChar2.m_cLocation.Y++;
+					bSomethingHappened_2 = true;
+				}
 			}
 		}
 		direction2 = 'g';
@@ -385,11 +530,33 @@ void moveCharacter_2()
 		//Beep(1440, 30);
 		if (map[g_sChar2.m_cLocation.X + 1][g_sChar2.m_cLocation.Y - 1] != 'x' && map[g_sChar2.m_cLocation.X + 1][g_sChar2.m_cLocation.Y - 1] != 'd' && direction2 == 'h')
 		{
-			if (g_sChar.m_cLocation.X != g_sChar2.m_cLocation.X + 1 || g_sChar2.m_cLocation.Y != g_sChar.m_cLocation.Y)
+			if (g_sChar2.m_cLocation.X != g_sChar2.m_cLocation.X + 1 || g_sChar2.m_cLocation.Y != g_sChar2.m_cLocation.Y)
 			{
-				g_sChar2.m_cLocation.X++;
-				bSomethingHappened_2 = true;
+				if (g_sChar2.m_cLocation.X + 1 == boxx.X && g_sChar2.m_cLocation.Y - 1 == boxx.Y && map[boxx.X + 1][boxx.Y] != 'x' && boxx.Y && map[boxx.X + 1][boxx.Y] != 'd' && boxx.Y && map[boxx.X + 1][boxx.Y] != 'f')
+				{
+
+					boxx.X++;
+					thingthing = something;
+					something = map[boxx.X][boxx.Y];
+					map[boxx.X][boxx.Y] = 'n';
+					if (thingthing != '1')
+					{
+						map[boxx.X - 1][boxx.Y] = thingthing;
+					}
+					else
+					{
+						map[boxx.X - 1][boxx.Y] = '-';
+					}
+					g_sChar2.m_cLocation.X++;
+				}
+				else
+				{
+					g_sChar2.m_cLocation.X++;
+					bSomethingHappened_2 = true;
+				}
+
 			}
+	
 		}
 		direction2 = 'h';
 	}
@@ -640,6 +807,12 @@ void rendermap()
 				lever2.X = b;
 				lever2.Y = a;
 			}
+			if (map[b][a] == 'n')
+			{
+				boxx.X = b;
+				boxx.Y = a;
+			}
+
 			//record where door is, only when door not opened
 			//if (map[b][a] == 'd' && gateOpen == false)
 			//{
@@ -703,6 +876,10 @@ void rendermap()
 			if (shotPortal2 == false)
 			{
 				g_Console.writeToBuffer(portal2, 'O', 0x81);
+			}
+			if (map[x][y] == 'n')
+			{
+				g_Console.writeToBuffer(coord, box, 0xF6);
 			}
 
 		}
