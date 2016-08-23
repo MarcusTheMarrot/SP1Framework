@@ -598,6 +598,7 @@ void renderSplashScreen()  // renders the splash screen
 
 void renderGameOver()
 {
+	health = 53;
 	int i = 0;
 	int j = 0;
 	char main[63][6];
@@ -625,7 +626,7 @@ void renderGameOver()
 			c.X = x + 10;
 			if (main[x][y] != '~')
 			{
-				g_Console.writeToBuffer(c, main[x][y], 0x09);
+				g_Console.writeToBuffer(c, main[x][y], 0x0C);
 			}
 		}
 	}
@@ -652,12 +653,12 @@ void renderhealth()
 	c = g_Console.getConsoleSize();
 	c.Y /= 3 + 10;
 	c.X = c.X / 2;
-	c.Y += 15;
+	c.Y += 5;
 	c.X = g_Console.getConsoleSize().X / 2 + 30;
-	g_Console.writeToBuffer(c, "Health", 0x03);
+	g_Console.writeToBuffer(c, "Health", 0x07);
 	c.Y += 1;
 	c.X = g_Console.getConsoleSize().X / 2 + 30;
-	g_Console.writeToBuffer(c, health, 0x03);
+	g_Console.writeToBuffer(c, health, 0x07);
 	if (health == 48)
 	{
 		g_eGameState = S_GAMEOVER;
