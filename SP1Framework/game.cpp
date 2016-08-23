@@ -125,8 +125,10 @@ void getInput( void )
 	g_abKeyPressed[K_THREE] = isKeyPressed(0x33); // assign the three key
 	g_abKeyPressed[K_FOUR] = isKeyPressed(0x34); // assign the four key
 	g_abKeyPressed[K_FIVE] = isKeyPressed(0x35); // assign the five key
-	g_abKeyPressed[K_E] = isKeyPressed(0x45); // assign 'E' key
-	g_abKeyPressed[K_R] = isKeyPressed(0x52); // assige 'R' key
+	g_abKeyPressed[K_E] = isKeyPressed(0x45); // assign 'E' key for Player 1 first portal
+	g_abKeyPressed[K_R] = isKeyPressed(0x52); // assign 'R' key for Player 1 second portal
+	g_abKeyPressed[K_K] = isKeyPressed(0x4B); // assign 'K' key for Player 2 first portal
+	g_abKeyPressed[K_L] = isKeyPressed(0x4C); // assign 'L' key for player 2 second portal
 
 }
 
@@ -188,6 +190,8 @@ void render()
 		break;
 	case S_GAME: renderGame();
 		break;
+	case S_GAMEOVER: renderGameOver();
+		break;
 	}
     renderFramerate();  // renders debug information, frame rate, elapsed time, etc
     renderToScreen();   // dump the contents of the buffer to the screen, one frame worth of game
@@ -229,8 +233,28 @@ void moveCharacter_1()
 		{
 			if (g_sChar2.m_cLocation.X != g_sChar.m_cLocation.X || g_sChar.m_cLocation.Y - 1 != g_sChar2.m_cLocation.Y)
 			{
-				g_sChar.m_cLocation.Y--;
-				bSomethingHappened = true;
+				if (g_sChar.m_cLocation.X == boxx.X && g_sChar.m_cLocation.Y - 2 == boxx.Y && map[boxx.X][boxx.Y - 1] != 'x' && boxx.Y && map[boxx.X][boxx.Y - 1] != 'd' && boxx.Y && map[boxx.X][boxx.Y - 1] != 'f')
+				{
+
+					boxx.Y--;
+					thingthing = something;
+					something = map[boxx.X][boxx.Y];
+					map[boxx.X][boxx.Y] = 'n';
+					if (thingthing != '1')
+					{
+						map[boxx.X][boxx.Y + 1] = thingthing;
+					}
+					else
+					{
+						map[boxx.X][boxx.Y + 1] = '-';
+					}
+					g_sChar.m_cLocation.Y--;
+				}
+				else
+				{
+					g_sChar.m_cLocation.Y--;
+					bSomethingHappened = true;
+				}
 			}
 		}
 		direction = 'u';
@@ -242,8 +266,28 @@ void moveCharacter_1()
 		{
 			if (g_sChar2.m_cLocation.X != g_sChar.m_cLocation.X - 1 || g_sChar.m_cLocation.Y != g_sChar2.m_cLocation.Y)
 			{
-				g_sChar.m_cLocation.X--;
-				bSomethingHappened = true;
+				if (g_sChar.m_cLocation.X - 1 == boxx.X && g_sChar.m_cLocation.Y - 1 == boxx.Y && map[boxx.X - 1][boxx.Y] != 'x' && boxx.Y && map[boxx.X - 1][boxx.Y] != 'd' && boxx.Y && map[boxx.X - 1][boxx.Y] != 'f')
+				{
+
+					boxx.X--;
+					thingthing = something;
+					something = map[boxx.X][boxx.Y];
+					map[boxx.X][boxx.Y] = 'n';
+					if (thingthing != '1')
+					{
+						map[boxx.X + 1][boxx.Y] = thingthing;
+					}
+					else
+					{
+						map[boxx.X + 1][boxx.Y] = '-';
+					}
+					g_sChar.m_cLocation.X--;
+				}
+				else
+				{	
+					g_sChar.m_cLocation.X--;
+					bSomethingHappened = true;
+				}
 			}
 		}
 		direction = 'l';
@@ -255,8 +299,28 @@ void moveCharacter_1()
 		{
 			if (g_sChar2.m_cLocation.X != g_sChar.m_cLocation.X || g_sChar.m_cLocation.Y + 1 != g_sChar2.m_cLocation.Y)
 			{
-				g_sChar.m_cLocation.Y++;
-				bSomethingHappened = true;
+				if (g_sChar.m_cLocation.X == boxx.X && g_sChar.m_cLocation.Y == boxx.Y && map[boxx.X][boxx.Y + 1] != 'x' && boxx.Y && map[boxx.X][boxx.Y + 1] != 'd' && boxx.Y && map[boxx.X][boxx.Y + 1] != 'f')
+				{
+
+					boxx.Y++;
+					thingthing = something;
+					something = map[boxx.X][boxx.Y];
+					map[boxx.X][boxx.Y] = 'n';
+					if (thingthing != '1')
+					{
+						map[boxx.X][boxx.Y - 1] = thingthing;
+					}
+					else
+					{
+						map[boxx.X][boxx.Y - 1] = '-';
+					}
+					g_sChar.m_cLocation.Y++;
+				}
+				else
+				{
+					g_sChar.m_cLocation.Y++;
+					bSomethingHappened = true;
+				}
 			}
 		}
 		direction = 'd';
@@ -266,10 +330,30 @@ void moveCharacter_1()
 		//Beep(1440, 30);
 		if (map[g_sChar.m_cLocation.X + 1][g_sChar.m_cLocation.Y - 1] != 'x' && map[g_sChar.m_cLocation.X + 1][g_sChar.m_cLocation.Y - 1] != 'd' && direction == 'r')
 		{
-			if (g_sChar2.m_cLocation.X != g_sChar.m_cLocation.X + 1 || g_sChar.m_cLocation.Y  != g_sChar2.m_cLocation.Y)
+			if (g_sChar2.m_cLocation.X != g_sChar.m_cLocation.X + 1 || g_sChar.m_cLocation.Y != g_sChar2.m_cLocation.Y)
 			{
-				g_sChar.m_cLocation.X++;
-				bSomethingHappened = true;
+				if (g_sChar.m_cLocation.X + 1 == boxx.X && g_sChar.m_cLocation.Y - 1 == boxx.Y && map[boxx.X + 1][boxx.Y] != 'x' && boxx.Y && map[boxx.X + 1][boxx.Y] != 'd' && boxx.Y && map[boxx.X + 1][boxx.Y] != 'f')
+				{
+					
+					boxx.X++;
+					thingthing = something;
+					something = map[boxx.X][boxx.Y];
+					map[boxx.X][boxx.Y] = 'n';
+					if (thingthing != '1')
+					{
+						map[boxx.X - 1][boxx.Y] = thingthing;
+					}
+					else
+					{
+						map[boxx.X - 1][boxx.Y] = '-';
+					}
+					g_sChar.m_cLocation.X++;
+				}
+				else
+				{
+					g_sChar.m_cLocation.X++;
+					bSomethingHappened = true;
+				}
 			}
 		}
 		direction = 'r';
@@ -284,6 +368,7 @@ void moveCharacter_1()
 			g_sChar.m_cLocation.X = 5;
 			g_sChar.m_cLocation.Y = 10;
 			direction = 'u';
+			health--;
 
 		}
 
@@ -361,7 +446,25 @@ void moveCharacter_1()
 			}
 			g_sChar.m_cLocation.X = teleportTo1.X;
 			g_sChar.m_cLocation.Y = teleportTo1.Y;
+			g_sChar.m_cLocation.X = portal2.X;
+			g_sChar.m_cLocation.Y = portal2.Y;
 		}
+		else if(g_sChar.m_cLocation.X == portal2.X && g_sChar.m_cLocation.Y == portal2.Y && PortActive1 && PortActive2)
+		{
+			g_sChar.m_cLocation.X = portal1.X;
+			g_sChar.m_cLocation.Y = portal1.Y;
+		}
+		if (g_sChar.m_cLocation.X == portal3.X && g_sChar.m_cLocation.Y == portal3.Y && PortActive3 && PortActive4)
+		{
+			g_sChar.m_cLocation.X = portal4.X;
+			g_sChar.m_cLocation.Y = portal4.Y;
+		}
+		else if (g_sChar.m_cLocation.X == portal4.X && g_sChar.m_cLocation.Y == portal4.Y && PortActive3 && PortActive4)
+		{
+			g_sChar.m_cLocation.X = portal3.X;
+			g_sChar.m_cLocation.Y = portal3.Y;
+		}
+
 
 	}
 }
@@ -380,8 +483,28 @@ void moveCharacter_2()
 		{
 			if (g_sChar.m_cLocation.X  != g_sChar2.m_cLocation.X || g_sChar2.m_cLocation.Y - 1 != g_sChar.m_cLocation.Y)
 			{
-				g_sChar2.m_cLocation.Y--;
-				bSomethingHappened_2 = true;
+				if (g_sChar2.m_cLocation.X == boxx.X && g_sChar2.m_cLocation.Y - 2 == boxx.Y && map[boxx.X][boxx.Y - 1] != 'x' && boxx.Y && map[boxx.X][boxx.Y - 1] != 'd' && boxx.Y && map[boxx.X][boxx.Y - 1] != 'f')
+				{
+
+					boxx.Y--;
+					thingthing = something;
+					something = map[boxx.X][boxx.Y];
+					map[boxx.X][boxx.Y] = 'n';
+					if (thingthing != '1')
+					{
+						map[boxx.X][boxx.Y + 1] = thingthing;
+					}
+					else
+					{
+						map[boxx.X][boxx.Y + 1] = '-';
+					}
+					g_sChar2.m_cLocation.Y--;
+				}
+				else
+				{
+					g_sChar2.m_cLocation.Y--;
+					bSomethingHappened_2 = true;
+				}
 			}
 		}
 		direction2 = 't';
@@ -393,8 +516,28 @@ void moveCharacter_2()
 		{
 			if (g_sChar.m_cLocation.X != g_sChar2.m_cLocation.X - 1 || g_sChar2.m_cLocation.Y != g_sChar.m_cLocation.Y)
 			{
-				g_sChar2.m_cLocation.X--;
-				bSomethingHappened_2 = true;
+				if (g_sChar2.m_cLocation.X - 1 == boxx.X && g_sChar2.m_cLocation.Y - 1 == boxx.Y && map[boxx.X - 1][boxx.Y] != 'x' && boxx.Y && map[boxx.X - 1][boxx.Y] != 'd' && boxx.Y && map[boxx.X - 1][boxx.Y] != 'f')
+				{
+
+					boxx.X--;
+					thingthing = something;
+					something = map[boxx.X][boxx.Y];
+					map[boxx.X][boxx.Y] = 'n';
+					if (thingthing != '1')
+					{
+						map[boxx.X + 1][boxx.Y] = thingthing;
+					}
+					else
+					{
+						map[boxx.X + 1][boxx.Y] = '-';
+					}
+					g_sChar2.m_cLocation.X--;
+				}
+				else
+				{
+					g_sChar2.m_cLocation.X--;
+					bSomethingHappened_2 = true;
+				}
 			}
 		}
 		direction2 = 'f';
@@ -406,8 +549,28 @@ void moveCharacter_2()
 		{
 			if (g_sChar.m_cLocation.X != g_sChar2.m_cLocation.X || g_sChar2.m_cLocation.Y + 1 != g_sChar.m_cLocation.Y)
 			{
-				g_sChar2.m_cLocation.Y++;
-				bSomethingHappened_2 = true;
+				if (g_sChar2.m_cLocation.X == boxx.X && g_sChar2.m_cLocation.Y == boxx.Y && map[boxx.X][boxx.Y + 1] != 'x' && boxx.Y && map[boxx.X][boxx.Y + 1] != 'd' && boxx.Y && map[boxx.X][boxx.Y + 1] != 'f')
+				{
+
+					boxx.Y++;
+					thingthing = something;
+					something = map[boxx.X][boxx.Y];
+					map[boxx.X][boxx.Y] = 'n';
+					if (thingthing != '1')
+					{
+						map[boxx.X][boxx.Y - 1] = thingthing;
+					}
+					else
+					{
+						map[boxx.X][boxx.Y - 1] = '-';
+					}
+					g_sChar2.m_cLocation.Y++;
+				}
+				else
+				{
+					g_sChar2.m_cLocation.Y++;
+					bSomethingHappened_2 = true;
+				}
 			}
 		}
 		direction2 = 'g';
@@ -417,11 +580,33 @@ void moveCharacter_2()
 		//Beep(1440, 30);
 		if (map[g_sChar2.m_cLocation.X + 1][g_sChar2.m_cLocation.Y - 1] != 'x' && map[g_sChar2.m_cLocation.X + 1][g_sChar2.m_cLocation.Y - 1] != 'd' && direction2 == 'h')
 		{
-			if (g_sChar.m_cLocation.X != g_sChar2.m_cLocation.X + 1 || g_sChar2.m_cLocation.Y != g_sChar.m_cLocation.Y)
+			if (g_sChar2.m_cLocation.X != g_sChar2.m_cLocation.X + 1 || g_sChar2.m_cLocation.Y != g_sChar2.m_cLocation.Y)
 			{
-				g_sChar2.m_cLocation.X++;
-				bSomethingHappened_2 = true;
+				if (g_sChar2.m_cLocation.X + 1 == boxx.X && g_sChar2.m_cLocation.Y - 1 == boxx.Y && map[boxx.X + 1][boxx.Y] != 'x' && boxx.Y && map[boxx.X + 1][boxx.Y] != 'd' && boxx.Y && map[boxx.X + 1][boxx.Y] != 'f')
+				{
+
+					boxx.X++;
+					thingthing = something;
+					something = map[boxx.X][boxx.Y];
+					map[boxx.X][boxx.Y] = 'n';
+					if (thingthing != '1')
+					{
+						map[boxx.X - 1][boxx.Y] = thingthing;
+					}
+					else
+					{
+						map[boxx.X - 1][boxx.Y] = '-';
+					}
+					g_sChar2.m_cLocation.X++;
+				}
+				else
+				{
+					g_sChar2.m_cLocation.X++;
+					bSomethingHappened_2 = true;
+				}
+
 			}
+	
 		}
 		direction2 = 'h';
 	}
@@ -437,7 +622,7 @@ void moveCharacter_2()
 			g_sChar2.m_cLocation.X = 7;
 			g_sChar2.m_cLocation.Y = 8;
 			direction2 = 't';
-
+			health--;
 		}
 
 		//check if playr moved into a telporter
@@ -472,6 +657,27 @@ void moveCharacter_2()
 		}
 		teleport.erase(0, teledel);
 		teledel = 0;
+
+		if (g_sChar2.m_cLocation.X == portal3.X && g_sChar2.m_cLocation.Y == portal3.Y && PortActive3 && PortActive4)
+		{
+			g_sChar2.m_cLocation.X = portal4.X;
+			g_sChar2.m_cLocation.Y = portal4.Y;
+		}
+		else if (g_sChar2.m_cLocation.X == portal4.X && g_sChar2.m_cLocation.Y == portal4.Y && PortActive3 && PortActive4)
+		{
+			g_sChar2.m_cLocation.X = portal3.X;
+			g_sChar2.m_cLocation.Y = portal3.Y;
+		}
+		if (g_sChar2.m_cLocation.X == portal1.X && g_sChar2.m_cLocation.Y == portal1.Y && PortActive1 && PortActive2)
+		{
+			g_sChar2.m_cLocation.X = portal2.X;
+			g_sChar2.m_cLocation.Y = portal2.Y;
+		}
+		else if (g_sChar2.m_cLocation.X == portal2.X && g_sChar2.m_cLocation.Y == portal2.Y && PortActive1 && PortActive2)
+		{
+			g_sChar2.m_cLocation.X = portal1.X;
+			g_sChar2.m_cLocation.Y = portal1.Y;
+		}
 	}
 }
 
@@ -496,6 +702,24 @@ void processUserInput()
 		shotPortal = true;
 	if (g_abKeyPressed[K_R] && (g_sChar.m_cLocation.X - 1) != 'x')
 		shotPortal2 = true;
+
+	if (g_abKeyPressed[K_K] && (g_sChar2.m_cLocation.Y - 1) != 'x')
+		shotPortal3 = true;
+	if (g_abKeyPressed[K_L] && (g_sChar2.m_cLocation.Y - 1) != 'x')
+		shotPortal4 = true;
+	if (g_abKeyPressed[K_K] && (g_sChar2.m_cLocation.Y + 1) != 'x')
+		shotPortal3 = true;
+	if (g_abKeyPressed[K_L] && (g_sChar2.m_cLocation.Y + 1) != 'x')
+		shotPortal4 = true;
+	if (g_abKeyPressed[K_K] && (g_sChar2.m_cLocation.X + 1) != 'x')
+		shotPortal3 = true;
+	if (g_abKeyPressed[K_L] && (g_sChar2.m_cLocation.X + 1) != 'x')
+		shotPortal4 = true;
+	if (g_abKeyPressed[K_K] && (g_sChar2.m_cLocation.X - 1) != 'x')
+		shotPortal3 = true;
+	if (g_abKeyPressed[K_L] && (g_sChar2.m_cLocation.X - 1) != 'x')
+		shotPortal4 = true;
+
 }
 
 void clearScreen()
@@ -542,6 +766,10 @@ void renderSplashScreen()  // renders the splash screen
 					g_Console.writeToBuffer(c, splash[x][y], 0x0B);
 				}
 				else if (splash[x][y] != '~' && y > 5)
+				{
+					g_Console.writeToBuffer(c, splash[x][y], 0x0B);
+				}
+				else if (splash[x][y] != '~' && y > 10)
 				{
 					g_Console.writeToBuffer(c, splash[x][y], 0x0B);
 				}
@@ -620,6 +848,76 @@ void renderSplashScreen()  // renders the splash screen
 	}
 }
 
+void renderGameOver()
+{
+	health = 53;
+	int i = 0;
+	int j = 0;
+	char main[63][6];
+	ifstream file("GameOver.txt"); // read file from PickALevel.txt to print the ascii art
+	COORD c;
+	if (file.is_open())
+	{
+		while (j <= 5)
+		{
+			while (i <= 62)
+			{
+				file >> main[i][j];
+				i++;
+			}
+			i = 0;
+			j++;
+		}
+		file.close();
+	}
+	for (int y = 0; y <= 5; y++)
+	{
+		c.Y = y + 4;
+		for (int x = 0; x <= 62; x++)
+		{
+			c.X = x + 10;
+			if (main[x][y] != '~')
+			{
+				g_Console.writeToBuffer(c, main[x][y], 0x0C);
+			}
+		}
+	}
+	c = g_Console.getConsoleSize();
+	c.Y /= 3 + 10;
+	c.X = c.X / 2 - 35;
+	c.Y += 10;
+	c.X = g_Console.getConsoleSize().X / 2 - 20;
+	g_Console.writeToBuffer(c, "Press enter to go back to Starting Screen.", 0x03);
+
+	if (g_abKeyPressed[K_RETURN])
+	{
+		g_eGameState = S_SPLASHSCREEN;
+	}
+	if (g_abKeyPressed[K_ESCAPE])
+	{
+		g_bQuitGame = true;
+	}
+}
+
+void renderhealth()
+{
+	COORD c;
+	c = g_Console.getConsoleSize();
+	c.Y /= 3 + 10;
+	c.X = c.X / 2;
+	c.Y += 5;
+	c.X = g_Console.getConsoleSize().X / 2 + 30;
+	g_Console.writeToBuffer(c, "Health", 0x07);
+	c.Y += 1;
+	c.X = g_Console.getConsoleSize().X / 2 + 30;
+	g_Console.writeToBuffer(c, health, 0x07);
+	if (health == 48)
+	{
+		g_eGameState = S_GAMEOVER;
+	}
+
+}
+
 void rendermap()
 {
 	/*// Set up sample colours, and output shadings
@@ -672,6 +970,12 @@ void rendermap()
 				lever2.X = b;
 				lever2.Y = a;
 			}
+			if (map[b][a] == 'n')
+			{
+				boxx.X = b;
+				boxx.Y = a;
+			}
+
 			//record where door is, only when door not opened
 			//if (map[b][a] == 'd' && gateOpen == false)
 			//{
@@ -699,17 +1003,38 @@ void rendermap()
 			//buffer ground
 			if (map[x][y] == '-')
 			{
-				g_Console.writeToBuffer(coord, ground, 0x88);
+				if ((g_sChar.m_cLocation.X + 7) >= x && x >= (g_sChar.m_cLocation.X - 7) && (g_sChar.m_cLocation.Y - 5) <= (y - 1) && (g_sChar.m_cLocation.Y + 5) >= (y + 3))
+				{
+					g_Console.writeToBuffer(coord, ground, 0x88);
+				}
+				if ((g_sChar2.m_cLocation.X + 7) >= x && x >= (g_sChar2.m_cLocation.X - 7) && (g_sChar2.m_cLocation.Y - 5) <= (y - 1) && (g_sChar2.m_cLocation.Y + 5) >= (y + 3))
+				{
+					g_Console.writeToBuffer(coord, ground, 0x88);
+				}
 			}
 			//buffer wall
 			if (map[x][y] == 'x')
 			//buffer teleportal
 			{
-				g_Console.writeToBuffer(coord, wall, 0x80);
+				if ((g_sChar.m_cLocation.X + 5) >= x && x >= (g_sChar.m_cLocation.X - 5) && (g_sChar.m_cLocation.Y - 5) <= (y + 1) && (g_sChar.m_cLocation.Y + 5) >= (y + 1))
+				{
+					g_Console.writeToBuffer(coord, wall, 0x80);
+				}
+				if ((g_sChar2.m_cLocation.X + 5) >= x && x >= (g_sChar2.m_cLocation.X - 5) && (g_sChar2.m_cLocation.Y - 5) <= (y + 1) && (g_sChar2.m_cLocation.Y + 5) >= (y + 1))
+				{
+					g_Console.writeToBuffer(coord, wall, 0x80);
+				}
 			}
 			if (map[x][y] == 'p')
 			{
-				g_Console.writeToBuffer(coord, wall, 0x2B);
+				if ((g_sChar.m_cLocation.X + 5) >= x && x >= (g_sChar.m_cLocation.X - 5) && (g_sChar.m_cLocation.Y - 5) <= (y + 1) && (g_sChar.m_cLocation.Y + 5) >= (y + 1))
+				{
+					g_Console.writeToBuffer(coord, wall, 0x2B);
+				}
+				if ((g_sChar2.m_cLocation.X + 5) >= x && x >= (g_sChar2.m_cLocation.X - 5) && (g_sChar2.m_cLocation.Y - 5) <= (y + 1) && (g_sChar2.m_cLocation.Y + 5) >= (y + 1))
+				{
+					g_Console.writeToBuffer(coord, wall, 0x2B);
+				}
 			}
 			//buffer exit
 			if (map[x][y] == 'e')
@@ -718,15 +1043,37 @@ void rendermap()
 			}
 			if (map[x][y] == 'd')
 			{
-				g_Console.writeToBuffer(coord, wall, 0x11);
+				if ((g_sChar.m_cLocation.X + 5) >= x && x >= (g_sChar.m_cLocation.X - 5) && (g_sChar.m_cLocation.Y - 5) <= (y + 1) && (g_sChar.m_cLocation.Y + 5) >= (y + 1))
+				{
+					g_Console.writeToBuffer(coord, wall, 0x11);
+				}
+				if ((g_sChar2.m_cLocation.X + 5) >= x && x >= (g_sChar2.m_cLocation.X - 5) && (g_sChar2.m_cLocation.Y - 5) <= (y + 1) && (g_sChar2.m_cLocation.Y + 5) >= (y + 1))
+				{
+					g_Console.writeToBuffer(coord, wall, 0x11);
+				}
 			}
 			if (map[x][y] == 'l' || map[x][y] == 'L')
 			{
-				g_Console.writeToBuffer(coord, destination, 0x1F);
+				if ((g_sChar.m_cLocation.X + 5) >= x && x >= (g_sChar.m_cLocation.X - 5) && (g_sChar.m_cLocation.Y - 5) <= (y + 1) && (g_sChar.m_cLocation.Y + 5) >= (y + 1))
+				{
+					g_Console.writeToBuffer(coord, destination, 0x1F);
+				}
+				if ((g_sChar2.m_cLocation.X + 5) >= x && x >= (g_sChar2.m_cLocation.X - 5) && (g_sChar2.m_cLocation.Y - 5) <= (y + 1) && (g_sChar2.m_cLocation.Y + 5) >= (y + 1))
+				{
+					g_Console.writeToBuffer(coord, destination, 0x1F);
+				}
 			}
 			if (map[x][y] == 'f')
 			{
-				g_Console.writeToBuffer(coord, ground, 0xC3);
+				if ((g_sChar.m_cLocation.X + 5) >= x && x >= (g_sChar.m_cLocation.X - 5) && (g_sChar.m_cLocation.Y - 5) <= (y + 1) && (g_sChar.m_cLocation.Y + 5) >= (y + 1))
+				{
+					g_Console.writeToBuffer(coord, ground, 0xC3);
+				}
+				if ((g_sChar2.m_cLocation.X + 5) >= x && x >= (g_sChar2.m_cLocation.X - 5) && (g_sChar2.m_cLocation.Y - 5) <= (y + 1) && (g_sChar2.m_cLocation.Y + 5) >= (y + 1))
+				{
+					g_Console.writeToBuffer(coord, ground, 0xC3);
+				}
+
 			}
 			if (shotPortal == false)
 			{
@@ -735,6 +1082,20 @@ void rendermap()
 			if (shotPortal2 == false)
 			{
 				g_Console.writeToBuffer(portal2, 'O', 0x81);
+			}
+<<<<<<< HEAD
+			if (map[x][y] == 'n')
+			{
+				g_Console.writeToBuffer(coord, box, 0xF6);
+=======
+			if (shotPortal3 == false)
+			{
+				g_Console.writeToBuffer(portal3, 'O', 0x8C);
+			}
+			if (shotPortal4 == false)
+			{
+				g_Console.writeToBuffer(portal4, 'O', 0x81);
+>>>>>>> 9aa439f6bfdcd8b32ba959a841429cfd6cf45f0f
 			}
 
 		}
@@ -746,6 +1107,8 @@ void renderGame()
 	rendermap();// renders the map to the buffer first	
 	renderCharacter(); 
 	renderCharacter_2();// renders the character into the buffer
+	renderhealth();
+
 }
 
 void renderCharacter()
@@ -772,8 +1135,6 @@ void renderCharacter()
 			{
 				portal1.X = cord1.X;
 				portal1.Y = cord1.Y;
-				teleportTo1.X = portal1.X;
-				teleportTo1.Y = portal1.Y;
 				shotPortal = false;
 			}
 		}
@@ -788,8 +1149,6 @@ void renderCharacter()
 			{
 				portal2.X = cord2.X;
 				portal2.Y = cord2.Y;
-				teleportTo2.X = portal2.X;
-				teleportTo2.Y = portal2.Y;
 				shotPortal2 = false;
 			}
 		}
@@ -812,8 +1171,6 @@ void renderCharacter()
 			{
 				portal1.X = cord1.X;
 				portal1.Y = cord1.Y;
-				teleportTo1.X = portal1.X;
-				teleportTo1.Y = portal1.Y;
 				shotPortal = false;
 			}
 		}
@@ -828,8 +1185,6 @@ void renderCharacter()
 			{
 				portal2.X = cord2.X;
 				portal2.Y = cord2.Y;
-				teleportTo2.X = portal2.X;
-				teleportTo2.Y = portal2.Y;
 				shotPortal2 = false;
 			}
 		}
@@ -852,8 +1207,6 @@ void renderCharacter()
 			{
 				portal1.X = cord1.X;
 				portal1.Y = cord1.Y;
-				teleportTo1.X = portal1.X;
-				teleportTo1.Y = portal1.Y;
 				shotPortal = false;
 			}
 		}
@@ -868,8 +1221,6 @@ void renderCharacter()
 			{
 				portal2.X = cord2.X;
 				portal2.Y = cord2.Y;
-				teleportTo2.X = portal2.X;
-				teleportTo2.Y = portal2.Y;
 				shotPortal2 = false;
 			}
 		}
@@ -892,8 +1243,6 @@ void renderCharacter()
 			{
 				portal1.X = cord1.X;
 				portal1.Y = cord1.Y;
-				teleportTo1.X = portal1.X;
-				teleportTo1.Y = portal1.Y;
 				shotPortal = false;
 			}
 		}
@@ -908,8 +1257,6 @@ void renderCharacter()
 			{
 				portal2.X = cord2.X;
 				portal2.Y = cord2.Y;
-				teleportTo2.X = portal2.X;
-				teleportTo2.Y = portal2.Y;
 				shotPortal2 = false;
 			}
 		}
@@ -929,18 +1276,154 @@ void renderCharacter_2()
 	if (direction2 == 't')
 	{
 		g_Console.writeToBuffer(g_sChar2.m_cLocation, '^', charColor2);
+		cord3.X = g_sChar2.m_cLocation.X;
+		cord3.Y = g_sChar2.m_cLocation.Y;
+		cord4.X = g_sChar2.m_cLocation.X;
+		cord4.Y = g_sChar2.m_cLocation.Y;
+		while (shotPortal3)
+		{
+			if ((map[cord3.X][cord3.Y - 2] != 'x') && (map[cord3.X][cord3.Y - 2] != 'e') && (map[cord3.X][cord3.Y - 2] != 'd'))
+			{
+				cord3.Y--;
+				g_Console.writeToBuffer(cord3, '|', 0x8C);
+			}
+			else
+			{
+				portal3.X = cord3.X;
+				portal3.Y = cord3.Y;
+				shotPortal3 = false;
+				PortActive3 = true;
+			}
+		}
+		while (shotPortal4)
+		{
+			if ((map[cord4.X][cord4.Y - 2] != 'x') && (map[cord4.X][cord4.Y - 2] != 'e') && (map[cord4.X][cord4.Y - 2] != 'd'))
+			{
+				cord4.Y--;
+				g_Console.writeToBuffer(cord4, '|', 0x81);
+			}
+			else
+			{
+				portal4.X = cord4.X;
+				portal4.Y = cord4.Y;
+				shotPortal4 = false;
+				PortActive4 = true;
+			}
+		}
 	}
 	else if (direction2 == 'g')
 	{
 		g_Console.writeToBuffer(g_sChar2.m_cLocation, 'v', charColor2);
+		cord3.X = g_sChar2.m_cLocation.X;
+		cord3.Y = g_sChar2.m_cLocation.Y;
+		cord4.X = g_sChar2.m_cLocation.X;
+		cord4.Y = g_sChar2.m_cLocation.Y;
+		while (shotPortal3)
+		{
+			if ((map[cord3.X][cord3.Y] != 'x') && (map[cord3.X][cord3.Y] != 'e') && (map[cord3.X][cord3.Y] != 'd'))
+			{
+				cord3.Y++;
+				g_Console.writeToBuffer(cord3, '|', 0x8C);
+			}
+			else
+			{
+				portal3.X = cord3.X;
+				portal3.Y = cord3.Y;
+				shotPortal3 = false;
+				PortActive3 = true;
+			}
+		}
+		while (shotPortal4)
+		{
+			if ((map[cord4.X][cord4.Y] != 'x') && (map[cord4.X][cord4.Y] != 'e') && (map[cord4.X][cord4.Y] != 'd'))
+			{
+				cord4.Y++;
+				g_Console.writeToBuffer(cord4, '|', 0x81);
+			}
+			else
+			{
+				portal4.X = cord4.X;
+				portal4.Y = cord4.Y;
+				shotPortal4 = false;
+				PortActive4 = true;
+			}
+		}
 	}
 	else if (direction2 == 'f')
 	{
 		g_Console.writeToBuffer(g_sChar2.m_cLocation, '<', charColor2);
+		cord3.X = g_sChar2.m_cLocation.X;
+		cord3.Y = g_sChar2.m_cLocation.Y;
+		cord4.X = g_sChar2.m_cLocation.X;
+		cord4.Y = g_sChar2.m_cLocation.Y;
+		while (shotPortal3)
+		{
+			if ((map[cord3.X - 1][cord3.Y - 1] != 'x') && (map[cord3.X - 1][cord3.Y - 1] != 'e') && (map[cord3.X - 1][cord3.Y - 1] != 'd'))
+			{
+				cord3.X--;
+				g_Console.writeToBuffer(cord3, '-', 0x8C);
+			}
+			else
+			{
+				portal3.X = cord3.X;
+				portal3.Y = cord3.Y;
+				shotPortal3 = false;
+				PortActive3 = true;
+			}
+		}
+		while (shotPortal4)
+		{
+			if ((map[cord4.X - 1][cord4.Y - 1] != 'x') && (map[cord4.X - 1][cord4.Y - 1] != 'e') && (map[cord4.X - 1][cord4.Y - 1] != 'd'))
+			{
+				cord4.X--;
+				g_Console.writeToBuffer(cord4, '-', 0x81);
+			}
+			else
+			{
+				portal4.X = cord4.X;
+				portal4.Y = cord4.Y;
+				shotPortal4 = false;
+				PortActive4 = true;
+			}
+		}
 	}
 	else if (direction2 == 'h')
 	{
 		g_Console.writeToBuffer(g_sChar2.m_cLocation, '>', charColor2);
+		cord3.X = g_sChar2.m_cLocation.X;
+		cord3.Y = g_sChar2.m_cLocation.Y;
+		cord4.X = g_sChar2.m_cLocation.X;
+		cord4.Y = g_sChar2.m_cLocation.Y;
+		while (shotPortal3)
+		{
+			if ((map[cord3.X + 1][cord3.Y - 1] != 'x') && (map[cord3.X + 1][cord3.Y - 1] != 'e') && (map[cord3.X + 1][cord3.Y - 1] != 'd'))
+			{
+				cord3.X++;
+				g_Console.writeToBuffer(cord3, '-', 0x8C);
+			}
+			else
+			{
+				portal3.X = cord3.X;
+				portal3.Y = cord3.Y;
+				shotPortal3 = false;
+				PortActive3 = true;
+			}
+		}
+		while (shotPortal4)
+		{
+			if ((map[cord4.X + 1][cord4.Y - 1] != 'x') && (map[cord4.X + 1][cord4.Y - 1] != 'e') && (map[cord4.X + 1][cord4.Y - 1] != 'd'))
+			{
+				cord4.X++;
+				g_Console.writeToBuffer(cord4, '-', 0x81);
+			}
+			else
+			{
+				portal4.X = cord4.X;
+				portal4.Y = cord4.Y;
+				shotPortal4 = false;
+				PortActive4 = true;
+			}
+		}
 	}
 	else
 	{
@@ -978,6 +1461,9 @@ void renderToMainMenu()
 	int i = 0;
 	int j = 0;
 	char main[73][12];
+
+	int count = 0;
+
 	ifstream file("PickALevel.txt"); // read file from PickALevel.txt to print the ascii art
 	COORD c;
 	if (file.is_open())
@@ -1012,6 +1498,7 @@ void renderToMainMenu()
 	c.Y += 15;
 	c.X = g_Console.getConsoleSize().X / 2 - 20;
 	g_Console.writeToBuffer(c, "Press enter to choose your level (1-5).", 0x03);
+
 	c.Y += 1;
 	c.X = g_Console.getConsoleSize().X / 2 - 7;
 	g_Console.writeToBuffer(c, "Level 1", 0x73);
@@ -1023,7 +1510,7 @@ void renderToMainMenu()
 	g_Console.writeToBuffer(c, "Level 4", 0x03);
 	c.Y += 1;
 	g_Console.writeToBuffer(c, "Level 5", 0x03);
-
+	
 	if (g_abKeyPressed[PLAYER_2_K_DOWN])
 	{
 		g_eGameState = S_MAINMENU2;
