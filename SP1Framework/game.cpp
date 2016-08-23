@@ -21,6 +21,7 @@ bool transisted;
 
 char	map[61][21];
 int level;
+char health = 53;
 unsigned char wall = 178;
 unsigned char direction, direction2;
 unsigned char ground = 176;
@@ -188,6 +189,8 @@ void render()
 		break;
 	case S_GAME: renderGame();
 		break;
+	case S_GAMEOVER: renderGameOver();
+		break;
 	}
     renderFramerate();  // renders debug information, frame rate, elapsed time, etc
     renderToScreen();   // dump the contents of the buffer to the screen, one frame worth of game
@@ -284,6 +287,7 @@ void moveCharacter_1()
 			g_sChar.m_cLocation.X = 5;
 			g_sChar.m_cLocation.Y = 10;
 			direction = 'u';
+			health--;
 
 		}
 
@@ -405,7 +409,7 @@ void moveCharacter_2()
 			g_sChar2.m_cLocation.X = 7;
 			g_sChar2.m_cLocation.Y = 8;
 			direction2 = 't';
-
+			health--;
 		}
 
 		//check if playr moved into a telporter
@@ -513,6 +517,10 @@ void renderSplashScreen()  // renders the splash screen
 				{
 					g_Console.writeToBuffer(c, splash[x][y], 0x0B);
 				}
+				else if (splash[x][y] != '~' && y > 10)
+				{
+					g_Console.writeToBuffer(c, splash[x][y], 0x0B);
+				}
 				else if (splash[x][y] != '~')
 				{
 					g_Console.writeToBuffer(c, splash[x][y], 0x07);
@@ -586,6 +594,75 @@ void renderSplashScreen()  // renders the splash screen
 		c.X = g_Console.getConsoleSize().X / 2 - 13;
 		g_Console.writeToBuffer(c, "Press 'Esc' to quit", 0x07);
 	}
+}
+
+void renderGameOver()
+{
+	int i = 0;
+	int j = 0;
+	char main[63][6];
+	ifstream file("GameOver.txt"); // read file from PickALevel.txt to print the ascii art
+	COORD c;
+	if (file.is_open())
+	{
+		while (j <= 5)
+		{
+			while (i <= 62)
+			{
+				file >> main[i][j];
+				i++;
+			}
+			i = 0;
+			j++;
+		}
+		file.close();
+	}
+	for (int y = 0; y <= 5; y++)
+	{
+		c.Y = y + 4;
+		for (int x = 0; x <= 62; x++)
+		{
+			c.X = x + 10;
+			if (main[x][y] != '~')
+			{
+				g_Console.writeToBuffer(c, main[x][y], 0x09);
+			}
+		}
+	}
+	c = g_Console.getConsoleSize();
+	c.Y /= 3 + 10;
+	c.X = c.X / 2 - 35;
+	c.Y += 10;
+	c.X = g_Console.getConsoleSize().X / 2 - 20;
+	g_Console.writeToBuffer(c, "Press enter to go back to Starting Screen.", 0x03);
+
+	if (g_abKeyPressed[K_RETURN])
+	{
+		g_eGameState = S_SPLASHSCREEN;
+	}
+	if (g_abKeyPressed[K_ESCAPE])
+	{
+		g_bQuitGame = true;
+	}
+}
+
+void renderhealth()
+{
+	COORD c;
+	c = g_Console.getConsoleSize();
+	c.Y /= 3 + 10;
+	c.X = c.X / 2;
+	c.Y += 15;
+	c.X = g_Console.getConsoleSize().X / 2 + 30;
+	g_Console.writeToBuffer(c, "Health", 0x03);
+	c.Y += 1;
+	c.X = g_Console.getConsoleSize().X / 2 + 30;
+	g_Console.writeToBuffer(c, health, 0x03);
+	if (health == 48)
+	{
+		g_eGameState = S_GAMEOVER;
+	}
+
 }
 
 void rendermap()
@@ -667,11 +744,11 @@ void rendermap()
 			//buffer ground
 			if (map[x][y] == '-')
 			{
-				if ((g_sChar.m_cLocation.X + 7) >= x && x >= (g_sChar.m_cLocation.X - 7) && (g_sChar.m_cLocation.Y - 5) <= (y + 1) && (g_sChar.m_cLocation.Y + 5) >= (y + 1))
+				if ((g_sChar.m_cLocation.X + 7) >= x && x >= (g_sChar.m_cLocation.X - 7) && (g_sChar.m_cLocation.Y - 5) <= (y - 1) && (g_sChar.m_cLocation.Y + 5) >= (y + 3))
 				{
 					g_Console.writeToBuffer(coord, ground, 0x88);
 				}
-				if ((g_sChar2.m_cLocation.X + 7) >= x && x >= (g_sChar2.m_cLocation.X - 7) && (g_sChar2.m_cLocation.Y - 5) <= (y + 1) && (g_sChar2.m_cLocation.Y + 5) >= (y + 1))
+				if ((g_sChar2.m_cLocation.X + 7) >= x && x >= (g_sChar2.m_cLocation.X - 7) && (g_sChar2.m_cLocation.Y - 5) <= (y - 1) && (g_sChar2.m_cLocation.Y + 5) >= (y + 3))
 				{
 					g_Console.writeToBuffer(coord, ground, 0x88);
 				}
@@ -757,6 +834,8 @@ void renderGame()
 	rendermap();// renders the map to the buffer first	
 	renderCharacter(); 
 	renderCharacter_2();// renders the character into the buffer
+	renderhealth();
+
 }
 
 void renderCharacter()
@@ -1000,16 +1079,6 @@ void renderToMainMenu()
 
 	int count = 0;
 
-	//bool pressdown1 = false;
-	//bool pressdown2 = false;
-	//bool pressdown3 = false;
-	//bool pressdown4 = false;
-
-	//bool pressup1 = false;
-	//bool pressup2 = false;
-	//bool pressup3 = false;
-	//bool pressup4 = false;
-
 	ifstream file("PickALevel.txt"); // read file from PickALevel.txt to print the ascii art
 	COORD c;
 	if (file.is_open())
@@ -1059,7 +1128,7 @@ void renderToMainMenu()
 	
 	if (g_abKeyPressed[PLAYER_2_K_DOWN])
 	{
-		g_eGameState = S_MAINMENU;
+		g_eGameState = S_MAINMENU2;
 	}
 
 	if (g_abKeyPressed[K_RETURN])
