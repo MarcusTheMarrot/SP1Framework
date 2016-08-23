@@ -16,7 +16,7 @@ using namespace std;
 
 double  g_dElapsedTime;
 double  g_dDeltaTime;
-bool    g_abKeyPressed[K_COUNT], teleporter = false, gateOpen = false, shotPortal = false, shotPortal2 = false;
+bool    g_abKeyPressed[K_COUNT], teleporter = false, gateOpen = false, shotPortal = false, shotPortal2 = false, PortActive1 = false, PortActive2 = false;
 bool transisted;
 
 char	map[61][21];
@@ -320,45 +320,13 @@ void moveCharacter_1()
 		teleport.erase(0, teledel);
 		teledel = 0;
 
-		if (g_sChar.m_cLocation.X == portal1.X && g_sChar.m_cLocation.Y == portal1.Y)
+		if (g_sChar.m_cLocation.X == portal1.X && g_sChar.m_cLocation.Y == portal1.Y && PortActive1 && PortActive2)
 		{
-			if ((portal2.X - 1) == 'x')
-			{
-				teleportTo2.X + 1;
-			}
-			if ((portal2.X + 1) == 'x')
-			{
-				teleportTo2.X - 1;
-			}
-			if ((portal2.Y - 1) == 'x')
-			{
-				teleportTo2.Y + 1;
-			}
-			if ((portal2.Y + 1) == 'x')
-			{
-				teleportTo2.Y - 1;
-			}
 			g_sChar.m_cLocation.X = teleportTo2.X;
 			g_sChar.m_cLocation.Y = teleportTo2.Y;
 		}
-		else if (g_sChar.m_cLocation.X == portal2.X && g_sChar.m_cLocation.Y == portal2.Y)
+		else if (g_sChar.m_cLocation.X == portal2.X && g_sChar.m_cLocation.Y == portal2.Y && PortActive1 && PortActive2)
 		{
-			if ((portal1.X - 1) == 'x')
-			{
-				teleportTo1.X + 1;
-			}
-			if ((portal1.X + 1) == 'x')
-			{
-				teleportTo1.X - 1;
-			}
-			if ((portal1.Y - 1) == 'x')
-			{
-				teleportTo1.Y + 1;
-			}
-			if ((portal1.Y + 1) == 'x')
-			{
-				teleportTo1.Y - 1;
-			}
 			g_sChar.m_cLocation.X = teleportTo1.X;
 			g_sChar.m_cLocation.Y = teleportTo1.Y;
 		}
@@ -763,7 +731,7 @@ void renderCharacter()
 		cord2.Y = g_sChar.m_cLocation.Y;
 		while (shotPortal)
 		{
-			if (map[cord1.X][cord1.Y - 2] != 'x')
+			if ((map[cord1.X][cord1.Y - 2] != 'x') && (map[cord1.X][cord1.Y - 2] != 'e') && (map[cord1.X][cord1.Y - 2] != 'd'))
 			{
 				cord1.Y--;
 				g_Console.writeToBuffer(cord1, '|', 0x8C);
@@ -775,11 +743,12 @@ void renderCharacter()
 				teleportTo1.X = portal1.X;
 				teleportTo1.Y = portal1.Y;
 				shotPortal = false;
+				PortActive1 = true;
 			}
 		}
 		while (shotPortal2)
 		{
-			if (map[cord2.X][cord2.Y - 2] != 'x')
+			if ((map[cord2.X][cord2.Y - 2] != 'x') && (map[cord2.X][cord2.Y - 2] != 'e') && (map[cord2.X][cord2.Y - 2] != 'd'))
 			{
 				cord2.Y--;
 				g_Console.writeToBuffer(cord2, '|', 0x81);
@@ -791,6 +760,7 @@ void renderCharacter()
 				teleportTo2.X = portal2.X;
 				teleportTo2.Y = portal2.Y;
 				shotPortal2 = false;
+				PortActive2 = true;
 			}
 		}
 	}
@@ -803,7 +773,7 @@ void renderCharacter()
 		cord2.Y = g_sChar.m_cLocation.Y;
 		while (shotPortal)
 		{
-			if (map[cord1.X][cord1.Y] != 'x')
+			if ((map[cord1.X][cord1.Y] != 'x') && (map[cord1.X][cord1.Y] != 'e') && (map[cord1.X][cord1.Y] != 'd'))
 			{
 				cord1.Y++;
 				g_Console.writeToBuffer(cord1, '|', 0x8C);
@@ -815,11 +785,12 @@ void renderCharacter()
 				teleportTo1.X = portal1.X;
 				teleportTo1.Y = portal1.Y;
 				shotPortal = false;
+				PortActive1 = true;
 			}
 		}
 		while (shotPortal2)
 		{
-			if (map[cord2.X][cord2.Y] != 'x')
+			if ((map[cord2.X][cord2.Y] != 'x') && (map[cord2.X][cord2.Y] != 'e') && (map[cord2.X][cord2.Y] != 'd'))
 			{
 				cord2.Y++;
 				g_Console.writeToBuffer(cord2, '|', 0x81);
@@ -831,6 +802,7 @@ void renderCharacter()
 				teleportTo2.X = portal2.X;
 				teleportTo2.Y = portal2.Y;
 				shotPortal2 = false;
+				PortActive2 = true;
 			}
 		}
 	}
@@ -843,7 +815,7 @@ void renderCharacter()
 		cord2.Y = g_sChar.m_cLocation.Y;
 		while (shotPortal)
 		{
-			if (map[cord1.X-1][cord1.Y-1] != 'x')
+			if ((map[cord1.X-1][cord1.Y-1] != 'x') && (map[cord1.X - 1][cord1.Y - 1] != 'e') && (map[cord1.X - 1][cord1.Y - 1] != 'd'))
 			{
 				cord1.X--;
 				g_Console.writeToBuffer(cord1, '-', 0x8C);
@@ -855,11 +827,12 @@ void renderCharacter()
 				teleportTo1.X = portal1.X;
 				teleportTo1.Y = portal1.Y;
 				shotPortal = false;
+				PortActive1 = true;
 			}
 		}
 		while (shotPortal2)
 		{
-			if (map[cord2.X-1][cord2.Y-1] != 'x')
+			if ((map[cord2.X-1][cord2.Y-1] != 'x') && (map[cord2.X - 1][cord2.Y - 1] != 'e') && (map[cord2.X - 1][cord2.Y - 1] != 'd'))
 			{
 				cord2.X--;
 				g_Console.writeToBuffer(cord2, '-', 0x81);
@@ -871,6 +844,7 @@ void renderCharacter()
 				teleportTo2.X = portal2.X;
 				teleportTo2.Y = portal2.Y;
 				shotPortal2 = false;
+				PortActive2 = true;
 			}
 		}
 	}
@@ -883,7 +857,7 @@ void renderCharacter()
 		cord2.Y = g_sChar.m_cLocation.Y;
 		while (shotPortal)
 		{
-			if (map[cord1.X + 1][cord1.Y-1] != 'x')
+			if ((map[cord1.X + 1][cord1.Y-1] != 'x') && (map[cord1.X + 1][cord1.Y - 1] != 'e') && (map[cord1.X + 1][cord1.Y - 1] != 'd'))
 			{
 				cord1.X++;
 				g_Console.writeToBuffer(cord1, '-', 0x8C);
@@ -895,11 +869,12 @@ void renderCharacter()
 				teleportTo1.X = portal1.X;
 				teleportTo1.Y = portal1.Y;
 				shotPortal = false;
+				PortActive1 = true;
 			}
 		}
 		while (shotPortal2)
 		{
-			if (map[cord2.X + 1][cord2.Y-1] != 'x')
+			if ((map[cord2.X + 1][cord2.Y-1] != 'x') && (map[cord2.X + 1][cord2.Y - 1] != 'e') && (map[cord2.X + 1][cord2.Y - 1] != 'd'))
 			{
 				cord2.X++;
 				g_Console.writeToBuffer(cord2, '-', 0x81);
@@ -911,6 +886,7 @@ void renderCharacter()
 				teleportTo2.X = portal2.X;
 				teleportTo2.Y = portal2.Y;
 				shotPortal2 = false;
+				PortActive2 = true;
 			}
 		}
 	}
