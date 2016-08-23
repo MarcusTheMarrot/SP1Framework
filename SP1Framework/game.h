@@ -28,6 +28,8 @@ enum EKEYS
 	K_FIVE,
 	K_E,
 	K_R,
+	K_K,
+	K_L,
 	K_COUNT
 };
 
@@ -46,6 +48,7 @@ enum EGAMESTATES
 	S_LEVELTHREE,
 	S_LEVELFOUR,
 	S_LEVELFIVE,
+	S_GAMEOVER,
 	S_COUNT
 };
 
@@ -87,5 +90,7 @@ void renderToMainMenu2();
 void renderToMainMenu3();
 void renderToMainMenu4();
 void renderToMainMenu5();
+void renderhealth();
+void renderGameOver();
 
 #endif // _GAME_H
