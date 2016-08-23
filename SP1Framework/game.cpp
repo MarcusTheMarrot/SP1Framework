@@ -978,6 +978,19 @@ void renderToMainMenu()
 	int i = 0;
 	int j = 0;
 	char main[73][12];
+
+	int count = 0;
+
+	//bool pressdown1 = false;
+	//bool pressdown2 = false;
+	//bool pressdown3 = false;
+	//bool pressdown4 = false;
+
+	//bool pressup1 = false;
+	//bool pressup2 = false;
+	//bool pressup3 = false;
+	//bool pressup4 = false;
+
 	ifstream file("PickALevel.txt"); // read file from PickALevel.txt to print the ascii art
 	COORD c;
 	if (file.is_open())
@@ -1012,6 +1025,7 @@ void renderToMainMenu()
 	c.Y += 15;
 	c.X = g_Console.getConsoleSize().X / 2 - 20;
 	g_Console.writeToBuffer(c, "Press enter to choose your level (1-5).", 0x03);
+
 	c.Y += 1;
 	c.X = g_Console.getConsoleSize().X / 2 - 7;
 	g_Console.writeToBuffer(c, "Level 1", 0x73);
@@ -1023,10 +1037,10 @@ void renderToMainMenu()
 	g_Console.writeToBuffer(c, "Level 4", 0x03);
 	c.Y += 1;
 	g_Console.writeToBuffer(c, "Level 5", 0x03);
-
+	
 	if (g_abKeyPressed[PLAYER_2_K_DOWN])
 	{
-		g_eGameState = S_MAINMENU2;
+		g_eGameState = S_MAINMENU;
 	}
 
 	if (g_abKeyPressed[K_RETURN])
