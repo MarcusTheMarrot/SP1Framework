@@ -17,7 +17,7 @@ using namespace std;
 double  g_dElapsedTime;
 double  g_dDeltaTime;
 bool    g_abKeyPressed[K_COUNT], teleporter = false, gateOpen = false, shotPortal = false, shotPortal2 = false, PortActive1 = false, PortActive2 = false;
-bool transisted;
+bool transisted, shotPortal3 = false, shotPortal4 = false, PortActive3 = false, PortActive4;
 
 char	map[61][21];
 int level;
@@ -34,10 +34,13 @@ COORD lever1;
 COORD lever2;
 COORD cord1;
 COORD cord2;
+COORD cord3;
+COORD cord4;
 COORD portal1;
 COORD portal2;
-COORD teleportTo1;
-COORD teleportTo2;
+COORD portal3;
+COORD portal4;
+
 
 // Game specific variables here
 SGameChar	g_sChar;
@@ -125,8 +128,10 @@ void getInput( void )
 	g_abKeyPressed[K_THREE] = isKeyPressed(0x33); // assign the three key
 	g_abKeyPressed[K_FOUR] = isKeyPressed(0x34); // assign the four key
 	g_abKeyPressed[K_FIVE] = isKeyPressed(0x35); // assign the five key
-	g_abKeyPressed[K_E] = isKeyPressed(0x45); // assign 'E' key
-	g_abKeyPressed[K_R] = isKeyPressed(0x52); // assige 'R' key
+	g_abKeyPressed[K_E] = isKeyPressed(0x45); // assign 'E' key for Player 1 first portal
+	g_abKeyPressed[K_R] = isKeyPressed(0x52); // assign 'R' key for Player 1 second portal
+	g_abKeyPressed[K_K] = isKeyPressed(0x4B); // assign 'K' key for Player 2 first portal
+	g_abKeyPressed[K_L] = isKeyPressed(0x4C); // assign 'L' key for player 2 second portal
 
 }
 
@@ -322,14 +327,25 @@ void moveCharacter_1()
 
 		if (g_sChar.m_cLocation.X == portal1.X && g_sChar.m_cLocation.Y == portal1.Y && PortActive1 && PortActive2)
 		{
-			g_sChar.m_cLocation.X = teleportTo2.X;
-			g_sChar.m_cLocation.Y = teleportTo2.Y;
+			g_sChar.m_cLocation.X = portal2.X;
+			g_sChar.m_cLocation.Y = portal2.Y;
 		}
-		else if (g_sChar.m_cLocation.X == portal2.X && g_sChar.m_cLocation.Y == portal2.Y && PortActive1 && PortActive2)
+		else if(g_sChar.m_cLocation.X == portal2.X && g_sChar.m_cLocation.Y == portal2.Y && PortActive1 && PortActive2)
 		{
-			g_sChar.m_cLocation.X = teleportTo1.X;
-			g_sChar.m_cLocation.Y = teleportTo1.Y;
+			g_sChar.m_cLocation.X = portal1.X;
+			g_sChar.m_cLocation.Y = portal1.Y;
 		}
+		if (g_sChar.m_cLocation.X == portal3.X && g_sChar.m_cLocation.Y == portal3.Y && PortActive3 && PortActive4)
+		{
+			g_sChar.m_cLocation.X = portal4.X;
+			g_sChar.m_cLocation.Y = portal4.Y;
+		}
+		else if (g_sChar.m_cLocation.X == portal4.X && g_sChar.m_cLocation.Y == portal4.Y && PortActive3 && PortActive4)
+		{
+			g_sChar.m_cLocation.X = portal3.X;
+			g_sChar.m_cLocation.Y = portal3.Y;
+		}
+
 
 	}
 }
@@ -440,6 +456,27 @@ void moveCharacter_2()
 		}
 		teleport.erase(0, teledel);
 		teledel = 0;
+
+		if (g_sChar2.m_cLocation.X == portal3.X && g_sChar2.m_cLocation.Y == portal3.Y && PortActive3 && PortActive4)
+		{
+			g_sChar2.m_cLocation.X = portal4.X;
+			g_sChar2.m_cLocation.Y = portal4.Y;
+		}
+		else if (g_sChar2.m_cLocation.X == portal4.X && g_sChar2.m_cLocation.Y == portal4.Y && PortActive3 && PortActive4)
+		{
+			g_sChar2.m_cLocation.X = portal3.X;
+			g_sChar2.m_cLocation.Y = portal3.Y;
+		}
+		if (g_sChar2.m_cLocation.X == portal1.X && g_sChar2.m_cLocation.Y == portal1.Y && PortActive1 && PortActive2)
+		{
+			g_sChar2.m_cLocation.X = portal2.X;
+			g_sChar2.m_cLocation.Y = portal2.Y;
+		}
+		else if (g_sChar2.m_cLocation.X == portal2.X && g_sChar2.m_cLocation.Y == portal2.Y && PortActive1 && PortActive2)
+		{
+			g_sChar2.m_cLocation.X = portal1.X;
+			g_sChar2.m_cLocation.Y = portal1.Y;
+		}
 	}
 }
 
@@ -464,6 +501,24 @@ void processUserInput()
 		shotPortal = true;
 	if (g_abKeyPressed[K_R] && (g_sChar.m_cLocation.X - 1) != 'x')
 		shotPortal2 = true;
+
+	if (g_abKeyPressed[K_K] && (g_sChar2.m_cLocation.Y - 1) != 'x')
+		shotPortal3 = true;
+	if (g_abKeyPressed[K_L] && (g_sChar2.m_cLocation.Y - 1) != 'x')
+		shotPortal4 = true;
+	if (g_abKeyPressed[K_K] && (g_sChar2.m_cLocation.Y + 1) != 'x')
+		shotPortal3 = true;
+	if (g_abKeyPressed[K_L] && (g_sChar2.m_cLocation.Y + 1) != 'x')
+		shotPortal4 = true;
+	if (g_abKeyPressed[K_K] && (g_sChar2.m_cLocation.X + 1) != 'x')
+		shotPortal3 = true;
+	if (g_abKeyPressed[K_L] && (g_sChar2.m_cLocation.X + 1) != 'x')
+		shotPortal4 = true;
+	if (g_abKeyPressed[K_K] && (g_sChar2.m_cLocation.X - 1) != 'x')
+		shotPortal3 = true;
+	if (g_abKeyPressed[K_L] && (g_sChar2.m_cLocation.X - 1) != 'x')
+		shotPortal4 = true;
+
 }
 
 void clearScreen()
@@ -704,6 +759,14 @@ void rendermap()
 			{
 				g_Console.writeToBuffer(portal2, 'O', 0x81);
 			}
+			if (shotPortal3 == false)
+			{
+				g_Console.writeToBuffer(portal3, 'O', 0x8C);
+			}
+			if (shotPortal4 == false)
+			{
+				g_Console.writeToBuffer(portal4, 'O', 0x81);
+			}
 
 		}
 	}
@@ -740,8 +803,6 @@ void renderCharacter()
 			{
 				portal1.X = cord1.X;
 				portal1.Y = cord1.Y;
-				teleportTo1.X = portal1.X;
-				teleportTo1.Y = portal1.Y;
 				shotPortal = false;
 				PortActive1 = true;
 			}
@@ -757,8 +818,6 @@ void renderCharacter()
 			{
 				portal2.X = cord2.X;
 				portal2.Y = cord2.Y;
-				teleportTo2.X = portal2.X;
-				teleportTo2.Y = portal2.Y;
 				shotPortal2 = false;
 				PortActive2 = true;
 			}
@@ -782,8 +841,6 @@ void renderCharacter()
 			{
 				portal1.X = cord1.X;
 				portal1.Y = cord1.Y;
-				teleportTo1.X = portal1.X;
-				teleportTo1.Y = portal1.Y;
 				shotPortal = false;
 				PortActive1 = true;
 			}
@@ -799,8 +856,6 @@ void renderCharacter()
 			{
 				portal2.X = cord2.X;
 				portal2.Y = cord2.Y;
-				teleportTo2.X = portal2.X;
-				teleportTo2.Y = portal2.Y;
 				shotPortal2 = false;
 				PortActive2 = true;
 			}
@@ -824,8 +879,6 @@ void renderCharacter()
 			{
 				portal1.X = cord1.X;
 				portal1.Y = cord1.Y;
-				teleportTo1.X = portal1.X;
-				teleportTo1.Y = portal1.Y;
 				shotPortal = false;
 				PortActive1 = true;
 			}
@@ -841,8 +894,6 @@ void renderCharacter()
 			{
 				portal2.X = cord2.X;
 				portal2.Y = cord2.Y;
-				teleportTo2.X = portal2.X;
-				teleportTo2.Y = portal2.Y;
 				shotPortal2 = false;
 				PortActive2 = true;
 			}
@@ -866,8 +917,6 @@ void renderCharacter()
 			{
 				portal1.X = cord1.X;
 				portal1.Y = cord1.Y;
-				teleportTo1.X = portal1.X;
-				teleportTo1.Y = portal1.Y;
 				shotPortal = false;
 				PortActive1 = true;
 			}
@@ -883,8 +932,6 @@ void renderCharacter()
 			{
 				portal2.X = cord2.X;
 				portal2.Y = cord2.Y;
-				teleportTo2.X = portal2.X;
-				teleportTo2.Y = portal2.Y;
 				shotPortal2 = false;
 				PortActive2 = true;
 			}
@@ -905,18 +952,154 @@ void renderCharacter_2()
 	if (direction2 == 't')
 	{
 		g_Console.writeToBuffer(g_sChar2.m_cLocation, '^', charColor2);
+		cord3.X = g_sChar2.m_cLocation.X;
+		cord3.Y = g_sChar2.m_cLocation.Y;
+		cord4.X = g_sChar2.m_cLocation.X;
+		cord4.Y = g_sChar2.m_cLocation.Y;
+		while (shotPortal3)
+		{
+			if ((map[cord3.X][cord3.Y - 2] != 'x') && (map[cord3.X][cord3.Y - 2] != 'e') && (map[cord3.X][cord3.Y - 2] != 'd'))
+			{
+				cord3.Y--;
+				g_Console.writeToBuffer(cord3, '|', 0x8C);
+			}
+			else
+			{
+				portal3.X = cord3.X;
+				portal3.Y = cord3.Y;
+				shotPortal3 = false;
+				PortActive3 = true;
+			}
+		}
+		while (shotPortal4)
+		{
+			if ((map[cord4.X][cord4.Y - 2] != 'x') && (map[cord4.X][cord4.Y - 2] != 'e') && (map[cord4.X][cord4.Y - 2] != 'd'))
+			{
+				cord4.Y--;
+				g_Console.writeToBuffer(cord4, '|', 0x81);
+			}
+			else
+			{
+				portal4.X = cord4.X;
+				portal4.Y = cord4.Y;
+				shotPortal4 = false;
+				PortActive4 = true;
+			}
+		}
 	}
 	else if (direction2 == 'g')
 	{
 		g_Console.writeToBuffer(g_sChar2.m_cLocation, 'v', charColor2);
+		cord3.X = g_sChar2.m_cLocation.X;
+		cord3.Y = g_sChar2.m_cLocation.Y;
+		cord4.X = g_sChar2.m_cLocation.X;
+		cord4.Y = g_sChar2.m_cLocation.Y;
+		while (shotPortal3)
+		{
+			if ((map[cord3.X][cord3.Y] != 'x') && (map[cord3.X][cord3.Y] != 'e') && (map[cord3.X][cord3.Y] != 'd'))
+			{
+				cord3.Y++;
+				g_Console.writeToBuffer(cord3, '|', 0x8C);
+			}
+			else
+			{
+				portal3.X = cord3.X;
+				portal3.Y = cord3.Y;
+				shotPortal3 = false;
+				PortActive3 = true;
+			}
+		}
+		while (shotPortal4)
+		{
+			if ((map[cord4.X][cord4.Y] != 'x') && (map[cord4.X][cord4.Y] != 'e') && (map[cord4.X][cord4.Y] != 'd'))
+			{
+				cord4.Y++;
+				g_Console.writeToBuffer(cord4, '|', 0x81);
+			}
+			else
+			{
+				portal4.X = cord4.X;
+				portal4.Y = cord4.Y;
+				shotPortal4 = false;
+				PortActive4 = true;
+			}
+		}
 	}
 	else if (direction2 == 'f')
 	{
 		g_Console.writeToBuffer(g_sChar2.m_cLocation, '<', charColor2);
+		cord3.X = g_sChar2.m_cLocation.X;
+		cord3.Y = g_sChar2.m_cLocation.Y;
+		cord4.X = g_sChar2.m_cLocation.X;
+		cord4.Y = g_sChar2.m_cLocation.Y;
+		while (shotPortal3)
+		{
+			if ((map[cord3.X - 1][cord3.Y - 1] != 'x') && (map[cord3.X - 1][cord3.Y - 1] != 'e') && (map[cord3.X - 1][cord3.Y - 1] != 'd'))
+			{
+				cord3.X--;
+				g_Console.writeToBuffer(cord3, '-', 0x8C);
+			}
+			else
+			{
+				portal3.X = cord3.X;
+				portal3.Y = cord3.Y;
+				shotPortal3 = false;
+				PortActive3 = true;
+			}
+		}
+		while (shotPortal4)
+		{
+			if ((map[cord4.X - 1][cord4.Y - 1] != 'x') && (map[cord4.X - 1][cord4.Y - 1] != 'e') && (map[cord4.X - 1][cord4.Y - 1] != 'd'))
+			{
+				cord4.X--;
+				g_Console.writeToBuffer(cord4, '-', 0x81);
+			}
+			else
+			{
+				portal4.X = cord4.X;
+				portal4.Y = cord4.Y;
+				shotPortal4 = false;
+				PortActive4 = true;
+			}
+		}
 	}
 	else if (direction2 == 'h')
 	{
 		g_Console.writeToBuffer(g_sChar2.m_cLocation, '>', charColor2);
+		cord3.X = g_sChar2.m_cLocation.X;
+		cord3.Y = g_sChar2.m_cLocation.Y;
+		cord4.X = g_sChar2.m_cLocation.X;
+		cord4.Y = g_sChar2.m_cLocation.Y;
+		while (shotPortal3)
+		{
+			if ((map[cord3.X + 1][cord3.Y - 1] != 'x') && (map[cord3.X + 1][cord3.Y - 1] != 'e') && (map[cord3.X + 1][cord3.Y - 1] != 'd'))
+			{
+				cord3.X++;
+				g_Console.writeToBuffer(cord3, '-', 0x8C);
+			}
+			else
+			{
+				portal3.X = cord3.X;
+				portal3.Y = cord3.Y;
+				shotPortal3 = false;
+				PortActive3 = true;
+			}
+		}
+		while (shotPortal4)
+		{
+			if ((map[cord4.X + 1][cord4.Y - 1] != 'x') && (map[cord4.X + 1][cord4.Y - 1] != 'e') && (map[cord4.X + 1][cord4.Y - 1] != 'd'))
+			{
+				cord4.X++;
+				g_Console.writeToBuffer(cord4, '-', 0x81);
+			}
+			else
+			{
+				portal4.X = cord4.X;
+				portal4.Y = cord4.Y;
+				shotPortal4 = false;
+				PortActive4 = true;
+			}
+		}
 	}
 	else
 	{
