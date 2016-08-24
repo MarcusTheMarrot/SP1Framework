@@ -436,6 +436,8 @@ void moveCharacter_1()
 			g_sChar2.m_cLocation.Y = g_sChar.m_cLocation.Y;
 			transisted = false;
 			removeportal = true;
+			thingthing = '\0';
+			something = '\0';
 		}
 		teleport.erase(0, teledel);
 		teledel = 0;
@@ -1267,7 +1269,14 @@ void rendermap()
 			}
 			if (map[x][y] == 'n')
 			{
-				g_Console.writeToBuffer(coord, box, 0xF6);
+				if ((g_sChar.m_cLocation.X + 5) >= x && x >= (g_sChar.m_cLocation.X - 5) && (g_sChar.m_cLocation.Y - 5) <= (y + 1) && (g_sChar.m_cLocation.Y + 5) >= (y + 1))
+				{
+					g_Console.writeToBuffer(coord, box, 0xFE);
+				}
+				if ((g_sChar2.m_cLocation.X + 5) >= x && x >= (g_sChar2.m_cLocation.X - 5) && (g_sChar2.m_cLocation.Y - 5) <= (y + 1) && (g_sChar2.m_cLocation.Y + 5) >= (y + 1))
+				{
+					g_Console.writeToBuffer(coord, box, 0xFE);
+				}
 			}
 			if (shotPortal == false)
 			{
@@ -1279,11 +1288,11 @@ void rendermap()
 			}
 			if (shotPortal3 == false)
 			{
-				g_Console.writeToBuffer(portal3, 'O', 0x8C);
+				g_Console.writeToBuffer(portal3, 'O', 0x8D);
 			}
 			if (shotPortal4 == false)
 			{
-				g_Console.writeToBuffer(portal4, 'O', 0x81);
+				g_Console.writeToBuffer(portal4, 'O', 0x8B);
 
 			}
 			if (removeportal)
