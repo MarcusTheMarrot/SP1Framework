@@ -415,33 +415,6 @@ void moveCharacter_1()
 		teleport.erase(0, teledel);
 		teledel = 0;
 
-		if (g_sChar.m_cLocation.X == portal1.X && g_sChar.m_cLocation.Y == portal1.Y && PortActive1 && PortActive2)
-		{
-			g_sChar.m_cLocation.X = teleportTo2.X;
-			g_sChar.m_cLocation.Y = teleportTo2.Y;
-		}
-		else if (g_sChar.m_cLocation.X == portal2.X && g_sChar.m_cLocation.Y == portal2.Y && PortActive1 && PortActive2)
-		{
-			g_sChar.m_cLocation.X = teleportTo1.X;
-			g_sChar.m_cLocation.Y = teleportTo1.Y;
-			g_sChar.m_cLocation.X = portal2.X;
-			g_sChar.m_cLocation.Y = portal2.Y;
-		}
-		else if(g_sChar.m_cLocation.X == portal2.X && g_sChar.m_cLocation.Y == portal2.Y && PortActive1 && PortActive2)
-		{
-			g_sChar.m_cLocation.X = portal1.X;
-			g_sChar.m_cLocation.Y = portal1.Y;
-		}
-		if (g_sChar.m_cLocation.X == portal3.X && g_sChar.m_cLocation.Y == portal3.Y && PortActive3 && PortActive4)
-		{
-			g_sChar.m_cLocation.X = portal4.X;
-			g_sChar.m_cLocation.Y = portal4.Y;
-		}
-		else if (g_sChar.m_cLocation.X == portal4.X && g_sChar.m_cLocation.Y == portal4.Y && PortActive3 && PortActive4)
-		{
-			g_sChar.m_cLocation.X = portal3.X;
-			g_sChar.m_cLocation.Y = portal3.Y;
-		}
 		g_sChar.m_cLocation = Player1Position(g_sChar.m_cLocation, portal1, portal2, portal3, portal4, PortActive1, PortActive2, PortActive3, PortActive4); // allow g_sChar to teleport between portals
 	}
 }
@@ -1044,15 +1017,14 @@ void rendermap()
 			if (map[x][y] == 'n')
 			{
 				g_Console.writeToBuffer(coord, box, 0xF6);
-				if (shotPortal3 == false)
-				{
-					g_Console.writeToBuffer(portal3, 'O', 0x8C);
-				}
-				if (shotPortal4 == false)
-				{
-					g_Console.writeToBuffer(portal4, 'O', 0x81);
-
-				}
+			}
+			if (shotPortal3 == false)
+			{
+				g_Console.writeToBuffer(portal3, 'O', 0x8C);
+			}
+			if (shotPortal4 == false)
+			{
+				g_Console.writeToBuffer(portal4, 'O', 0x81);
 
 			}
 		}
@@ -1132,10 +1104,6 @@ void renderCharacter()
 				portal1.Y = cord1.Y;
 				shotPortal = false;
 				PortActive1 = true;		
-				cord3.X = g_sChar2.m_cLocation.X;
-				cord3.Y = g_sChar2.m_cLocation.Y;
-				cord4.X = g_sChar2.m_cLocation.X;
-				cord4.Y = g_sChar2.m_cLocation.Y;
 			}
 		}
 		while (shotPortal2)
