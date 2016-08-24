@@ -18,11 +18,7 @@ using namespace std;
 double  g_dElapsedTime;
 double  g_dDeltaTime;
 bool    g_abKeyPressed[K_COUNT], teleporter = false, gateOpen = false, shotPortal = false, shotPortal2 = false, PortActive1 = false, PortActive2 = false;
-<<<<<<< HEAD
-bool transisted;
-=======
 bool transisted, shotPortal3 = false, shotPortal4 = false, PortActive3 = false, PortActive4;
->>>>>>> 1593bb6961b43ead81db95477834bf1b24405627
 
 char	map[61][21];
 char something = '1', thingthing = '1';
@@ -419,7 +415,6 @@ void moveCharacter_1()
 		teleport.erase(0, teledel);
 		teledel = 0;
 
-<<<<<<< HEAD
 		if (g_sChar.m_cLocation.X == portal1.X && g_sChar.m_cLocation.Y == portal1.Y && PortActive1 && PortActive2)
 		{
 			g_sChar.m_cLocation.X = teleportTo2.X;
@@ -447,11 +442,7 @@ void moveCharacter_1()
 			g_sChar.m_cLocation.X = portal3.X;
 			g_sChar.m_cLocation.Y = portal3.Y;
 		}
-
-
-=======
 		g_sChar.m_cLocation = Player1Position(g_sChar.m_cLocation, portal1, portal2, portal3, portal4, PortActive1, PortActive2, PortActive3, PortActive4); // allow g_sChar to teleport between portals
->>>>>>> 1593bb6961b43ead81db95477834bf1b24405627
 	}
 }
 
@@ -1140,14 +1131,11 @@ void renderCharacter()
 				portal1.X = cord1.X;
 				portal1.Y = cord1.Y;
 				shotPortal = false;
-<<<<<<< HEAD
-				PortActive1 = true;
-=======
-				PortActive1 = true;		cord3.X = g_sChar2.m_cLocation.X;
-		cord3.Y = g_sChar2.m_cLocation.Y;
-		cord4.X = g_sChar2.m_cLocation.X;
-		cord4.Y = g_sChar2.m_cLocation.Y;
->>>>>>> 1593bb6961b43ead81db95477834bf1b24405627
+				PortActive1 = true;		
+				cord3.X = g_sChar2.m_cLocation.X;
+				cord3.Y = g_sChar2.m_cLocation.Y;
+				cord4.X = g_sChar2.m_cLocation.X;
+				cord4.Y = g_sChar2.m_cLocation.Y;
 			}
 		}
 		while (shotPortal2)
@@ -1171,11 +1159,7 @@ void renderCharacter()
 		g_Console.writeToBuffer(g_sChar.m_cLocation, '<', charColor);
 		while (shotPortal)
 		{
-<<<<<<< HEAD
 			if ((map[cord1.X-1][cord1.Y-1] != 'x') && (map[cord1.X - 1][cord1.Y - 1] != 'e') && (map[cord1.X - 1][cord1.Y - 1] != 'd'))
-=======
-			if (map[cord1.X - 1][cord1.Y - 1] != 'x')
->>>>>>> 1593bb6961b43ead81db95477834bf1b24405627
 			{
 				cord1.X--;
 				g_Console.writeToBuffer(cord1, '-', 0x8C);
@@ -1190,11 +1174,7 @@ void renderCharacter()
 		}
 		while (shotPortal2)
 		{
-<<<<<<< HEAD
 			if ((map[cord2.X-1][cord2.Y-1] != 'x') && (map[cord2.X - 1][cord2.Y - 1] != 'e') && (map[cord2.X - 1][cord2.Y - 1] != 'd'))
-=======
-			if (map[cord2.X - 1][cord2.Y - 1] != 'x')
->>>>>>> 1593bb6961b43ead81db95477834bf1b24405627
 			{
 				cord2.X--;
 				g_Console.writeToBuffer(cord2, '-', 0x81);
@@ -1213,11 +1193,7 @@ void renderCharacter()
 		g_Console.writeToBuffer(g_sChar.m_cLocation, '>', charColor);
 		while (shotPortal)
 		{
-<<<<<<< HEAD
 			if ((map[cord1.X + 1][cord1.Y-1] != 'x') && (map[cord1.X + 1][cord1.Y - 1] != 'e') && (map[cord1.X + 1][cord1.Y - 1] != 'd'))
-=======
-			if (map[cord1.X + 1][cord1.Y - 1] != 'x')
->>>>>>> 1593bb6961b43ead81db95477834bf1b24405627
 			{
 				cord1.X++;
 				g_Console.writeToBuffer(cord1, '-', 0x8C);
@@ -1232,11 +1208,7 @@ void renderCharacter()
 		}
 		while (shotPortal2)
 		{
-<<<<<<< HEAD
 			if ((map[cord2.X + 1][cord2.Y-1] != 'x') && (map[cord2.X + 1][cord2.Y - 1] != 'e') && (map[cord2.X + 1][cord2.Y - 1] != 'd'))
-=======
-			if (map[cord2.X + 1][cord2.Y - 1] != 'x')
->>>>>>> 1593bb6961b43ead81db95477834bf1b24405627
 			{
 				cord2.X++;
 				g_Console.writeToBuffer(cord2, '-', 0x81);
