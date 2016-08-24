@@ -1,4 +1,4 @@
-	// This is the main file for the game logic and function
+// This is the main file for the game logic and function
 //
 //
 #include "game.h"
@@ -12,19 +12,22 @@
 #include <fstream>
 #include <string>
 
-using namespace std; 
+using namespace std;
 
 double  g_dElapsedTime;
 double  g_dDeltaTime;
-bool    g_abKeyPressed[K_COUNT], teleporter = false, gateOpen = false, shotPortal = false, shotPortal2 = false;
-bool transisted;
+bool    g_abKeyPressed[K_COUNT], teleporter = false, gateOpen = false, shotPortal = false, shotPortal2 = false, PortActive1 = false, PortActive2 = false;
+bool transisted, shotPortal3 = false, shotPortal4 = false, PortActive3 = false, PortActive4;
 
 char	map[61][21];
+char something = '1', thingthing = '1';
 int level;
+char health = 53;
 unsigned char wall = 178;
 unsigned char direction, direction2;
 unsigned char ground = 176;
 unsigned char destination = 177;
+unsigned char box = 219;
 string	teleport;
 string	null = { '\0', };
 
@@ -34,10 +37,16 @@ COORD lever1;
 COORD lever2;
 COORD cord1;
 COORD cord2;
+COORD cord3;
+COORD cord4;
 COORD portal1;
 COORD portal2;
 COORD teleportTo1;
 COORD teleportTo2;
+COORD boxx;
+COORD portal3;
+COORD portal4;
+
 
 // Game specific variables here
 SGameChar	g_sChar;
@@ -45,7 +54,7 @@ SGameChar2   g_sChar2;
 EGAMESTATES g_eGameState = S_SPLASHSCREEN;
 double  g_dBounceTime, g_dBounceTime2;// this is to prevent key bouncing, so we won't trigger keypresses more than once
 
-// Console object
+									  // Console object
 Console g_Console(80, 25, "SP1 Framework");
 
 //--------------------------------------------------------------
@@ -55,24 +64,24 @@ Console g_Console(80, 25, "SP1 Framework");
 // Input    : void
 // Output   : void
 //--------------------------------------------------------------
-void init( void )
+void init(void)
 {
-    // Set precision for floating point output
-    g_dElapsedTime = 0.0;
-    g_dBounceTime = 0.0;
+	// Set precision for floating point output
+	g_dElapsedTime = 0.0;
+	g_dBounceTime = 0.0;
 	g_dBounceTime2 = 0.0;
 
-    // sets the initial state for the game
-    g_eGameState = S_SPLASHSCREEN;
+	// sets the initial state for the game
+	g_eGameState = S_SPLASHSCREEN;
 
-    g_sChar.m_cLocation.X = 7;
-    g_sChar.m_cLocation.Y = 6;
-    g_sChar.m_bActive = true;
+	g_sChar.m_cLocation.X = 7;
+	g_sChar.m_cLocation.Y = 6;
+	g_sChar.m_bActive = true;
 	g_sChar2.m_cLocation.X = 7;
 	g_sChar2.m_cLocation.Y = 6;
 	g_sChar2.m_bActive = true;
-    // sets the width, height and the font name to use in the console
-    g_Console.setConsoleFont(0, 16, L"Consolas");
+	// sets the width, height and the font name to use in the console
+	g_Console.setConsoleFont(0, 16, L"Consolas");
 }
 
 //--------------------------------------------------------------
@@ -83,12 +92,12 @@ void init( void )
 // Output   : void
 //--------------------------------------------------------------
 
-void shutdown( void )
+void shutdown(void)
 {
-    // Reset to white text on black background
+	// Reset to white text on black background
 	colour(FOREGROUND_BLUE | FOREGROUND_GREEN | FOREGROUND_RED);
 
-    g_Console.clearBuffer();
+	g_Console.clearBuffer();
 }
 
 //--------------------------------------------------------------
@@ -103,8 +112,8 @@ void shutdown( void )
 // Output   : void
 //--------------------------------------------------------------
 
-void getInput( void )
-{    
+void getInput(void)
+{
 	//g_abKeyPressed[K_UP] = isKeyPressed(VK_UP);
 	//g_abKeyPressed[K_DOWN] = isKeyPressed(VK_DOWN);
 	//g_abKeyPressed[K_LEFT] = isKeyPressed(VK_LEFT);
@@ -149,17 +158,17 @@ void getInput( void )
 
 void update(double dt)
 {
-    // get the delta time
-    g_dElapsedTime += dt;
-    g_dDeltaTime = dt;
+	// get the delta time
+	g_dElapsedTime += dt;
+	g_dDeltaTime = dt;
 
-    switch (g_eGameState)
-    {
-        case S_SPLASHSCREEN : splashScreenWait(); // game logic for the splash screen
-            break;
-        case S_GAME: gameplay(); // gameplay logic when we are in the game
-            break;
-    }
+	switch (g_eGameState)
+	{
+	case S_SPLASHSCREEN: splashScreenWait(); // game logic for the splash screen
+		break;
+	case S_GAME: gameplay(); // gameplay logic when we are in the game
+		break;
+	}
 }
 
 //--------------------------------------------------------------
@@ -173,7 +182,7 @@ void update(double dt)
 
 void render()
 {
-    clearScreen();      // clears the current screen and draw from scratch 
+	clearScreen();      // clears the current screen and draw from scratch 
 	switch (g_eGameState)
 	{
 	case S_SPLASHSCREEN: renderSplashScreen();
@@ -193,8 +202,8 @@ void render()
 	case S_GAMEOVER: renderGameOver();
 		break;
 	}
-    renderFramerate();  // renders debug information, frame rate, elapsed time, etc
-    renderToScreen();   // dump the contents of the buffer to the screen, one frame worth of game
+	renderFramerate();  // renders debug information, frame rate, elapsed time, etc
+	renderToScreen();   // dump the contents of the buffer to the screen, one frame worth of game
 }
 
 void splashScreenWait()    // waits for time to pass in splash screen
@@ -210,10 +219,10 @@ void splashScreenWait()    // waits for time to pass in splash screen
 
 void gameplay()            // gameplay logic
 {
-    processUserInput(); // checks if you should change states or do something else with the game, e.g. pause, exit
-    moveCharacter_1(); 
+	processUserInput(); // checks if you should change states or do something else with the game, e.g. pause, exit
+	moveCharacter_1();
 	moveCharacter_2();// moves the character, collision detection, physics, etc
-                        // sound can be played here too.
+					  // sound can be played here too.
 }
 
 void moveCharacter_1()
@@ -284,7 +293,7 @@ void moveCharacter_1()
 					g_sChar.m_cLocation.X--;
 				}
 				else
-				{	
+				{
 					g_sChar.m_cLocation.X--;
 					bSomethingHappened = true;
 				}
@@ -334,7 +343,7 @@ void moveCharacter_1()
 			{
 				if (g_sChar.m_cLocation.X + 1 == boxx.X && g_sChar.m_cLocation.Y - 1 == boxx.Y && map[boxx.X + 1][boxx.Y] != 'x' && boxx.Y && map[boxx.X + 1][boxx.Y] != 'd' && boxx.Y && map[boxx.X + 1][boxx.Y] != 'f')
 				{
-					
+
 					boxx.X++;
 					thingthing = something;
 					something = map[boxx.X][boxx.Y];
@@ -361,8 +370,8 @@ void moveCharacter_1()
 
 	if (bSomethingHappened == true)
 	{
-		
-		
+
+
 		if (map[g_sChar.m_cLocation.X][g_sChar.m_cLocation.Y - 1] == 'f')
 		{
 			g_sChar.m_cLocation.X = 5;
@@ -392,8 +401,8 @@ void moveCharacter_1()
 		}
 		// set the bounce time to some time in the future to prevent accidental triggers
 		g_dBounceTime = g_dElapsedTime + 0.010; // 125ms should not be enough
-										// 125ms should be enough
-										//if player reaches exit for stage 0, move to next map
+												// 125ms should be enough
+												//if player reaches exit for stage 0, move to next map
 		g_sChar.m_cLocation = mapTransition(g_sChar.m_cLocation, g_sChar.m_cLocation.X, g_sChar.m_cLocation.Y, &level, &transisted);
 		if (transisted == true)
 		{
@@ -449,7 +458,7 @@ void moveCharacter_1()
 			g_sChar.m_cLocation.X = portal2.X;
 			g_sChar.m_cLocation.Y = portal2.Y;
 		}
-		else if(g_sChar.m_cLocation.X == portal2.X && g_sChar.m_cLocation.Y == portal2.Y && PortActive1 && PortActive2)
+		else if (g_sChar.m_cLocation.X == portal2.X && g_sChar.m_cLocation.Y == portal2.Y && PortActive1 && PortActive2)
 		{
 			g_sChar.m_cLocation.X = portal1.X;
 			g_sChar.m_cLocation.Y = portal1.Y;
@@ -481,7 +490,7 @@ void moveCharacter_2()
 		//only move if player is facing in the direction he wants to move
 		if (map[g_sChar2.m_cLocation.X][g_sChar2.m_cLocation.Y - 2] != 'x' && map[g_sChar2.m_cLocation.X][g_sChar2.m_cLocation.Y - 2] != 'd' && direction2 == 't')
 		{
-			if (g_sChar.m_cLocation.X  != g_sChar2.m_cLocation.X || g_sChar2.m_cLocation.Y - 1 != g_sChar.m_cLocation.Y)
+			if (g_sChar.m_cLocation.X != g_sChar2.m_cLocation.X || g_sChar2.m_cLocation.Y - 1 != g_sChar.m_cLocation.Y)
 			{
 				if (g_sChar2.m_cLocation.X == boxx.X && g_sChar2.m_cLocation.Y - 2 == boxx.Y && map[boxx.X][boxx.Y - 1] != 'x' && boxx.Y && map[boxx.X][boxx.Y - 1] != 'd' && boxx.Y && map[boxx.X][boxx.Y - 1] != 'f')
 				{
@@ -606,7 +615,7 @@ void moveCharacter_2()
 				}
 
 			}
-	
+
 		}
 		direction2 = 'h';
 	}
@@ -615,7 +624,7 @@ void moveCharacter_2()
 	if (bSomethingHappened_2 == true)
 	{
 		//restart player at start point(sample level)
-		
+
 
 		if (map[g_sChar2.m_cLocation.X][g_sChar2.m_cLocation.Y - 1] == 'f')
 		{
@@ -645,8 +654,8 @@ void moveCharacter_2()
 			map[door.X][door.Y] = '-';
 		}
 		g_dBounceTime2 = g_dElapsedTime + 0.005; // 125ms should not be enough
-										// 125ms should be enough
-										//if player reaches exit for stage 0, move to next map
+												 // 125ms should be enough
+												 //if player reaches exit for stage 0, move to next map
 		g_sChar2.m_cLocation = mapTransition(g_sChar2.m_cLocation, g_sChar2.m_cLocation.X, g_sChar2.m_cLocation.Y, &level, &transisted);
 		if (transisted == true)
 		{
@@ -683,9 +692,9 @@ void moveCharacter_2()
 
 void processUserInput()
 {
-    // quits the game if player hits the escape key
-    if (g_abKeyPressed[K_ESCAPE])
-        g_bQuitGame = true; 
+	// quits the game if player hits the escape key
+	if (g_abKeyPressed[K_ESCAPE])
+		g_bQuitGame = true;
 	if (g_abKeyPressed[K_E] && (g_sChar.m_cLocation.Y - 1) != 'x')
 		shotPortal = true;
 	if (g_abKeyPressed[K_R] && (g_sChar.m_cLocation.Y - 1) != 'x')
@@ -724,8 +733,8 @@ void processUserInput()
 
 void clearScreen()
 {
-    // Clears the buffer with this colour attribute
-    g_Console.clearBuffer(0x00);
+	// Clears the buffer with this colour attribute
+	g_Console.clearBuffer(0x00);
 }
 
 void renderSplashScreen()  // renders the splash screen
@@ -1014,7 +1023,7 @@ void rendermap()
 			}
 			//buffer wall
 			if (map[x][y] == 'x')
-			//buffer teleportal
+				//buffer teleportal
 			{
 				if ((g_sChar.m_cLocation.X + 5) >= x && x >= (g_sChar.m_cLocation.X - 5) && (g_sChar.m_cLocation.Y - 5) <= (y + 1) && (g_sChar.m_cLocation.Y + 5) >= (y + 1))
 				{
@@ -1083,21 +1092,20 @@ void rendermap()
 			{
 				g_Console.writeToBuffer(portal2, 'O', 0x81);
 			}
-<<<<<<< HEAD
 			if (map[x][y] == 'n')
 			{
 				g_Console.writeToBuffer(coord, box, 0xF6);
-=======
-			if (shotPortal3 == false)
-			{
-				g_Console.writeToBuffer(portal3, 'O', 0x8C);
-			}
-			if (shotPortal4 == false)
-			{
-				g_Console.writeToBuffer(portal4, 'O', 0x81);
->>>>>>> 9aa439f6bfdcd8b32ba959a841429cfd6cf45f0f
-			}
+				if (shotPortal3 == false)
+				{
+					g_Console.writeToBuffer(portal3, 'O', 0x8C);
+				}
+				if (shotPortal4 == false)
+				{
+					g_Console.writeToBuffer(portal4, 'O', 0x81);
 
+				}
+
+			}
 		}
 	}
 }
@@ -1105,7 +1113,7 @@ void rendermap()
 void renderGame()
 {
 	rendermap();// renders the map to the buffer first	
-	renderCharacter(); 
+	renderCharacter();
 	renderCharacter_2();// renders the character into the buffer
 	renderhealth();
 
@@ -1114,9 +1122,9 @@ void renderGame()
 void renderCharacter()
 {
 	WORD charColor = 0x89;
-    // Draw the location of the character
+	// Draw the location of the character
 	//change player direction
-	
+
 	if (direction == 'u')
 	{
 		g_Console.writeToBuffer(g_sChar.m_cLocation, '^', charColor);
@@ -1138,6 +1146,7 @@ void renderCharacter()
 				shotPortal = false;
 			}
 		}
+
 		while (shotPortal2)
 		{
 			if (map[cord2.X][cord2.Y - 2] != 'x')
@@ -1198,7 +1207,7 @@ void renderCharacter()
 		cord2.Y = g_sChar.m_cLocation.Y;
 		while (shotPortal)
 		{
-			if (map[cord1.X-1][cord1.Y-1] != 'x')
+			if (map[cord1.X - 1][cord1.Y - 1] != 'x')
 			{
 				cord1.X--;
 				g_Console.writeToBuffer(cord1, '-', 0x8C);
@@ -1212,7 +1221,7 @@ void renderCharacter()
 		}
 		while (shotPortal2)
 		{
-			if (map[cord2.X-1][cord2.Y-1] != 'x')
+			if (map[cord2.X - 1][cord2.Y - 1] != 'x')
 			{
 				cord2.X--;
 				g_Console.writeToBuffer(cord2, '-', 0x81);
@@ -1234,7 +1243,7 @@ void renderCharacter()
 		cord2.Y = g_sChar.m_cLocation.Y;
 		while (shotPortal)
 		{
-			if (map[cord1.X + 1][cord1.Y-1] != 'x')
+			if (map[cord1.X + 1][cord1.Y - 1] != 'x')
 			{
 				cord1.X++;
 				g_Console.writeToBuffer(cord1, '-', 0x8C);
@@ -1248,7 +1257,7 @@ void renderCharacter()
 		}
 		while (shotPortal2)
 		{
-			if (map[cord2.X + 1][cord2.Y-1] != 'x')
+			if (map[cord2.X + 1][cord2.Y - 1] != 'x')
 			{
 				cord2.X++;
 				g_Console.writeToBuffer(cord2, '-', 0x81);
@@ -1295,6 +1304,7 @@ void renderCharacter_2()
 				PortActive3 = true;
 			}
 		}
+
 		while (shotPortal4)
 		{
 			if ((map[cord4.X][cord4.Y - 2] != 'x') && (map[cord4.X][cord4.Y - 2] != 'e') && (map[cord4.X][cord4.Y - 2] != 'd'))
@@ -1433,27 +1443,27 @@ void renderCharacter_2()
 
 void renderFramerate()
 {
-    COORD c;
-    // displays the framerate
-    std::ostringstream ss;
-    ss << std::fixed << std::setprecision(3);
-    ss << 1.0 / g_dDeltaTime << "fps";
-    c.X = g_Console.getConsoleSize().X - 9;
-    c.Y = 0;
-    g_Console.writeToBuffer(c, ss.str());
+	COORD c;
+	// displays the framerate
+	std::ostringstream ss;
+	ss << std::fixed << std::setprecision(3);
+	ss << 1.0 / g_dDeltaTime << "fps";
+	c.X = g_Console.getConsoleSize().X - 9;
+	c.Y = 0;
+	g_Console.writeToBuffer(c, ss.str());
 
-    // displays the elapsed time
-    ss.str("");
-    ss << g_dElapsedTime << "secs";
-    c.X = 0;
-    c.Y = 0;
-    g_Console.writeToBuffer(c, ss.str());
+	// displays the elapsed time
+	ss.str("");
+	ss << g_dElapsedTime << "secs";
+	c.X = 0;
+	c.Y = 0;
+	g_Console.writeToBuffer(c, ss.str());
 }
 
 void renderToScreen()
 {
-    // Writes the buffer to the console, hence you will see what you have written
-    g_Console.flushBufferToConsole();
+	// Writes the buffer to the console, hence you will see what you have written
+	g_Console.flushBufferToConsole();
 }
 
 void renderToMainMenu()
@@ -1510,7 +1520,7 @@ void renderToMainMenu()
 	g_Console.writeToBuffer(c, "Level 4", 0x03);
 	c.Y += 1;
 	g_Console.writeToBuffer(c, "Level 5", 0x03);
-	
+
 	if (g_abKeyPressed[PLAYER_2_K_DOWN])
 	{
 		g_eGameState = S_MAINMENU2;
