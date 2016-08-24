@@ -52,6 +52,14 @@ bool dooring(COORD lever1, COORD lever2, int x1, int y1, int x2, int y2, int xb,
 	{
 		return true;
 	}
+	else if (lever1.X == xb && lever1.Y == yb && lever2.X == x1 && lever2.Y == y1)
+	{
+		return true;
+	}
+	else if (lever1.X == xb && lever1.Y == yb && lever2.X == x2 && lever2.Y == y2)
+	{
+		return true;
+	}
 	else
 	{
 		return false;

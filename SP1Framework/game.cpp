@@ -1180,11 +1180,11 @@ void rendermap()
 			//buffer ground
 			if (map[x][y] == '-')
 			{
-				if ((g_sChar.m_cLocation.X + 7) >= x && x >= (g_sChar.m_cLocation.X - 7) && (g_sChar.m_cLocation.Y - 5) <= (y - 1) && (g_sChar.m_cLocation.Y + 5) >= (y + 3))
+				if ((g_sChar.m_cLocation.X + 7) >= x && x >= (g_sChar.m_cLocation.X - 7) && (g_sChar.m_cLocation.Y - 7) <= (y - 1) && (g_sChar.m_cLocation.Y + 7) >= (y + 3))
 				{
 					g_Console.writeToBuffer(coord, ground, 0x88);
 				}
-				if ((g_sChar2.m_cLocation.X + 7) >= x && x >= (g_sChar2.m_cLocation.X - 7) && (g_sChar2.m_cLocation.Y - 5) <= (y - 1) && (g_sChar2.m_cLocation.Y + 5) >= (y + 3))
+				if ((g_sChar2.m_cLocation.X + 7) >= x && x >= (g_sChar2.m_cLocation.X - 7) && (g_sChar2.m_cLocation.Y - 7) <= (y - 1) && (g_sChar2.m_cLocation.Y + 7) >= (y + 3))
 				{
 					g_Console.writeToBuffer(coord, ground, 0x88);
 				}
@@ -1244,13 +1244,23 @@ void rendermap()
 			{
 				if ((g_sChar.m_cLocation.X + 5) >= x && x >= (g_sChar.m_cLocation.X - 5) && (g_sChar.m_cLocation.Y - 5) <= (y + 1) && (g_sChar.m_cLocation.Y + 5) >= (y + 1))
 				{
-					g_Console.writeToBuffer(coord, ground, 0xC3);
+					g_Console.writeToBuffer(coord, ground, 0xCE);
 				}
 				if ((g_sChar2.m_cLocation.X + 5) >= x && x >= (g_sChar2.m_cLocation.X - 5) && (g_sChar2.m_cLocation.Y - 5) <= (y + 1) && (g_sChar2.m_cLocation.Y + 5) >= (y + 1))
 				{
-					g_Console.writeToBuffer(coord, ground, 0xC3);
+					g_Console.writeToBuffer(coord, ground, 0xCE);
 				}
-
+			}
+			if (map[x][y] == 'n')
+			{
+				if ((g_sChar.m_cLocation.X + 5) >= x && x >= (g_sChar.m_cLocation.X - 5) && (g_sChar.m_cLocation.Y - 5) <= (y + 1) && (g_sChar.m_cLocation.Y + 5) >= (y + 1))
+				{
+					g_Console.writeToBuffer(coord, box, 0xFE);
+				}
+				if ((g_sChar2.m_cLocation.X + 5) >= x && x >= (g_sChar2.m_cLocation.X - 5) && (g_sChar2.m_cLocation.Y - 5) <= (y + 1) && (g_sChar2.m_cLocation.Y + 5) >= (y + 1))
+				{
+					g_Console.writeToBuffer(coord, box, 0xFE);
+				}
 			}
 			if (shotPortal == false)
 			{
@@ -1260,17 +1270,13 @@ void rendermap()
 			{
 				g_Console.writeToBuffer(portal2, 'O', 0x81);
 			}
-			if (map[x][y] == 'n')
-			{
-				g_Console.writeToBuffer(coord, box, 0xF6);
-			}
 			if (shotPortal3 == false)
 			{
-				g_Console.writeToBuffer(portal3, 'O', 0x8C);
+				g_Console.writeToBuffer(portal3, 'O', 0x8B);
 			}
 			if (shotPortal4 == false)
 			{
-				g_Console.writeToBuffer(portal4, 'O', 0x81);
+				g_Console.writeToBuffer(portal4, 'O', 0x8D);
 
 			}
 		}
@@ -1444,7 +1450,7 @@ void renderCharacter()
 
 void renderCharacter_2()
 {
-	WORD charColor2 = 0x89;
+	WORD charColor2 = 0x8C;
 	// Draw the location of the character
 	//change player direction
 	cord3.X = g_sChar2.m_cLocation.X;
@@ -1459,7 +1465,7 @@ void renderCharacter_2()
 			if ((map[cord3.X][cord3.Y - 2] != 'x') && (map[cord3.X][cord3.Y - 2] != 'e') && (map[cord3.X][cord3.Y - 2] != 'd'))
 			{
 				cord3.Y--;
-				g_Console.writeToBuffer(cord3, '|', 0x8C);
+				g_Console.writeToBuffer(cord3, '|', 0x8D);
 			}
 			else
 			{
@@ -1475,7 +1481,7 @@ void renderCharacter_2()
 			if ((map[cord4.X][cord4.Y - 2] != 'x') && (map[cord4.X][cord4.Y - 2] != 'e') && (map[cord4.X][cord4.Y - 2] != 'd'))
 			{
 				cord4.Y--;
-				g_Console.writeToBuffer(cord4, '|', 0x81);
+				g_Console.writeToBuffer(cord4, '|', 0x8B);
 			}
 			else
 			{
@@ -1494,7 +1500,7 @@ void renderCharacter_2()
 			if ((map[cord3.X][cord3.Y] != 'x') && (map[cord3.X][cord3.Y] != 'e') && (map[cord3.X][cord3.Y] != 'd'))
 			{
 				cord3.Y++;
-				g_Console.writeToBuffer(cord3, '|', 0x8C);
+				g_Console.writeToBuffer(cord3, '|', 0x8D);
 			}
 			else
 			{
@@ -1509,7 +1515,7 @@ void renderCharacter_2()
 			if ((map[cord4.X][cord4.Y] != 'x') && (map[cord4.X][cord4.Y] != 'e') && (map[cord4.X][cord4.Y] != 'd'))
 			{
 				cord4.Y++;
-				g_Console.writeToBuffer(cord4, '|', 0x81);
+				g_Console.writeToBuffer(cord4, '|', 0x8B);
 			}
 			else
 			{
@@ -1528,7 +1534,7 @@ void renderCharacter_2()
 			if ((map[cord3.X - 1][cord3.Y - 1] != 'x') && (map[cord3.X - 1][cord3.Y - 1] != 'e') && (map[cord3.X - 1][cord3.Y - 1] != 'd'))
 			{
 				cord3.X--;
-				g_Console.writeToBuffer(cord3, '-', 0x8C);
+				g_Console.writeToBuffer(cord3, '-', 0x8D);
 			}
 			else
 			{
@@ -1543,7 +1549,7 @@ void renderCharacter_2()
 			if ((map[cord4.X - 1][cord4.Y - 1] != 'x') && (map[cord4.X - 1][cord4.Y - 1] != 'e') && (map[cord4.X - 1][cord4.Y - 1] != 'd'))
 			{
 				cord4.X--;
-				g_Console.writeToBuffer(cord4, '-', 0x81);
+				g_Console.writeToBuffer(cord4, '-', 0x8B);
 			}
 			else
 			{
@@ -1562,7 +1568,7 @@ void renderCharacter_2()
 			if ((map[cord3.X + 1][cord3.Y - 1] != 'x') && (map[cord3.X + 1][cord3.Y - 1] != 'e') && (map[cord3.X + 1][cord3.Y - 1] != 'd'))
 			{
 				cord3.X++;
-				g_Console.writeToBuffer(cord3, '-', 0x8C);
+				g_Console.writeToBuffer(cord3, '-', 0x8D);
 			}
 			else
 			{
@@ -1577,7 +1583,7 @@ void renderCharacter_2()
 			if ((map[cord4.X + 1][cord4.Y - 1] != 'x') && (map[cord4.X + 1][cord4.Y - 1] != 'e') && (map[cord4.X + 1][cord4.Y - 1] != 'd'))
 			{
 				cord4.X++;
-				g_Console.writeToBuffer(cord4, '-', 0x81);
+				g_Console.writeToBuffer(cord4, '-', 0x8B);
 			}
 			else
 			{
