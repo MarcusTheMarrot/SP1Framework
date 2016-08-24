@@ -42,9 +42,6 @@
     <ClCompile Include="levelTransition.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Portalgun-teleporting.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Framework\console.h">
@@ -63,9 +60,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="levelTransition.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Portalgun-teleporting.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
