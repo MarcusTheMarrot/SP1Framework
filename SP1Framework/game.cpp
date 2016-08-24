@@ -18,7 +18,7 @@ using namespace std;
 double  g_dElapsedTime;
 double  g_dDeltaTime;
 bool    g_abKeyPressed[K_COUNT], teleporter = false, gateOpen = false, shotPortal = false, shotPortal2 = false, PortActive1 = false, PortActive2 = false;
-bool transisted, shotPortal3 = false, shotPortal4 = false, PortActive3 = false, PortActive4;
+bool transisted, shotPortal3 = false, shotPortal4 = false, PortActive3 = false, PortActive4, removeportal = false;
 
 char	map[61][21];
 char something = '1', thingthing = '1';
@@ -411,6 +411,7 @@ void moveCharacter_1()
 			g_sChar2.m_cLocation.X = g_sChar.m_cLocation.X + 1;
 			g_sChar2.m_cLocation.Y = g_sChar.m_cLocation.Y;
 			transisted = false;
+			removeportal = true;
 		}
 		teleport.erase(0, teledel);
 		teledel = 0;
@@ -604,6 +605,7 @@ void moveCharacter_2()
 			g_sChar.m_cLocation.X = g_sChar2.m_cLocation.X + 1;
 			g_sChar.m_cLocation.Y = g_sChar2.m_cLocation.Y;
 			transisted = false;
+			removeportal = true;
 		}
 		teleport.erase(0, teledel);
 		teledel = 0;
@@ -873,6 +875,7 @@ void rendermap()
 	//int e = 0;
 	//int f = 0;
 	//int g = 0;
+	
 	for (int a = 0; a < 20; a++)
 	{
 		for (int b = 0; b < 60; b++)
@@ -1006,6 +1009,10 @@ void rendermap()
 				}
 
 			}
+			if (map[x][y] == 'n')
+			{
+				g_Console.writeToBuffer(coord, box, 0xF6);
+			}
 			if (shotPortal == false)
 			{
 				g_Console.writeToBuffer(portal1, 'O', 0x8C);
@@ -1014,10 +1021,6 @@ void rendermap()
 			{
 				g_Console.writeToBuffer(portal2, 'O', 0x81);
 			}
-			if (map[x][y] == 'n')
-			{
-				g_Console.writeToBuffer(coord, box, 0xF6);
-			}
 			if (shotPortal3 == false)
 			{
 				g_Console.writeToBuffer(portal3, 'O', 0x8C);
@@ -1025,8 +1028,28 @@ void rendermap()
 			if (shotPortal4 == false)
 			{
 				g_Console.writeToBuffer(portal4, 'O', 0x81);
-
 			}
+			if (removeportal)
+			{
+				portal1.X = 0;
+				portal1.Y = 0;
+				portal2.X = 0;
+				portal2.Y = 0;
+				portal3.X = 0;
+				portal3.Y = 0;
+				portal4.X = 0;
+				portal4.Y = 0;
+				g_Console.writeToBuffer(portal1, ' ');
+				g_Console.writeToBuffer(portal2, ' ');
+				g_Console.writeToBuffer(portal3, ' ');
+				g_Console.writeToBuffer(portal4, ' ');
+				PortActive1 = false;
+				PortActive2 = false;
+				PortActive3 = false;
+				PortActive4 = false;
+				removeportal = false;
+			}
+
 		}
 	}
 }
@@ -1050,8 +1073,6 @@ void renderCharacter()
 	cord1.Y = g_sChar.m_cLocation.Y;
 	cord2.X = g_sChar.m_cLocation.X;
 	cord2.Y = g_sChar.m_cLocation.Y;
-
-
 	if (direction == 'u')
 	{
 		g_Console.writeToBuffer(g_sChar.m_cLocation, '^', charColor);
