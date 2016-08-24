@@ -21,6 +21,7 @@ enum EKEYS
 	K_ESCAPE,
 	K_SPACE,
 	K_RETURN,
+	K_BACK,
 	K_ONE,
 	K_TWO,
 	K_THREE,
@@ -37,12 +38,19 @@ enum EKEYS
 enum EGAMESTATES
 {
 	S_SPLASHSCREEN,
+	S_SPLASH2,
+	S_INSTRUCT,
 	S_GAME,
 	S_MAINMENU,
 	S_MAINMENU2,
 	S_MAINMENU3,
 	S_MAINMENU4,
 	S_MAINMENU5,
+	/*S_CHOICE1,
+	S_CHOICE2,
+	S_CHOICE3,
+	S_CHOICE4,
+	S_CHOICE5,*/
 	S_LEVELONE,
 	S_LEVELTWO,
 	S_LEVELTHREE,
@@ -71,12 +79,15 @@ void render      ( void );      // renders the current state of the game to the 
 void shutdown    ( void );      // do clean up, free memory
 
 void splashScreenWait();    // waits for time to pass in splash screen
+
 void gameplay();            // gameplay logic
 void moveCharacter_1();
 void moveCharacter_2();// moves the character, collision detection, physics, etc
 void processUserInput();    // checks if you should change states or do something else with the game, e.g. pause, exit
+
 void clearScreen();         // clears the current screen and draw from scratch 
 void renderSplashScreen();  // renders the splash screen
+
 void renderGame();          // renders the game stuff
 int load_game(int level);
 void renderMap();           // renders the map to the buffer first
@@ -84,13 +95,24 @@ void renderCharacter();     // renders the character into the buffer
 void renderCharacter_2();
 void renderFramerate();     // renders debug information, frame rate, elapsed time, etc
 void renderToScreen();      // dump the contents of the buffer to the screen, one frame worth of game
+
 void mainmenuchoice();
+void mainmenuchoice2();
+void mainmenuchoice3();
+void mainmenuchoice4();
+void mainmenuchoice5();
 void renderToMainMenu();
 void renderToMainMenu2();
 void renderToMainMenu3();
 void renderToMainMenu4();
 void renderToMainMenu5();
+
 void renderhealth();
 void renderGameOver();
+
+void renderSplashScreen2();
+void Splashwait2();
+void renderinstruct();
+void instructwait();
 
 #endif // _GAME_H
