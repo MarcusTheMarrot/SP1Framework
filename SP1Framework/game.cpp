@@ -6,6 +6,7 @@
 #include "mapInteract.h"
 #include "extract.h"
 #include "levelTransition.h"
+#include "Portalgun-teleporting.h"
 #include <iostream>
 #include <iomanip>
 #include <sstream>
@@ -329,28 +330,7 @@ void moveCharacter_1()
 		teleport.erase(0, teledel);
 		teledel = 0;
 
-		if (g_sChar.m_cLocation.X == portal1.X && g_sChar.m_cLocation.Y == portal1.Y && PortActive1 && PortActive2)
-		{
-			g_sChar.m_cLocation.X = portal2.X;
-			g_sChar.m_cLocation.Y = portal2.Y;
-		}
-		else if(g_sChar.m_cLocation.X == portal2.X && g_sChar.m_cLocation.Y == portal2.Y && PortActive1 && PortActive2)
-		{
-			g_sChar.m_cLocation.X = portal1.X;
-			g_sChar.m_cLocation.Y = portal1.Y;
-		}
-		if (g_sChar.m_cLocation.X == portal3.X && g_sChar.m_cLocation.Y == portal3.Y && PortActive3 && PortActive4)
-		{
-			g_sChar.m_cLocation.X = portal4.X;
-			g_sChar.m_cLocation.Y = portal4.Y;
-		}
-		else if (g_sChar.m_cLocation.X == portal4.X && g_sChar.m_cLocation.Y == portal4.Y && PortActive3 && PortActive4)
-		{
-			g_sChar.m_cLocation.X = portal3.X;
-			g_sChar.m_cLocation.Y = portal3.Y;
-		}
-
-
+		g_sChar.m_cLocation = Player1Position(g_sChar.m_cLocation, portal1, portal2, portal3, portal4, PortActive1, PortActive2, PortActive3, PortActive4); // allow g_sChar to teleport between portals
 	}
 }
 
@@ -461,26 +441,7 @@ void moveCharacter_2()
 		teleport.erase(0, teledel);
 		teledel = 0;
 
-		if (g_sChar2.m_cLocation.X == portal3.X && g_sChar2.m_cLocation.Y == portal3.Y && PortActive3 && PortActive4)
-		{
-			g_sChar2.m_cLocation.X = portal4.X;
-			g_sChar2.m_cLocation.Y = portal4.Y;
-		}
-		else if (g_sChar2.m_cLocation.X == portal4.X && g_sChar2.m_cLocation.Y == portal4.Y && PortActive3 && PortActive4)
-		{
-			g_sChar2.m_cLocation.X = portal3.X;
-			g_sChar2.m_cLocation.Y = portal3.Y;
-		}
-		if (g_sChar2.m_cLocation.X == portal1.X && g_sChar2.m_cLocation.Y == portal1.Y && PortActive1 && PortActive2)
-		{
-			g_sChar2.m_cLocation.X = portal2.X;
-			g_sChar2.m_cLocation.Y = portal2.Y;
-		}
-		else if (g_sChar2.m_cLocation.X == portal2.X && g_sChar2.m_cLocation.Y == portal2.Y && PortActive1 && PortActive2)
-		{
-			g_sChar2.m_cLocation.X = portal1.X;
-			g_sChar2.m_cLocation.Y = portal1.Y;
-		}
+		g_sChar2.m_cLocation = Player2Position(g_sChar2.m_cLocation, portal1, portal2, portal3, portal4, PortActive1, PortActive2, PortActive3, PortActive4);
 	}
 }
 
@@ -907,13 +868,14 @@ void renderCharacter()
     // Draw the location of the character
 	//change player direction
 	
+	cord1.X = g_sChar.m_cLocation.X;
+	cord1.Y = g_sChar.m_cLocation.Y;
+	cord2.X = g_sChar.m_cLocation.X;
+	cord2.Y = g_sChar.m_cLocation.Y;
 	if (direction == 'u')
 	{
 		g_Console.writeToBuffer(g_sChar.m_cLocation, '^', charColor);
-		cord1.X = g_sChar.m_cLocation.X;
-		cord1.Y = g_sChar.m_cLocation.Y;
-		cord2.X = g_sChar.m_cLocation.X;
-		cord2.Y = g_sChar.m_cLocation.Y;
+
 		while (shotPortal)
 		{
 			if ((map[cord1.X][cord1.Y - 2] != 'x') && (map[cord1.X][cord1.Y - 2] != 'e') && (map[cord1.X][cord1.Y - 2] != 'd'))
@@ -948,10 +910,6 @@ void renderCharacter()
 	else if (direction == 'd')
 	{
 		g_Console.writeToBuffer(g_sChar.m_cLocation, 'v', charColor);
-		cord1.X = g_sChar.m_cLocation.X;
-		cord1.Y = g_sChar.m_cLocation.Y;
-		cord2.X = g_sChar.m_cLocation.X;
-		cord2.Y = g_sChar.m_cLocation.Y;
 		while (shotPortal)
 		{
 			if ((map[cord1.X][cord1.Y] != 'x') && (map[cord1.X][cord1.Y] != 'e') && (map[cord1.X][cord1.Y] != 'd'))
@@ -965,6 +923,7 @@ void renderCharacter()
 				portal1.Y = cord1.Y;
 				shotPortal = false;
 				PortActive1 = true;
+
 			}
 		}
 		while (shotPortal2)
@@ -986,10 +945,6 @@ void renderCharacter()
 	else if (direction == 'l')
 	{
 		g_Console.writeToBuffer(g_sChar.m_cLocation, '<', charColor);
-		cord1.X = g_sChar.m_cLocation.X;
-		cord1.Y = g_sChar.m_cLocation.Y;
-		cord2.X = g_sChar.m_cLocation.X;
-		cord2.Y = g_sChar.m_cLocation.Y;
 		while (shotPortal)
 		{
 			if ((map[cord1.X-1][cord1.Y-1] != 'x') && (map[cord1.X - 1][cord1.Y - 1] != 'e') && (map[cord1.X - 1][cord1.Y - 1] != 'd'))
@@ -1024,10 +979,6 @@ void renderCharacter()
 	else if (direction == 'r')
 	{
 		g_Console.writeToBuffer(g_sChar.m_cLocation, '>', charColor);
-		cord1.X = g_sChar.m_cLocation.X;
-		cord1.Y = g_sChar.m_cLocation.Y;
-		cord2.X = g_sChar.m_cLocation.X;
-		cord2.Y = g_sChar.m_cLocation.Y;
 		while (shotPortal)
 		{
 			if ((map[cord1.X + 1][cord1.Y-1] != 'x') && (map[cord1.X + 1][cord1.Y - 1] != 'e') && (map[cord1.X + 1][cord1.Y - 1] != 'd'))
@@ -1070,14 +1021,13 @@ void renderCharacter_2()
 	WORD charColor2 = 0x89;
 	// Draw the location of the character
 	//change player direction
-
+	cord3.X = g_sChar2.m_cLocation.X;
+	cord3.Y = g_sChar2.m_cLocation.Y;
+	cord4.X = g_sChar2.m_cLocation.X;
+	cord4.Y = g_sChar2.m_cLocation.Y;
 	if (direction2 == 't')
 	{
 		g_Console.writeToBuffer(g_sChar2.m_cLocation, '^', charColor2);
-		cord3.X = g_sChar2.m_cLocation.X;
-		cord3.Y = g_sChar2.m_cLocation.Y;
-		cord4.X = g_sChar2.m_cLocation.X;
-		cord4.Y = g_sChar2.m_cLocation.Y;
 		while (shotPortal3)
 		{
 			if ((map[cord3.X][cord3.Y - 2] != 'x') && (map[cord3.X][cord3.Y - 2] != 'e') && (map[cord3.X][cord3.Y - 2] != 'd'))
@@ -1112,10 +1062,6 @@ void renderCharacter_2()
 	else if (direction2 == 'g')
 	{
 		g_Console.writeToBuffer(g_sChar2.m_cLocation, 'v', charColor2);
-		cord3.X = g_sChar2.m_cLocation.X;
-		cord3.Y = g_sChar2.m_cLocation.Y;
-		cord4.X = g_sChar2.m_cLocation.X;
-		cord4.Y = g_sChar2.m_cLocation.Y;
 		while (shotPortal3)
 		{
 			if ((map[cord3.X][cord3.Y] != 'x') && (map[cord3.X][cord3.Y] != 'e') && (map[cord3.X][cord3.Y] != 'd'))
@@ -1150,10 +1096,6 @@ void renderCharacter_2()
 	else if (direction2 == 'f')
 	{
 		g_Console.writeToBuffer(g_sChar2.m_cLocation, '<', charColor2);
-		cord3.X = g_sChar2.m_cLocation.X;
-		cord3.Y = g_sChar2.m_cLocation.Y;
-		cord4.X = g_sChar2.m_cLocation.X;
-		cord4.Y = g_sChar2.m_cLocation.Y;
 		while (shotPortal3)
 		{
 			if ((map[cord3.X - 1][cord3.Y - 1] != 'x') && (map[cord3.X - 1][cord3.Y - 1] != 'e') && (map[cord3.X - 1][cord3.Y - 1] != 'd'))
@@ -1188,10 +1130,6 @@ void renderCharacter_2()
 	else if (direction2 == 'h')
 	{
 		g_Console.writeToBuffer(g_sChar2.m_cLocation, '>', charColor2);
-		cord3.X = g_sChar2.m_cLocation.X;
-		cord3.Y = g_sChar2.m_cLocation.Y;
-		cord4.X = g_sChar2.m_cLocation.X;
-		cord4.Y = g_sChar2.m_cLocation.Y;
 		while (shotPortal3)
 		{
 			if ((map[cord3.X + 1][cord3.Y - 1] != 'x') && (map[cord3.X + 1][cord3.Y - 1] != 'e') && (map[cord3.X + 1][cord3.Y - 1] != 'd'))
