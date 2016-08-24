@@ -395,7 +395,7 @@ void moveCharacter_1()
 		//	//set door to open
 		//	gateOpen = true;
 		//}
-		gateOpen = dooring(lever1, lever2, g_sChar.m_cLocation.X, g_sChar.m_cLocation.Y - 1, g_sChar2.m_cLocation.X, g_sChar2.m_cLocation.Y - 1);
+		gateOpen = dooring(lever1, lever2, g_sChar.m_cLocation.X, g_sChar.m_cLocation.Y - 1, g_sChar2.m_cLocation.X, g_sChar2.m_cLocation.Y - 1, boxx.X, boxx.Y);
 		if (gateOpen == true)
 		{
 			map[door.X][door.Y] = '-';
@@ -589,7 +589,7 @@ void moveCharacter_2()
 		//	gateOpen = true;
 		//}
 		// set the bounce time to some time in the future to prevent accidental triggers
-		gateOpen = dooring(lever1, lever2, g_sChar.m_cLocation.X, g_sChar.m_cLocation.Y - 1, g_sChar2.m_cLocation.X, g_sChar2.m_cLocation.Y - 1);
+		gateOpen = dooring(lever1, lever2, g_sChar.m_cLocation.X, g_sChar.m_cLocation.Y - 1, g_sChar2.m_cLocation.X, g_sChar2.m_cLocation.Y - 1, boxx.X, boxx.Y);
 		if (gateOpen == true)
 		{
 			map[door.X][door.Y] = '-';
