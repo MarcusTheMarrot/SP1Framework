@@ -1,4 +1,4 @@
-	// This is the main file for the game logic and function
+// This is the main file for the game logic and function
 //
 //
 #include "game.h"
@@ -13,7 +13,7 @@
 #include <fstream>
 #include <string>
 
-using namespace std; 
+using namespace std;
 
 double  g_dElapsedTime;
 double  g_dDeltaTime;
@@ -21,12 +21,14 @@ bool    g_abKeyPressed[K_COUNT], teleporter = false, gateOpen = false, shotPorta
 bool transisted, shotPortal3 = false, shotPortal4 = false, PortActive3 = false, PortActive4;
 
 char	map[61][21];
+char something = '1', thingthing = '1';
 int level;
 char health = 53;
 unsigned char wall = 178;
 unsigned char direction, direction2;
 unsigned char ground = 176;
 unsigned char destination = 177;
+unsigned char box = 219;
 string	teleport;
 string	null = { '\0', };
 
@@ -40,6 +42,9 @@ COORD cord3;
 COORD cord4;
 COORD portal1;
 COORD portal2;
+COORD teleportTo1;
+COORD teleportTo2;
+COORD boxx;
 COORD portal3;
 COORD portal4;
 
@@ -50,7 +55,7 @@ SGameChar2   g_sChar2;
 EGAMESTATES g_eGameState = S_SPLASHSCREEN;
 double  g_dBounceTime, g_dBounceTime2;// this is to prevent key bouncing, so we won't trigger keypresses more than once
 
-// Console object
+									  // Console object
 Console g_Console(80, 25, "SP1 Framework");
 
 //--------------------------------------------------------------
@@ -60,24 +65,24 @@ Console g_Console(80, 25, "SP1 Framework");
 // Input    : void
 // Output   : void
 //--------------------------------------------------------------
-void init( void )
+void init(void)
 {
-    // Set precision for floating point output
-    g_dElapsedTime = 0.0;
-    g_dBounceTime = 0.0;
+	// Set precision for floating point output
+	g_dElapsedTime = 0.0;
+	g_dBounceTime = 0.0;
 	g_dBounceTime2 = 0.0;
 
-    // sets the initial state for the game
-    g_eGameState = S_SPLASHSCREEN;
+	// sets the initial state for the game
+	g_eGameState = S_SPLASHSCREEN;
 
-    g_sChar.m_cLocation.X = 7;
-    g_sChar.m_cLocation.Y = 6;
-    g_sChar.m_bActive = true;
+	g_sChar.m_cLocation.X = 7;
+	g_sChar.m_cLocation.Y = 6;
+	g_sChar.m_bActive = true;
 	g_sChar2.m_cLocation.X = 7;
 	g_sChar2.m_cLocation.Y = 6;
 	g_sChar2.m_bActive = true;
-    // sets the width, height and the font name to use in the console
-    g_Console.setConsoleFont(0, 16, L"Consolas");
+	// sets the width, height and the font name to use in the console
+	g_Console.setConsoleFont(0, 16, L"Consolas");
 }
 
 //--------------------------------------------------------------
@@ -88,12 +93,12 @@ void init( void )
 // Output   : void
 //--------------------------------------------------------------
 
-void shutdown( void )
+void shutdown(void)
 {
-    // Reset to white text on black background
+	// Reset to white text on black background
 	colour(FOREGROUND_BLUE | FOREGROUND_GREEN | FOREGROUND_RED);
 
-    g_Console.clearBuffer();
+	g_Console.clearBuffer();
 }
 
 //--------------------------------------------------------------
@@ -108,8 +113,8 @@ void shutdown( void )
 // Output   : void
 //--------------------------------------------------------------
 
-void getInput( void )
-{    
+void getInput(void)
+{
 	//g_abKeyPressed[K_UP] = isKeyPressed(VK_UP);
 	//g_abKeyPressed[K_DOWN] = isKeyPressed(VK_DOWN);
 	//g_abKeyPressed[K_LEFT] = isKeyPressed(VK_LEFT);
@@ -154,17 +159,17 @@ void getInput( void )
 
 void update(double dt)
 {
-    // get the delta time
-    g_dElapsedTime += dt;
-    g_dDeltaTime = dt;
+	// get the delta time
+	g_dElapsedTime += dt;
+	g_dDeltaTime = dt;
 
-    switch (g_eGameState)
-    {
-        case S_SPLASHSCREEN : splashScreenWait(); // game logic for the splash screen
-            break;
-        case S_GAME: gameplay(); // gameplay logic when we are in the game
-            break;
-    }
+	switch (g_eGameState)
+	{
+	case S_SPLASHSCREEN: splashScreenWait(); // game logic for the splash screen
+		break;
+	case S_GAME: gameplay(); // gameplay logic when we are in the game
+		break;
+	}
 }
 
 //--------------------------------------------------------------
@@ -178,7 +183,7 @@ void update(double dt)
 
 void render()
 {
-    clearScreen();      // clears the current screen and draw from scratch 
+	clearScreen();      // clears the current screen and draw from scratch 
 	switch (g_eGameState)
 	{
 	case S_SPLASHSCREEN: renderSplashScreen();
@@ -198,8 +203,8 @@ void render()
 	case S_GAMEOVER: renderGameOver();
 		break;
 	}
-    renderFramerate();  // renders debug information, frame rate, elapsed time, etc
-    renderToScreen();   // dump the contents of the buffer to the screen, one frame worth of game
+	renderFramerate();  // renders debug information, frame rate, elapsed time, etc
+	renderToScreen();   // dump the contents of the buffer to the screen, one frame worth of game
 }
 
 void splashScreenWait()    // waits for time to pass in splash screen
@@ -215,10 +220,10 @@ void splashScreenWait()    // waits for time to pass in splash screen
 
 void gameplay()            // gameplay logic
 {
-    processUserInput(); // checks if you should change states or do something else with the game, e.g. pause, exit
-    moveCharacter_1(); 
+	processUserInput(); // checks if you should change states or do something else with the game, e.g. pause, exit
+	moveCharacter_1();
 	moveCharacter_2();// moves the character, collision detection, physics, etc
-                        // sound can be played here too.
+					  // sound can be played here too.
 }
 
 void moveCharacter_1()
@@ -238,8 +243,28 @@ void moveCharacter_1()
 		{
 			if (g_sChar2.m_cLocation.X != g_sChar.m_cLocation.X || g_sChar.m_cLocation.Y - 1 != g_sChar2.m_cLocation.Y)
 			{
-				g_sChar.m_cLocation.Y--;
-				bSomethingHappened = true;
+				if (g_sChar.m_cLocation.X == boxx.X && g_sChar.m_cLocation.Y - 2 == boxx.Y && map[boxx.X][boxx.Y - 1] != 'x' && boxx.Y && map[boxx.X][boxx.Y - 1] != 'd' && boxx.Y && map[boxx.X][boxx.Y - 1] != 'f')
+				{
+
+					boxx.Y--;
+					thingthing = something;
+					something = map[boxx.X][boxx.Y];
+					map[boxx.X][boxx.Y] = 'n';
+					if (thingthing != '1')
+					{
+						map[boxx.X][boxx.Y + 1] = thingthing;
+					}
+					else
+					{
+						map[boxx.X][boxx.Y + 1] = '-';
+					}
+					g_sChar.m_cLocation.Y--;
+				}
+				else
+				{
+					g_sChar.m_cLocation.Y--;
+					bSomethingHappened = true;
+				}
 			}
 		}
 		direction = 'u';
@@ -251,8 +276,28 @@ void moveCharacter_1()
 		{
 			if (g_sChar2.m_cLocation.X != g_sChar.m_cLocation.X - 1 || g_sChar.m_cLocation.Y != g_sChar2.m_cLocation.Y)
 			{
-				g_sChar.m_cLocation.X--;
-				bSomethingHappened = true;
+				if (g_sChar.m_cLocation.X - 1 == boxx.X && g_sChar.m_cLocation.Y - 1 == boxx.Y && map[boxx.X - 1][boxx.Y] != 'x' && boxx.Y && map[boxx.X - 1][boxx.Y] != 'd' && boxx.Y && map[boxx.X - 1][boxx.Y] != 'f')
+				{
+
+					boxx.X--;
+					thingthing = something;
+					something = map[boxx.X][boxx.Y];
+					map[boxx.X][boxx.Y] = 'n';
+					if (thingthing != '1')
+					{
+						map[boxx.X + 1][boxx.Y] = thingthing;
+					}
+					else
+					{
+						map[boxx.X + 1][boxx.Y] = '-';
+					}
+					g_sChar.m_cLocation.X--;
+				}
+				else
+				{
+					g_sChar.m_cLocation.X--;
+					bSomethingHappened = true;
+				}
 			}
 		}
 		direction = 'l';
@@ -264,8 +309,28 @@ void moveCharacter_1()
 		{
 			if (g_sChar2.m_cLocation.X != g_sChar.m_cLocation.X || g_sChar.m_cLocation.Y + 1 != g_sChar2.m_cLocation.Y)
 			{
-				g_sChar.m_cLocation.Y++;
-				bSomethingHappened = true;
+				if (g_sChar.m_cLocation.X == boxx.X && g_sChar.m_cLocation.Y == boxx.Y && map[boxx.X][boxx.Y + 1] != 'x' && boxx.Y && map[boxx.X][boxx.Y + 1] != 'd' && boxx.Y && map[boxx.X][boxx.Y + 1] != 'f')
+				{
+
+					boxx.Y++;
+					thingthing = something;
+					something = map[boxx.X][boxx.Y];
+					map[boxx.X][boxx.Y] = 'n';
+					if (thingthing != '1')
+					{
+						map[boxx.X][boxx.Y - 1] = thingthing;
+					}
+					else
+					{
+						map[boxx.X][boxx.Y - 1] = '-';
+					}
+					g_sChar.m_cLocation.Y++;
+				}
+				else
+				{
+					g_sChar.m_cLocation.Y++;
+					bSomethingHappened = true;
+				}
 			}
 		}
 		direction = 'd';
@@ -275,10 +340,30 @@ void moveCharacter_1()
 		//Beep(1440, 30);
 		if (map[g_sChar.m_cLocation.X + 1][g_sChar.m_cLocation.Y - 1] != 'x' && map[g_sChar.m_cLocation.X + 1][g_sChar.m_cLocation.Y - 1] != 'd' && direction == 'r')
 		{
-			if (g_sChar2.m_cLocation.X != g_sChar.m_cLocation.X + 1 || g_sChar.m_cLocation.Y  != g_sChar2.m_cLocation.Y)
+			if (g_sChar2.m_cLocation.X != g_sChar.m_cLocation.X + 1 || g_sChar.m_cLocation.Y != g_sChar2.m_cLocation.Y)
 			{
-				g_sChar.m_cLocation.X++;
-				bSomethingHappened = true;
+				if (g_sChar.m_cLocation.X + 1 == boxx.X && g_sChar.m_cLocation.Y - 1 == boxx.Y && map[boxx.X + 1][boxx.Y] != 'x' && boxx.Y && map[boxx.X + 1][boxx.Y] != 'd' && boxx.Y && map[boxx.X + 1][boxx.Y] != 'f')
+				{
+
+					boxx.X++;
+					thingthing = something;
+					something = map[boxx.X][boxx.Y];
+					map[boxx.X][boxx.Y] = 'n';
+					if (thingthing != '1')
+					{
+						map[boxx.X - 1][boxx.Y] = thingthing;
+					}
+					else
+					{
+						map[boxx.X - 1][boxx.Y] = '-';
+					}
+					g_sChar.m_cLocation.X++;
+				}
+				else
+				{
+					g_sChar.m_cLocation.X++;
+					bSomethingHappened = true;
+				}
 			}
 		}
 		direction = 'r';
@@ -286,8 +371,8 @@ void moveCharacter_1()
 
 	if (bSomethingHappened == true)
 	{
-		
-		
+
+
 		if (map[g_sChar.m_cLocation.X][g_sChar.m_cLocation.Y - 1] == 'f')
 		{
 			g_sChar.m_cLocation.X = 5;
@@ -317,8 +402,8 @@ void moveCharacter_1()
 		}
 		// set the bounce time to some time in the future to prevent accidental triggers
 		g_dBounceTime = g_dElapsedTime + 0.010; // 125ms should not be enough
-										// 125ms should be enough
-										//if player reaches exit for stage 0, move to next map
+												// 125ms should be enough
+												//if player reaches exit for stage 0, move to next map
 		g_sChar.m_cLocation = mapTransition(g_sChar.m_cLocation, g_sChar.m_cLocation.X, g_sChar.m_cLocation.Y, &level, &transisted);
 		if (transisted == true)
 		{
@@ -346,10 +431,30 @@ void moveCharacter_2()
 		//only move if player is facing in the direction he wants to move
 		if (map[g_sChar2.m_cLocation.X][g_sChar2.m_cLocation.Y - 2] != 'x' && map[g_sChar2.m_cLocation.X][g_sChar2.m_cLocation.Y - 2] != 'd' && direction2 == 't')
 		{
-			if (g_sChar.m_cLocation.X  != g_sChar2.m_cLocation.X || g_sChar2.m_cLocation.Y - 1 != g_sChar.m_cLocation.Y)
+			if (g_sChar.m_cLocation.X != g_sChar2.m_cLocation.X || g_sChar2.m_cLocation.Y - 1 != g_sChar.m_cLocation.Y)
 			{
-				g_sChar2.m_cLocation.Y--;
-				bSomethingHappened_2 = true;
+				if (g_sChar2.m_cLocation.X == boxx.X && g_sChar2.m_cLocation.Y - 2 == boxx.Y && map[boxx.X][boxx.Y - 1] != 'x' && boxx.Y && map[boxx.X][boxx.Y - 1] != 'd' && boxx.Y && map[boxx.X][boxx.Y - 1] != 'f')
+				{
+
+					boxx.Y--;
+					thingthing = something;
+					something = map[boxx.X][boxx.Y];
+					map[boxx.X][boxx.Y] = 'n';
+					if (thingthing != '1')
+					{
+						map[boxx.X][boxx.Y + 1] = thingthing;
+					}
+					else
+					{
+						map[boxx.X][boxx.Y + 1] = '-';
+					}
+					g_sChar2.m_cLocation.Y--;
+				}
+				else
+				{
+					g_sChar2.m_cLocation.Y--;
+					bSomethingHappened_2 = true;
+				}
 			}
 		}
 		direction2 = 't';
@@ -361,8 +466,28 @@ void moveCharacter_2()
 		{
 			if (g_sChar.m_cLocation.X != g_sChar2.m_cLocation.X - 1 || g_sChar2.m_cLocation.Y != g_sChar.m_cLocation.Y)
 			{
-				g_sChar2.m_cLocation.X--;
-				bSomethingHappened_2 = true;
+				if (g_sChar2.m_cLocation.X - 1 == boxx.X && g_sChar2.m_cLocation.Y - 1 == boxx.Y && map[boxx.X - 1][boxx.Y] != 'x' && boxx.Y && map[boxx.X - 1][boxx.Y] != 'd' && boxx.Y && map[boxx.X - 1][boxx.Y] != 'f')
+				{
+
+					boxx.X--;
+					thingthing = something;
+					something = map[boxx.X][boxx.Y];
+					map[boxx.X][boxx.Y] = 'n';
+					if (thingthing != '1')
+					{
+						map[boxx.X + 1][boxx.Y] = thingthing;
+					}
+					else
+					{
+						map[boxx.X + 1][boxx.Y] = '-';
+					}
+					g_sChar2.m_cLocation.X--;
+				}
+				else
+				{
+					g_sChar2.m_cLocation.X--;
+					bSomethingHappened_2 = true;
+				}
 			}
 		}
 		direction2 = 'f';
@@ -374,8 +499,28 @@ void moveCharacter_2()
 		{
 			if (g_sChar.m_cLocation.X != g_sChar2.m_cLocation.X || g_sChar2.m_cLocation.Y + 1 != g_sChar.m_cLocation.Y)
 			{
-				g_sChar2.m_cLocation.Y++;
-				bSomethingHappened_2 = true;
+				if (g_sChar2.m_cLocation.X == boxx.X && g_sChar2.m_cLocation.Y == boxx.Y && map[boxx.X][boxx.Y + 1] != 'x' && boxx.Y && map[boxx.X][boxx.Y + 1] != 'd' && boxx.Y && map[boxx.X][boxx.Y + 1] != 'f')
+				{
+
+					boxx.Y++;
+					thingthing = something;
+					something = map[boxx.X][boxx.Y];
+					map[boxx.X][boxx.Y] = 'n';
+					if (thingthing != '1')
+					{
+						map[boxx.X][boxx.Y - 1] = thingthing;
+					}
+					else
+					{
+						map[boxx.X][boxx.Y - 1] = '-';
+					}
+					g_sChar2.m_cLocation.Y++;
+				}
+				else
+				{
+					g_sChar2.m_cLocation.Y++;
+					bSomethingHappened_2 = true;
+				}
 			}
 		}
 		direction2 = 'g';
@@ -385,11 +530,33 @@ void moveCharacter_2()
 		//Beep(1440, 30);
 		if (map[g_sChar2.m_cLocation.X + 1][g_sChar2.m_cLocation.Y - 1] != 'x' && map[g_sChar2.m_cLocation.X + 1][g_sChar2.m_cLocation.Y - 1] != 'd' && direction2 == 'h')
 		{
-			if (g_sChar.m_cLocation.X != g_sChar2.m_cLocation.X + 1 || g_sChar2.m_cLocation.Y != g_sChar.m_cLocation.Y)
+			if (g_sChar2.m_cLocation.X != g_sChar2.m_cLocation.X + 1 || g_sChar2.m_cLocation.Y != g_sChar2.m_cLocation.Y)
 			{
-				g_sChar2.m_cLocation.X++;
-				bSomethingHappened_2 = true;
+				if (g_sChar2.m_cLocation.X + 1 == boxx.X && g_sChar2.m_cLocation.Y - 1 == boxx.Y && map[boxx.X + 1][boxx.Y] != 'x' && boxx.Y && map[boxx.X + 1][boxx.Y] != 'd' && boxx.Y && map[boxx.X + 1][boxx.Y] != 'f')
+				{
+
+					boxx.X++;
+					thingthing = something;
+					something = map[boxx.X][boxx.Y];
+					map[boxx.X][boxx.Y] = 'n';
+					if (thingthing != '1')
+					{
+						map[boxx.X - 1][boxx.Y] = thingthing;
+					}
+					else
+					{
+						map[boxx.X - 1][boxx.Y] = '-';
+					}
+					g_sChar2.m_cLocation.X++;
+				}
+				else
+				{
+					g_sChar2.m_cLocation.X++;
+					bSomethingHappened_2 = true;
+				}
+
 			}
+
 		}
 		direction2 = 'h';
 	}
@@ -398,7 +565,7 @@ void moveCharacter_2()
 	if (bSomethingHappened_2 == true)
 	{
 		//restart player at start point(sample level)
-		
+
 
 		if (map[g_sChar2.m_cLocation.X][g_sChar2.m_cLocation.Y - 1] == 'f')
 		{
@@ -428,8 +595,8 @@ void moveCharacter_2()
 			map[door.X][door.Y] = '-';
 		}
 		g_dBounceTime2 = g_dElapsedTime + 0.005; // 125ms should not be enough
-										// 125ms should be enough
-										//if player reaches exit for stage 0, move to next map
+												 // 125ms should be enough
+												 //if player reaches exit for stage 0, move to next map
 		g_sChar2.m_cLocation = mapTransition(g_sChar2.m_cLocation, g_sChar2.m_cLocation.X, g_sChar2.m_cLocation.Y, &level, &transisted);
 		if (transisted == true)
 		{
@@ -447,9 +614,9 @@ void moveCharacter_2()
 
 void processUserInput()
 {
-    // quits the game if player hits the escape key
-    if (g_abKeyPressed[K_ESCAPE])
-        g_bQuitGame = true; 
+	// quits the game if player hits the escape key
+	if (g_abKeyPressed[K_ESCAPE])
+		g_bQuitGame = true;
 	if (g_abKeyPressed[K_E] && (g_sChar.m_cLocation.Y - 1) != 'x')
 		shotPortal = true;
 	if (g_abKeyPressed[K_R] && (g_sChar.m_cLocation.Y - 1) != 'x')
@@ -488,8 +655,8 @@ void processUserInput()
 
 void clearScreen()
 {
-    // Clears the buffer with this colour attribute
-    g_Console.clearBuffer(0x00);
+	// Clears the buffer with this colour attribute
+	g_Console.clearBuffer(0x00);
 }
 
 void renderSplashScreen()  // renders the splash screen
@@ -614,6 +781,7 @@ void renderSplashScreen()  // renders the splash screen
 
 void renderGameOver()
 {
+	health = 53;
 	int i = 0;
 	int j = 0;
 	char main[63][6];
@@ -641,7 +809,7 @@ void renderGameOver()
 			c.X = x + 10;
 			if (main[x][y] != '~')
 			{
-				g_Console.writeToBuffer(c, main[x][y], 0x09);
+				g_Console.writeToBuffer(c, main[x][y], 0x0C);
 			}
 		}
 	}
@@ -668,12 +836,12 @@ void renderhealth()
 	c = g_Console.getConsoleSize();
 	c.Y /= 3 + 10;
 	c.X = c.X / 2;
-	c.Y += 15;
+	c.Y += 5;
 	c.X = g_Console.getConsoleSize().X / 2 + 30;
-	g_Console.writeToBuffer(c, "Health", 0x03);
+	g_Console.writeToBuffer(c, "Health", 0x07);
 	c.Y += 1;
 	c.X = g_Console.getConsoleSize().X / 2 + 30;
-	g_Console.writeToBuffer(c, health, 0x03);
+	g_Console.writeToBuffer(c, health, 0x07);
 	if (health == 48)
 	{
 		g_eGameState = S_GAMEOVER;
@@ -733,6 +901,12 @@ void rendermap()
 				lever2.X = b;
 				lever2.Y = a;
 			}
+			if (map[b][a] == 'n')
+			{
+				boxx.X = b;
+				boxx.Y = a;
+			}
+
 			//record where door is, only when door not opened
 			//if (map[b][a] == 'd' && gateOpen == false)
 			//{
@@ -771,7 +945,7 @@ void rendermap()
 			}
 			//buffer wall
 			if (map[x][y] == 'x')
-			//buffer teleportal
+				//buffer teleportal
 			{
 				if ((g_sChar.m_cLocation.X + 5) >= x && x >= (g_sChar.m_cLocation.X - 5) && (g_sChar.m_cLocation.Y - 5) <= (y + 1) && (g_sChar.m_cLocation.Y + 5) >= (y + 1))
 				{
@@ -840,15 +1014,20 @@ void rendermap()
 			{
 				g_Console.writeToBuffer(portal2, 'O', 0x81);
 			}
-			if (shotPortal3 == false)
+			if (map[x][y] == 'n')
 			{
-				g_Console.writeToBuffer(portal3, 'O', 0x8C);
-			}
-			if (shotPortal4 == false)
-			{
-				g_Console.writeToBuffer(portal4, 'O', 0x81);
-			}
+				g_Console.writeToBuffer(coord, box, 0xF6);
+				if (shotPortal3 == false)
+				{
+					g_Console.writeToBuffer(portal3, 'O', 0x8C);
+				}
+				if (shotPortal4 == false)
+				{
+					g_Console.writeToBuffer(portal4, 'O', 0x81);
 
+				}
+
+			}
 		}
 	}
 }
@@ -856,7 +1035,7 @@ void rendermap()
 void renderGame()
 {
 	rendermap();// renders the map to the buffer first	
-	renderCharacter(); 
+	renderCharacter();
 	renderCharacter_2();// renders the character into the buffer
 	renderhealth();
 
@@ -865,20 +1044,22 @@ void renderGame()
 void renderCharacter()
 {
 	WORD charColor = 0x89;
-    // Draw the location of the character
+	// Draw the location of the character
 	//change player direction
 	
 	cord1.X = g_sChar.m_cLocation.X;
 	cord1.Y = g_sChar.m_cLocation.Y;
 	cord2.X = g_sChar.m_cLocation.X;
 	cord2.Y = g_sChar.m_cLocation.Y;
+
+
 	if (direction == 'u')
 	{
 		g_Console.writeToBuffer(g_sChar.m_cLocation, '^', charColor);
 
 		while (shotPortal)
 		{
-			if ((map[cord1.X][cord1.Y - 2] != 'x') && (map[cord1.X][cord1.Y - 2] != 'e') && (map[cord1.X][cord1.Y - 2] != 'd'))
+			if (map[cord1.X][cord1.Y - 2] != 'x')
 			{
 				cord1.Y--;
 				g_Console.writeToBuffer(cord1, '|', 0x8C);
@@ -888,12 +1069,12 @@ void renderCharacter()
 				portal1.X = cord1.X;
 				portal1.Y = cord1.Y;
 				shotPortal = false;
-				PortActive1 = true;
 			}
 		}
+
 		while (shotPortal2)
 		{
-			if ((map[cord2.X][cord2.Y - 2] != 'x') && (map[cord2.X][cord2.Y - 2] != 'e') && (map[cord2.X][cord2.Y - 2] != 'd'))
+			if (map[cord2.X][cord2.Y - 2] != 'x')
 			{
 				cord2.Y--;
 				g_Console.writeToBuffer(cord2, '|', 0x81);
@@ -903,7 +1084,6 @@ void renderCharacter()
 				portal2.X = cord2.X;
 				portal2.Y = cord2.Y;
 				shotPortal2 = false;
-				PortActive2 = true;
 			}
 		}
 	}
@@ -912,7 +1092,7 @@ void renderCharacter()
 		g_Console.writeToBuffer(g_sChar.m_cLocation, 'v', charColor);
 		while (shotPortal)
 		{
-			if ((map[cord1.X][cord1.Y] != 'x') && (map[cord1.X][cord1.Y] != 'e') && (map[cord1.X][cord1.Y] != 'd'))
+			if (map[cord1.X][cord1.Y] != 'x')
 			{
 				cord1.Y++;
 				g_Console.writeToBuffer(cord1, '|', 0x8C);
@@ -922,13 +1102,15 @@ void renderCharacter()
 				portal1.X = cord1.X;
 				portal1.Y = cord1.Y;
 				shotPortal = false;
-				PortActive1 = true;
-
+				PortActive1 = true;		cord3.X = g_sChar2.m_cLocation.X;
+		cord3.Y = g_sChar2.m_cLocation.Y;
+		cord4.X = g_sChar2.m_cLocation.X;
+		cord4.Y = g_sChar2.m_cLocation.Y;
 			}
 		}
 		while (shotPortal2)
 		{
-			if ((map[cord2.X][cord2.Y] != 'x') && (map[cord2.X][cord2.Y] != 'e') && (map[cord2.X][cord2.Y] != 'd'))
+			if (map[cord2.X][cord2.Y] != 'x')
 			{
 				cord2.Y++;
 				g_Console.writeToBuffer(cord2, '|', 0x81);
@@ -938,7 +1120,6 @@ void renderCharacter()
 				portal2.X = cord2.X;
 				portal2.Y = cord2.Y;
 				shotPortal2 = false;
-				PortActive2 = true;
 			}
 		}
 	}
@@ -947,7 +1128,7 @@ void renderCharacter()
 		g_Console.writeToBuffer(g_sChar.m_cLocation, '<', charColor);
 		while (shotPortal)
 		{
-			if ((map[cord1.X-1][cord1.Y-1] != 'x') && (map[cord1.X - 1][cord1.Y - 1] != 'e') && (map[cord1.X - 1][cord1.Y - 1] != 'd'))
+			if (map[cord1.X - 1][cord1.Y - 1] != 'x')
 			{
 				cord1.X--;
 				g_Console.writeToBuffer(cord1, '-', 0x8C);
@@ -957,12 +1138,11 @@ void renderCharacter()
 				portal1.X = cord1.X;
 				portal1.Y = cord1.Y;
 				shotPortal = false;
-				PortActive1 = true;
 			}
 		}
 		while (shotPortal2)
 		{
-			if ((map[cord2.X-1][cord2.Y-1] != 'x') && (map[cord2.X - 1][cord2.Y - 1] != 'e') && (map[cord2.X - 1][cord2.Y - 1] != 'd'))
+			if (map[cord2.X - 1][cord2.Y - 1] != 'x')
 			{
 				cord2.X--;
 				g_Console.writeToBuffer(cord2, '-', 0x81);
@@ -972,7 +1152,6 @@ void renderCharacter()
 				portal2.X = cord2.X;
 				portal2.Y = cord2.Y;
 				shotPortal2 = false;
-				PortActive2 = true;
 			}
 		}
 	}
@@ -981,7 +1160,7 @@ void renderCharacter()
 		g_Console.writeToBuffer(g_sChar.m_cLocation, '>', charColor);
 		while (shotPortal)
 		{
-			if ((map[cord1.X + 1][cord1.Y-1] != 'x') && (map[cord1.X + 1][cord1.Y - 1] != 'e') && (map[cord1.X + 1][cord1.Y - 1] != 'd'))
+			if (map[cord1.X + 1][cord1.Y - 1] != 'x')
 			{
 				cord1.X++;
 				g_Console.writeToBuffer(cord1, '-', 0x8C);
@@ -991,12 +1170,11 @@ void renderCharacter()
 				portal1.X = cord1.X;
 				portal1.Y = cord1.Y;
 				shotPortal = false;
-				PortActive1 = true;
 			}
 		}
 		while (shotPortal2)
 		{
-			if ((map[cord2.X + 1][cord2.Y-1] != 'x') && (map[cord2.X + 1][cord2.Y - 1] != 'e') && (map[cord2.X + 1][cord2.Y - 1] != 'd'))
+			if (map[cord2.X + 1][cord2.Y - 1] != 'x')
 			{
 				cord2.X++;
 				g_Console.writeToBuffer(cord2, '-', 0x81);
@@ -1006,7 +1184,6 @@ void renderCharacter()
 				portal2.X = cord2.X;
 				portal2.Y = cord2.Y;
 				shotPortal2 = false;
-				PortActive2 = true;
 			}
 		}
 	}
@@ -1043,6 +1220,7 @@ void renderCharacter_2()
 				PortActive3 = true;
 			}
 		}
+
 		while (shotPortal4)
 		{
 			if ((map[cord4.X][cord4.Y - 2] != 'x') && (map[cord4.X][cord4.Y - 2] != 'e') && (map[cord4.X][cord4.Y - 2] != 'd'))
@@ -1169,27 +1347,27 @@ void renderCharacter_2()
 
 void renderFramerate()
 {
-    COORD c;
-    // displays the framerate
-    std::ostringstream ss;
-    ss << std::fixed << std::setprecision(3);
-    ss << 1.0 / g_dDeltaTime << "fps";
-    c.X = g_Console.getConsoleSize().X - 9;
-    c.Y = 0;
-    g_Console.writeToBuffer(c, ss.str());
+	COORD c;
+	// displays the framerate
+	std::ostringstream ss;
+	ss << std::fixed << std::setprecision(3);
+	ss << 1.0 / g_dDeltaTime << "fps";
+	c.X = g_Console.getConsoleSize().X - 9;
+	c.Y = 0;
+	g_Console.writeToBuffer(c, ss.str());
 
-    // displays the elapsed time
-    ss.str("");
-    ss << g_dElapsedTime << "secs";
-    c.X = 0;
-    c.Y = 0;
-    g_Console.writeToBuffer(c, ss.str());
+	// displays the elapsed time
+	ss.str("");
+	ss << g_dElapsedTime << "secs";
+	c.X = 0;
+	c.Y = 0;
+	g_Console.writeToBuffer(c, ss.str());
 }
 
 void renderToScreen()
 {
-    // Writes the buffer to the console, hence you will see what you have written
-    g_Console.flushBufferToConsole();
+	// Writes the buffer to the console, hence you will see what you have written
+	g_Console.flushBufferToConsole();
 }
 
 void renderToMainMenu()
@@ -1246,7 +1424,7 @@ void renderToMainMenu()
 	g_Console.writeToBuffer(c, "Level 4", 0x03);
 	c.Y += 1;
 	g_Console.writeToBuffer(c, "Level 5", 0x03);
-	
+
 	if (g_abKeyPressed[PLAYER_2_K_DOWN])
 	{
 		g_eGameState = S_MAINMENU2;
