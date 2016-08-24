@@ -21,7 +21,7 @@
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
     <CharacterSet>Unicode</CharacterSet>
-    <PlatformToolset>v120</PlatformToolset>
+    <PlatformToolset>v140</PlatformToolset>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
@@ -85,6 +85,7 @@
     <ClCompile Include="levelTransition.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="mapInteract.cpp" />
+    <ClCompile Include="Portalgun-teleporting.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="extract.h" />
@@ -93,6 +94,7 @@
     <ClInclude Include="game.h" />
     <ClInclude Include="levelTransition.h" />
     <ClInclude Include="mapInteract.h" />
+    <ClInclude Include="Portalgun-teleporting.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
