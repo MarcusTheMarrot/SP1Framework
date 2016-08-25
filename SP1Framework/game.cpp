@@ -24,8 +24,7 @@ char	healthbar = 223;
 char	map[61][21];
 char something = '1', thingthing = '1';
 int level;
-int healthcount = 5;
-char health = 53;
+int healthcount = 10;
 unsigned char wall = 178;
 unsigned char direction, direction2;
 unsigned char ground = 176;
@@ -1034,7 +1033,6 @@ void renderinstruct()
 
 void renderGameOver()
 {
-	health = 53;
 	int i = 0;
 	int j = 0;
 	char main[63][6];
@@ -1090,10 +1088,10 @@ void renderhealth()
 	c.Y /= 3 + 10;
 	c.X = c.X / 2;
 	c.Y += 5;
-	c.X = g_Console.getConsoleSize().X / 2 + 30;
+	c.X = g_Console.getConsoleSize().X / 2 + 25;
 	g_Console.writeToBuffer(c, "Health", 0x07);
 	c.Y += 1;
-	c.X = g_Console.getConsoleSize().X / 2 + 30;
+	c.X = g_Console.getConsoleSize().X / 2 + 25;
 	/*c.X = g_Console.getConsoleSize().X / 2 + 30;
 	g_Console.writeToBuffer(c, health, 0x07);*/
 	for (int i = 0; i < healthcount; i++)
@@ -1102,31 +1100,31 @@ void renderhealth()
 		c.X += 1;
 	}
 	
-	if (healthcount < 3)
+	if (healthcount < 4)
 	{
 		if ((int)(g_dElapsedTime) % 2 == 0)
 		{
 			c.Y += 5;
-			c.X = g_Console.getConsoleSize().X / 2 + 30;
+			c.X = g_Console.getConsoleSize().X / 2 + 25;
 			g_Console.writeToBuffer(c, "WARNING", 0x0C);
 			c.Y += 1;
-			c.X = g_Console.getConsoleSize().X / 2 + 30;
+			c.X = g_Console.getConsoleSize().X / 2 + 25;
 			g_Console.writeToBuffer(c, "HP LOW", 0x0C);
 		}
 		else
 		{
 			c.Y += 5;
-			c.X = g_Console.getConsoleSize().X / 2 + 30;
+			c.X = g_Console.getConsoleSize().X / 2 + 25;
 			g_Console.writeToBuffer(c, "WARNING", 0x07);
 			c.Y += 1;
-			c.X = g_Console.getConsoleSize().X / 2 + 30;
+			c.X = g_Console.getConsoleSize().X / 2 + 25;
 			g_Console.writeToBuffer(c, "HP LOW", 0x07);
 		}
 	}
 	if (healthcount == 0)
 	{
 		g_eGameState = S_GAMEOVER;
-		healthcount = 5;
+		healthcount = 10;
 	}
 
 }
