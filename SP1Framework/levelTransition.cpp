@@ -21,7 +21,7 @@ COORD mapTransition(COORD spawn,int x, int y, int *level, bool *transisted)
 		spawn.X = 0;
 		spawn.Y = 4;
 		*level = 14;
-		*transisted;
+		*transisted = true;
 	}
 	//else if (x == 59 && y == 2 && *level == 11)
 	//{
