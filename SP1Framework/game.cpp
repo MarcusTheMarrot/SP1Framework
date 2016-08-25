@@ -1126,6 +1126,7 @@ void renderhealth()
 	if (healthcount == 0)
 	{
 		g_eGameState = S_GAMEOVER;
+		healthcount = 5;
 	}
 
 }
