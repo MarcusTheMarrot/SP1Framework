@@ -55,6 +55,8 @@ COORD portal4;
 SGameChar	g_sChar;
 SGameChar2   g_sChar2;
 EGAMESTATES g_eGameState = S_SPLASHSCREEN;
+portalgun RenderPortal;
+Direction Character;
 double  g_dBounceTime, g_dBounceTime2;// this is to prevent key bouncing, so we won't trigger keypresses more than once
 
 									  // Console object
@@ -1309,19 +1311,19 @@ void rendermap()
 			}
 			if (shotPortal == false)
 			{
-				g_Console.writeToBuffer(portal1, 'O', 0x8C);
+				g_Console.writeToBuffer(portal1, RenderPortal.portal, 0x8C);
 			}
 			if (shotPortal2 == false)
 			{
-				g_Console.writeToBuffer(portal2, 'O', 0x81);
+				g_Console.writeToBuffer(portal2, RenderPortal.portal, 0x81);
 			}
 			if (shotPortal3 == false)
 			{
-				g_Console.writeToBuffer(portal3, 'O', 0x8D);
+				g_Console.writeToBuffer(portal3, RenderPortal.portal, 0x8D);
 			}
 			if (shotPortal4 == false)
 			{
-				g_Console.writeToBuffer(portal4, 'O', 0x8B);
+				g_Console.writeToBuffer(portal4, RenderPortal.portal, 0x8B);
 
 			}
 			if (removeportal)
@@ -1370,14 +1372,14 @@ void renderCharacter()
 	cord2.Y = g_sChar.m_cLocation.Y;
 	if (direction == 'u')
 	{
-		g_Console.writeToBuffer(g_sChar.m_cLocation, '^', charColor);
+		g_Console.writeToBuffer(g_sChar.m_cLocation, Character.Up, charColor);
 
 		while (shotPortal)
 		{
 			if ((map[cord1.X][cord1.Y - 2] != 'x') && (map[cord1.X][cord1.Y - 2] != 'e') && (map[cord1.X][cord1.Y - 2] != 'd'))
 			{
 				cord1.Y--;
-				g_Console.writeToBuffer(cord1, '|', 0x8C);
+				g_Console.writeToBuffer(cord1, RenderPortal.UpDownProjectile, 0x8C);
 			}
 			else
 			{
@@ -1393,7 +1395,7 @@ void renderCharacter()
 			if ((map[cord2.X][cord2.Y - 2] != 'x') && (map[cord2.X][cord2.Y - 2] != 'e') && (map[cord2.X][cord2.Y - 2] != 'd'))
 			{
 				cord2.Y--;
-				g_Console.writeToBuffer(cord2, '|', 0x81);
+				g_Console.writeToBuffer(cord2, RenderPortal.UpDownProjectile, 0x81);
 			}
 			else
 			{
@@ -1406,13 +1408,13 @@ void renderCharacter()
 	}
 	else if (direction == 'd')
 	{
-		g_Console.writeToBuffer(g_sChar.m_cLocation, 'v', charColor);
+		g_Console.writeToBuffer(g_sChar.m_cLocation, Character.Down, charColor);
 		while (shotPortal)
 		{
 			if ((map[cord1.X][cord1.Y] != 'x') && (map[cord1.X][cord1.Y] != 'e') && (map[cord1.X][cord1.Y] != 'd'))
 			{
 				cord1.Y++;
-				g_Console.writeToBuffer(cord1, '|', 0x8C);
+				g_Console.writeToBuffer(cord1, RenderPortal.UpDownProjectile, 0x8C);
 			}
 			else
 			{
@@ -1427,7 +1429,7 @@ void renderCharacter()
 			if ((map[cord2.X][cord2.Y] != 'x') && (map[cord2.X][cord2.Y] != 'e') && (map[cord2.X][cord2.Y] != 'd'))
 			{
 				cord2.Y++;
-				g_Console.writeToBuffer(cord2, '|', 0x81);
+				g_Console.writeToBuffer(cord2, RenderPortal.UpDownProjectile, 0x81);
 			}
 			else
 			{
@@ -1440,13 +1442,13 @@ void renderCharacter()
 	}
 	else if (direction == 'l')
 	{
-		g_Console.writeToBuffer(g_sChar.m_cLocation, '<', charColor);
+		g_Console.writeToBuffer(g_sChar.m_cLocation, Character.Left, charColor);
 		while (shotPortal)
 		{
 			if ((map[cord1.X-1][cord1.Y-1] != 'x') && (map[cord1.X - 1][cord1.Y - 1] != 'e') && (map[cord1.X - 1][cord1.Y - 1] != 'd'))
 			{
 				cord1.X--;
-				g_Console.writeToBuffer(cord1, '-', 0x8C);
+				g_Console.writeToBuffer(cord1, RenderPortal.LeftRightProjectile, 0x8C);
 			}
 			else
 			{
@@ -1461,7 +1463,7 @@ void renderCharacter()
 			if ((map[cord2.X-1][cord2.Y-1] != 'x') && (map[cord2.X - 1][cord2.Y - 1] != 'e') && (map[cord2.X - 1][cord2.Y - 1] != 'd'))
 			{
 				cord2.X--;
-				g_Console.writeToBuffer(cord2, '-', 0x81);
+				g_Console.writeToBuffer(cord2, RenderPortal.LeftRightProjectile, 0x81);
 			}
 			else
 			{
@@ -1474,13 +1476,13 @@ void renderCharacter()
 	}
 	else if (direction == 'r')
 	{
-		g_Console.writeToBuffer(g_sChar.m_cLocation, '>', charColor);
+		g_Console.writeToBuffer(g_sChar.m_cLocation, Character.Right, charColor);
 		while (shotPortal)
 		{
 			if ((map[cord1.X + 1][cord1.Y-1] != 'x') && (map[cord1.X + 1][cord1.Y - 1] != 'e') && (map[cord1.X + 1][cord1.Y - 1] != 'd'))
 			{
 				cord1.X++;
-				g_Console.writeToBuffer(cord1, '-', 0x8C);
+				g_Console.writeToBuffer(cord1, RenderPortal.LeftRightProjectile, 0x8C);
 			}
 			else
 			{
@@ -1495,7 +1497,7 @@ void renderCharacter()
 			if ((map[cord2.X + 1][cord2.Y-1] != 'x') && (map[cord2.X + 1][cord2.Y - 1] != 'e') && (map[cord2.X + 1][cord2.Y - 1] != 'd'))
 			{
 				cord2.X++;
-				g_Console.writeToBuffer(cord2, '-', 0x81);
+				g_Console.writeToBuffer(cord2, RenderPortal.LeftRightProjectile, 0x81);
 			}
 			else
 			{
@@ -1508,7 +1510,7 @@ void renderCharacter()
 	}
 	else
 	{
-		g_Console.writeToBuffer(g_sChar.m_cLocation, '^', charColor);
+		g_Console.writeToBuffer(g_sChar.m_cLocation, Character.Up, charColor);
 	}
 }
 
@@ -1523,13 +1525,13 @@ void renderCharacter_2()
 	cord4.Y = g_sChar2.m_cLocation.Y;
 	if (direction2 == 't')
 	{
-		g_Console.writeToBuffer(g_sChar2.m_cLocation, '^', charColor2);
+		g_Console.writeToBuffer(g_sChar2.m_cLocation, Character.Up, charColor2);
 		while (shotPortal3)
 		{
 			if ((map[cord3.X][cord3.Y - 2] != 'x') && (map[cord3.X][cord3.Y - 2] != 'e') && (map[cord3.X][cord3.Y - 2] != 'd'))
 			{
 				cord3.Y--;
-				g_Console.writeToBuffer(cord3, '|', 0x8D);
+				g_Console.writeToBuffer(cord3, RenderPortal.UpDownProjectile, 0x8D);
 			}
 			else
 			{
@@ -1545,7 +1547,7 @@ void renderCharacter_2()
 			if ((map[cord4.X][cord4.Y - 2] != 'x') && (map[cord4.X][cord4.Y - 2] != 'e') && (map[cord4.X][cord4.Y - 2] != 'd'))
 			{
 				cord4.Y--;
-				g_Console.writeToBuffer(cord4, '|', 0x8B);
+				g_Console.writeToBuffer(cord4, RenderPortal.UpDownProjectile, 0x8B);
 			}
 			else
 			{
@@ -1558,13 +1560,13 @@ void renderCharacter_2()
 	}
 	else if (direction2 == 'g')
 	{
-		g_Console.writeToBuffer(g_sChar2.m_cLocation, 'v', charColor2);
+		g_Console.writeToBuffer(g_sChar2.m_cLocation, Character.Down, charColor2);
 		while (shotPortal3)
 		{
 			if ((map[cord3.X][cord3.Y] != 'x') && (map[cord3.X][cord3.Y] != 'e') && (map[cord3.X][cord3.Y] != 'd'))
 			{
 				cord3.Y++;
-				g_Console.writeToBuffer(cord3, '|', 0x8D);
+				g_Console.writeToBuffer(cord3, RenderPortal.UpDownProjectile, 0x8D);
 			}
 			else
 			{
@@ -1579,7 +1581,7 @@ void renderCharacter_2()
 			if ((map[cord4.X][cord4.Y] != 'x') && (map[cord4.X][cord4.Y] != 'e') && (map[cord4.X][cord4.Y] != 'd'))
 			{
 				cord4.Y++;
-				g_Console.writeToBuffer(cord4, '|', 0x8B);
+				g_Console.writeToBuffer(cord4, RenderPortal.UpDownProjectile, 0x8B);
 			}
 			else
 			{
@@ -1592,13 +1594,13 @@ void renderCharacter_2()
 	}
 	else if (direction2 == 'f')
 	{
-		g_Console.writeToBuffer(g_sChar2.m_cLocation, '<', charColor2);
+		g_Console.writeToBuffer(g_sChar2.m_cLocation, Character.Left, charColor2);
 		while (shotPortal3)
 		{
 			if ((map[cord3.X - 1][cord3.Y - 1] != 'x') && (map[cord3.X - 1][cord3.Y - 1] != 'e') && (map[cord3.X - 1][cord3.Y - 1] != 'd'))
 			{
 				cord3.X--;
-				g_Console.writeToBuffer(cord3, '-', 0x8D);
+				g_Console.writeToBuffer(cord3, RenderPortal.LeftRightProjectile, 0x8D);
 			}
 			else
 			{
@@ -1613,7 +1615,7 @@ void renderCharacter_2()
 			if ((map[cord4.X - 1][cord4.Y - 1] != 'x') && (map[cord4.X - 1][cord4.Y - 1] != 'e') && (map[cord4.X - 1][cord4.Y - 1] != 'd'))
 			{
 				cord4.X--;
-				g_Console.writeToBuffer(cord4, '-', 0x8B);
+				g_Console.writeToBuffer(cord4, RenderPortal.LeftRightProjectile, 0x8B);
 			}
 			else
 			{
@@ -1626,13 +1628,13 @@ void renderCharacter_2()
 	}
 	else if (direction2 == 'h')
 	{
-		g_Console.writeToBuffer(g_sChar2.m_cLocation, '>', charColor2);
+		g_Console.writeToBuffer(g_sChar2.m_cLocation, Character.Right, charColor2);
 		while (shotPortal3)
 		{
 			if ((map[cord3.X + 1][cord3.Y - 1] != 'x') && (map[cord3.X + 1][cord3.Y - 1] != 'e') && (map[cord3.X + 1][cord3.Y - 1] != 'd'))
 			{
 				cord3.X++;
-				g_Console.writeToBuffer(cord3, '-', 0x8D);
+				g_Console.writeToBuffer(cord3, RenderPortal.LeftRightProjectile, 0x8D);
 			}
 			else
 			{
@@ -1647,7 +1649,7 @@ void renderCharacter_2()
 			if ((map[cord4.X + 1][cord4.Y - 1] != 'x') && (map[cord4.X + 1][cord4.Y - 1] != 'e') && (map[cord4.X + 1][cord4.Y - 1] != 'd'))
 			{
 				cord4.X++;
-				g_Console.writeToBuffer(cord4, '-', 0x8B);
+				g_Console.writeToBuffer(cord4, RenderPortal.LeftRightProjectile, 0x8B);
 			}
 			else
 			{
@@ -1660,7 +1662,7 @@ void renderCharacter_2()
 	}
 	else
 	{
-		g_Console.writeToBuffer(g_sChar2.m_cLocation, '^', charColor2);
+		g_Console.writeToBuffer(g_sChar2.m_cLocation, Character.Up, charColor2);
 	}
 }
 

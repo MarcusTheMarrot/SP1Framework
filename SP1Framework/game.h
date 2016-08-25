@@ -67,6 +67,21 @@ struct SGameChar2
 	bool  m_bActive;
 };
 
+struct portalgun
+{
+	unsigned char portal = 79;
+	unsigned char UpDownProjectile = 179;
+	unsigned char LeftRightProjectile = 45;
+};
+
+struct Direction
+{
+	unsigned char Up = 94;
+	unsigned char Down = 118;
+	unsigned char Left = 60;
+	unsigned char Right = 62;
+};
+
 void init        ( void );      // initialize your variables, allocate memory, etc
 void getInput    ( void );      // get input from player
 void update      ( double dt ); // update the game and the state of the game
