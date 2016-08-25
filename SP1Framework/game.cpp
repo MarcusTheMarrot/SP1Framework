@@ -7,6 +7,7 @@
 #include "extract.h"
 #include "levelTransition.h"
 #include "Portalgun-teleporting.h"
+#include "textBuffer.h"
 #include <iostream>
 #include <iomanip>
 #include <sstream>
@@ -24,8 +25,7 @@ char	healthbar = 223;
 char	map[61][21];
 char something = '1', thingthing = '1';
 int level;
-int healthcount = 5;
-char health = 53;
+int healthcount = 10;
 unsigned char wall = 178;
 unsigned char direction, direction2;
 unsigned char ground = 176;
@@ -403,8 +403,6 @@ void moveCharacter_1()
 
 		if (map[g_sChar.m_cLocation.X][g_sChar.m_cLocation.Y - 1] == 'f')
 		{
-			g_sChar.m_cLocation.X = 5;
-			g_sChar.m_cLocation.Y = 10;
 			direction = 'u';
 			healthcount--;
 		}
@@ -439,7 +437,7 @@ void moveCharacter_1()
 			g_sChar2.m_cLocation.Y = g_sChar.m_cLocation.Y;
 			transisted = false;
 			removeportal = true;
-			thingthing = '\0';
+			/*thingthing = '\0';*/
 			something = '\0';
 		}
 		teleport.erase(0, teledel);
@@ -599,8 +597,6 @@ void moveCharacter_2()
 
 		if (map[g_sChar2.m_cLocation.X][g_sChar2.m_cLocation.Y - 1] == 'f')
 		{
-			g_sChar2.m_cLocation.X = 7;
-			g_sChar2.m_cLocation.Y = 8;
 			direction2 = 't';
 			healthcount--;
 		}
@@ -1034,7 +1030,6 @@ void renderinstruct()
 
 void renderGameOver()
 {
-	health = 53;
 	int i = 0;
 	int j = 0;
 	char main[63][6];
@@ -1090,10 +1085,10 @@ void renderhealth()
 	c.Y /= 3 + 10;
 	c.X = c.X / 2;
 	c.Y += 5;
-	c.X = g_Console.getConsoleSize().X / 2 + 30;
+	c.X = g_Console.getConsoleSize().X / 2 + 25;
 	g_Console.writeToBuffer(c, "Health", 0x07);
 	c.Y += 1;
-	c.X = g_Console.getConsoleSize().X / 2 + 30;
+	c.X = g_Console.getConsoleSize().X / 2 + 25;
 	/*c.X = g_Console.getConsoleSize().X / 2 + 30;
 	g_Console.writeToBuffer(c, health, 0x07);*/
 	for (int i = 0; i < healthcount; i++)
@@ -1102,31 +1097,31 @@ void renderhealth()
 		c.X += 1;
 	}
 	
-	if (healthcount < 3)
+	if (healthcount < 4)
 	{
 		if ((int)(g_dElapsedTime) % 2 == 0)
 		{
 			c.Y += 5;
-			c.X = g_Console.getConsoleSize().X / 2 + 30;
+			c.X = g_Console.getConsoleSize().X / 2 + 25;
 			g_Console.writeToBuffer(c, "WARNING", 0x0C);
 			c.Y += 1;
-			c.X = g_Console.getConsoleSize().X / 2 + 30;
+			c.X = g_Console.getConsoleSize().X / 2 + 25;
 			g_Console.writeToBuffer(c, "HP LOW", 0x0C);
 		}
 		else
 		{
 			c.Y += 5;
-			c.X = g_Console.getConsoleSize().X / 2 + 30;
+			c.X = g_Console.getConsoleSize().X / 2 + 25;
 			g_Console.writeToBuffer(c, "WARNING", 0x07);
 			c.Y += 1;
-			c.X = g_Console.getConsoleSize().X / 2 + 30;
+			c.X = g_Console.getConsoleSize().X / 2 + 25;
 			g_Console.writeToBuffer(c, "HP LOW", 0x07);
 		}
 	}
 	if (healthcount == 0)
 	{
 		g_eGameState = S_GAMEOVER;
-		healthcount = 5;
+		healthcount = 10;
 	}
 
 }
@@ -1217,11 +1212,11 @@ void rendermap()
 			//buffer ground
 			if (map[x][y] == '-')
 			{
-				if ((g_sChar.m_cLocation.X + 7) >= x && x >= (g_sChar.m_cLocation.X - 7) && (g_sChar.m_cLocation.Y - 7) <= (y - 1) && (g_sChar.m_cLocation.Y + 7) >= (y + 3))
+				if ((g_sChar.m_cLocation.X + 6) >= x && x >= (g_sChar.m_cLocation.X - 6) && (g_sChar.m_cLocation.Y - 6) <= (y - 1) && (g_sChar.m_cLocation.Y + 6) >= (y + 3))
 				{
 					g_Console.writeToBuffer(coord, ground, 0x88);
 				}
-				if ((g_sChar2.m_cLocation.X + 7) >= x && x >= (g_sChar2.m_cLocation.X - 7) && (g_sChar2.m_cLocation.Y - 7) <= (y - 1) && (g_sChar2.m_cLocation.Y + 7) >= (y + 3))
+				if ((g_sChar2.m_cLocation.X + 6) >= x && x >= (g_sChar2.m_cLocation.X - 6) && (g_sChar2.m_cLocation.Y - 6) <= (y - 1) && (g_sChar2.m_cLocation.Y + 6) >= (y + 3))
 				{
 					g_Console.writeToBuffer(coord, ground, 0x88);
 				}
@@ -1230,22 +1225,22 @@ void rendermap()
 			if (map[x][y] == 'x')
 				//buffer teleportal
 			{
-				if ((g_sChar.m_cLocation.X + 5) >= x && x >= (g_sChar.m_cLocation.X - 5) && (g_sChar.m_cLocation.Y - 5) <= (y + 1) && (g_sChar.m_cLocation.Y + 5) >= (y + 1))
+				if ((g_sChar.m_cLocation.X + 4) >= x && x >= (g_sChar.m_cLocation.X - 4) && (g_sChar.m_cLocation.Y - 3) <= (y + 1) && (g_sChar.m_cLocation.Y + 3) >= (y + 1))
 				{
 					g_Console.writeToBuffer(coord, wall, 0x80);
 				}
-				if ((g_sChar2.m_cLocation.X + 5) >= x && x >= (g_sChar2.m_cLocation.X - 5) && (g_sChar2.m_cLocation.Y - 5) <= (y + 1) && (g_sChar2.m_cLocation.Y + 5) >= (y + 1))
+				if ((g_sChar2.m_cLocation.X + 4) >= x && x >= (g_sChar2.m_cLocation.X - 4) && (g_sChar2.m_cLocation.Y - 3) <= (y + 1) && (g_sChar2.m_cLocation.Y + 3) >= (y + 1))
 				{
 					g_Console.writeToBuffer(coord, wall, 0x80);
 				}
 			}
 			if (map[x][y] == 'p')
 			{
-				if ((g_sChar.m_cLocation.X + 5) >= x && x >= (g_sChar.m_cLocation.X - 5) && (g_sChar.m_cLocation.Y - 5) <= (y + 1) && (g_sChar.m_cLocation.Y + 5) >= (y + 1))
+				if ((g_sChar.m_cLocation.X + 4) >= x && x >= (g_sChar.m_cLocation.X - 4) && (g_sChar.m_cLocation.Y - 3) <= (y + 1) && (g_sChar.m_cLocation.Y + 3) >= (y + 1))
 				{
 					g_Console.writeToBuffer(coord, wall, 0x2B);
 				}
-				if ((g_sChar2.m_cLocation.X + 5) >= x && x >= (g_sChar2.m_cLocation.X - 5) && (g_sChar2.m_cLocation.Y - 5) <= (y + 1) && (g_sChar2.m_cLocation.Y + 5) >= (y + 1))
+				if ((g_sChar2.m_cLocation.X + 4) >= x && x >= (g_sChar2.m_cLocation.X - 4) && (g_sChar2.m_cLocation.Y - 3) <= (y + 1) && (g_sChar2.m_cLocation.Y + 3) >= (y + 1))
 				{
 					g_Console.writeToBuffer(coord, wall, 0x2B);
 				}
@@ -1257,55 +1252,44 @@ void rendermap()
 			}
 			if (map[x][y] == 'd')
 			{
-				if ((g_sChar.m_cLocation.X + 5) >= x && x >= (g_sChar.m_cLocation.X - 5) && (g_sChar.m_cLocation.Y - 5) <= (y + 1) && (g_sChar.m_cLocation.Y + 5) >= (y + 1))
+				if ((g_sChar.m_cLocation.X + 4) >= x && x >= (g_sChar.m_cLocation.X - 4) && (g_sChar.m_cLocation.Y - 3) <= (y + 1) && (g_sChar.m_cLocation.Y + 3) >= (y + 1))
 				{
 					g_Console.writeToBuffer(coord, wall, 0x11);
 				}
-				if ((g_sChar2.m_cLocation.X + 5) >= x && x >= (g_sChar2.m_cLocation.X - 5) && (g_sChar2.m_cLocation.Y - 5) <= (y + 1) && (g_sChar2.m_cLocation.Y + 5) >= (y + 1))
+				if ((g_sChar2.m_cLocation.X + 4) >= x && x >= (g_sChar2.m_cLocation.X - 4) && (g_sChar2.m_cLocation.Y - 3) <= (y + 1) && (g_sChar2.m_cLocation.Y + 3) >= (y + 1))
 				{
 					g_Console.writeToBuffer(coord, wall, 0x11);
 				}
 			}
 			if (map[x][y] == 'l' || map[x][y] == 'L')
 			{
-				if ((g_sChar.m_cLocation.X + 5) >= x && x >= (g_sChar.m_cLocation.X - 5) && (g_sChar.m_cLocation.Y - 5) <= (y + 1) && (g_sChar.m_cLocation.Y + 5) >= (y + 1))
+				if ((g_sChar.m_cLocation.X + 4) >= x && x >= (g_sChar.m_cLocation.X - 4) && (g_sChar.m_cLocation.Y - 3) <= (y + 1) && (g_sChar.m_cLocation.Y + 3) >= (y + 1))
 				{
 					g_Console.writeToBuffer(coord, destination, 0x1F);
 				}
-				if ((g_sChar2.m_cLocation.X + 5) >= x && x >= (g_sChar2.m_cLocation.X - 5) && (g_sChar2.m_cLocation.Y - 5) <= (y + 1) && (g_sChar2.m_cLocation.Y + 5) >= (y + 1))
+				if ((g_sChar2.m_cLocation.X + 4) >= x && x >= (g_sChar2.m_cLocation.X - 4) && (g_sChar2.m_cLocation.Y - 3) <= (y + 1) && (g_sChar2.m_cLocation.Y + 3) >= (y + 1))
 				{
 					g_Console.writeToBuffer(coord, destination, 0x1F);
 				}
 			}
 			if (map[x][y] == 'f')
 			{
-				if ((g_sChar.m_cLocation.X + 5) >= x && x >= (g_sChar.m_cLocation.X - 5) && (g_sChar.m_cLocation.Y - 5) <= (y + 1) && (g_sChar.m_cLocation.Y + 5) >= (y + 1))
+				if ((g_sChar.m_cLocation.X + 4) >= x && x >= (g_sChar.m_cLocation.X - 4) && (g_sChar.m_cLocation.Y - 3) <= (y + 1) && (g_sChar.m_cLocation.Y + 3) >= (y + 1))
 				{
 					g_Console.writeToBuffer(coord, ground, 0xCE);
 				}
-				if ((g_sChar2.m_cLocation.X + 5) >= x && x >= (g_sChar2.m_cLocation.X - 5) && (g_sChar2.m_cLocation.Y - 5) <= (y + 1) && (g_sChar2.m_cLocation.Y + 5) >= (y + 1))
+				if ((g_sChar2.m_cLocation.X + 4) >= x && x >= (g_sChar2.m_cLocation.X - 4) && (g_sChar2.m_cLocation.Y - 3) <= (y + 1) && (g_sChar2.m_cLocation.Y + 3) >= (y + 1))
 				{
 					g_Console.writeToBuffer(coord, ground, 0xCE);
 				}
 			}
 			if (map[x][y] == 'n')
 			{
-				if ((g_sChar.m_cLocation.X + 5) >= x && x >= (g_sChar.m_cLocation.X - 5) && (g_sChar.m_cLocation.Y - 5) <= (y + 1) && (g_sChar.m_cLocation.Y + 5) >= (y + 1))
+				if ((g_sChar.m_cLocation.X + 4) >= x && x >= (g_sChar.m_cLocation.X - 4) && (g_sChar.m_cLocation.Y - 3) <= (y + 1) && (g_sChar.m_cLocation.Y + 3) >= (y + 1))
 				{
 					g_Console.writeToBuffer(coord, box, 0xFE);
 				}
-				if ((g_sChar2.m_cLocation.X + 5) >= x && x >= (g_sChar2.m_cLocation.X - 5) && (g_sChar2.m_cLocation.Y - 5) <= (y + 1) && (g_sChar2.m_cLocation.Y + 5) >= (y + 1))
-				{
-					g_Console.writeToBuffer(coord, box, 0xFE);
-				}
-			}
-			if (map[x][y] == 'n')
-			{
-				if ((g_sChar.m_cLocation.X + 5) >= x && x >= (g_sChar.m_cLocation.X - 5) && (g_sChar.m_cLocation.Y - 5) <= (y + 1) && (g_sChar.m_cLocation.Y + 5) >= (y + 1))
-				{
-					g_Console.writeToBuffer(coord, box, 0xFE);
-				}
-				if ((g_sChar2.m_cLocation.X + 5) >= x && x >= (g_sChar2.m_cLocation.X - 5) && (g_sChar2.m_cLocation.Y - 5) <= (y + 1) && (g_sChar2.m_cLocation.Y + 5) >= (y + 1))
+				if ((g_sChar2.m_cLocation.X + 4) >= x && x >= (g_sChar2.m_cLocation.X - 4) && (g_sChar2.m_cLocation.Y - 3) <= (y + 1) && (g_sChar2.m_cLocation.Y + 3) >= (y + 1))
 				{
 					g_Console.writeToBuffer(coord, box, 0xFE);
 				}
@@ -1347,8 +1331,8 @@ void rendermap()
 				PortActive4 = false;
 				removeportal = false;
 			}
-
 		}
+		g_Console.writeToBuffer(5, 21, text(level), 0x0D);
 	}
 }
 
@@ -1702,11 +1686,11 @@ void mainmenuchoice()
 	if (g_abKeyPressed[K_RETURN])
 	{
 
-		g_sChar.m_cLocation.X = 5;
-		g_sChar.m_cLocation.Y = 10;
-		g_sChar2.m_cLocation.X = 7;
-		g_sChar2.m_cLocation.Y = 8;
-		level = 0;
+		g_sChar.m_cLocation.X = 2;
+		g_sChar.m_cLocation.Y = 19;
+		g_sChar2.m_cLocation.X = 2;
+		g_sChar2.m_cLocation.Y = 18;
+		level = 11;
 
 		g_eGameState = S_GAME;
 	}
