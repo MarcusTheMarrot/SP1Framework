@@ -6,21 +6,37 @@ string extractMap(int *level)
 	string row;
 	string master;
 
-	if (*level == 0)
+	//if (*level == 0)
+	//{
+	//	myfile = "Testmap/sampleLevel.txt";
+	//}
+	//else if (*level == 1)
+	//{
+	//	myfile = "Testmap/test.txt";
+	//}
+	//else if (*level == 2)
+	//{
+	//	myfile = "Testmap/test2.txt";
+	//}
+	//else if (*level == 3)
+	//{
+	//	myfile = "Testmap/test3.txt";
+	//}
+	if (*level == 11)
 	{
-		myfile = "sampleLevel.txt";
+		myfile = "Level 1/level1-1.txt";
 	}
-	else if (*level == 1)
+	if (*level == 12)
 	{
-		myfile = "test.txt";
+		myfile = "Level 1/level1-2.txt";
 	}
-	else if (*level == 2)
+	if (*level == 13)
 	{
-		myfile = "test2.txt";
+		myfile = "Level 1/level1-3.txt";
 	}
-	else if (*level == 3)
+	if (*level == 14)
 	{
-		myfile = "test3.txt";
+		myfile = "Level 1/level1-4.txt";
 	}
 
 	ifstream file(myfile);
