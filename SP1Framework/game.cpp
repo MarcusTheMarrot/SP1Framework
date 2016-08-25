@@ -20,9 +20,11 @@ double  g_dDeltaTime;
 bool    g_abKeyPressed[K_COUNT], teleporter = false, gateOpen = false, shotPortal = false, shotPortal2 = false, PortActive1 = false, PortActive2 = false;
 bool transisted, shotPortal3 = false, shotPortal4 = false, PortActive3 = false, PortActive4, removeportal = false;
 
+char	healthbar = 223;
 char	map[61][21];
 char something = '1', thingthing = '1';
 int level;
+int healthcount = 5;
 char health = 53;
 unsigned char wall = 178;
 unsigned char direction, direction2;
@@ -402,8 +404,7 @@ void moveCharacter_1()
 			g_sChar.m_cLocation.X = 5;
 			g_sChar.m_cLocation.Y = 10;
 			direction = 'u';
-			health--;
-
+			healthcount--;
 		}
 
 		//check if playr moved into a telporter
@@ -599,7 +600,7 @@ void moveCharacter_2()
 			g_sChar2.m_cLocation.X = 7;
 			g_sChar2.m_cLocation.Y = 8;
 			direction2 = 't';
-			health--;
+			healthcount--;
 		}
 
 		//check if playr moved into a telporter
@@ -1091,8 +1092,36 @@ void renderhealth()
 	g_Console.writeToBuffer(c, "Health", 0x07);
 	c.Y += 1;
 	c.X = g_Console.getConsoleSize().X / 2 + 30;
-	g_Console.writeToBuffer(c, health, 0x07);
-	if (health == 48)
+	/*c.X = g_Console.getConsoleSize().X / 2 + 30;
+	g_Console.writeToBuffer(c, health, 0x07);*/
+	for (int i = 0; i < healthcount; i++)
+	{
+		g_Console.writeToBuffer(c, healthbar, 0x0C);
+		c.X += 1;
+	}
+	
+	if (healthcount < 3)
+	{
+		if ((int)(g_dElapsedTime) % 2 == 0)
+		{
+			c.Y += 5;
+			c.X = g_Console.getConsoleSize().X / 2 + 30;
+			g_Console.writeToBuffer(c, "WARNING", 0x0C);
+			c.Y += 1;
+			c.X = g_Console.getConsoleSize().X / 2 + 30;
+			g_Console.writeToBuffer(c, "HP LOW", 0x0C);
+		}
+		else
+		{
+			c.Y += 5;
+			c.X = g_Console.getConsoleSize().X / 2 + 30;
+			g_Console.writeToBuffer(c, "WARNING", 0x07);
+			c.Y += 1;
+			c.X = g_Console.getConsoleSize().X / 2 + 30;
+			g_Console.writeToBuffer(c, "HP LOW", 0x07);
+		}
+	}
+	if (healthcount == 0)
 	{
 		g_eGameState = S_GAMEOVER;
 	}
