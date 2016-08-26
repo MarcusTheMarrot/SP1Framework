@@ -23,12 +23,6 @@ COORD mapTransition(COORD spawn,int x, int y, int *level, bool *transisted)
 		*level = 14;
 		*transisted = true;
 	}
-
-	
-	
-
-	if (x == 59 & y == 4 && *level == 14)
-
 	if (x == 59 && y == 4 && *level == 14)
 
 	{
@@ -37,9 +31,6 @@ COORD mapTransition(COORD spawn,int x, int y, int *level, bool *transisted)
 		*level = 21;
 		*transisted = true;
 	}
-
-
-
 	if (x == 59 && y == 19 && *level == 21)
 	{
 		spawn.X = 0;
@@ -70,8 +61,7 @@ COORD mapTransition(COORD spawn,int x, int y, int *level, bool *transisted)
 		*level = 32;
 		*transisted = true;
 	}
-
-	if (x == 59 && y == 19 && *level == 31)
+	if (x == 59 && y == 19 && *level == 32)
 	{
 		spawn.X = 0;
 		spawn.Y = 19;
