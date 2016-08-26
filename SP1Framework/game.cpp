@@ -1326,7 +1326,7 @@ void rendermap()
 				removeportal = false;
 			}
 		}
-		g_Console.writeToBuffer(5, 21, text(level), 0x0D);
+		g_Console.writeToBuffer(0, 21, text(level), 0x0D);
 	}
 }
 
