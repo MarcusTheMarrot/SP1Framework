@@ -211,15 +211,16 @@ void render()
 		break;
 	case S_INSTRUCT: renderinstruct();
 		break;
-	case S_MAINMENU: renderToMainMenu();
-		break;
-	case S_MAINMENU2: renderToMainMenu2();
-		break;
-	case S_MAINMENU3: renderToMainMenu3();
-		break;
-	case S_MAINMENU4: renderToMainMenu4();
-		break;
-	case S_MAINMENU5: renderToMainMenu5();
+	case S_MAINMENU: 
+		
+	case S_MAINMENU2: //renderToMainMenu2();
+		
+	case S_MAINMENU3: //renderToMainMenu3();
+		
+	case S_MAINMENU4: //renderToMainMenu4();
+		
+	case S_MAINMENU5:// renderToMainMenu5();
+		renderToMainMenu(g_eGameState);
 		break;
 	case S_GAME: renderGame();
 		break;
@@ -1798,7 +1799,7 @@ void mainmenuchoice5()
 		g_bQuitGame = true;
 }
 
-void renderToMainMenu()
+void renderToMainMenu(unsigned char level)
 {
 	int i = 0;
 	int j = 0;
@@ -1806,23 +1807,23 @@ void renderToMainMenu()
 
 	int count = 0;
 
-	ifstream file("PickALevel.txt"); // read file from PickALevel.txt to print the ascii art
-	COORD c;
-	if (file.is_open())
-	{
-		while (j <= 11)
-		{
-			while (i <= 72)
-			{
-				file >> main[i][j];
-				i++;
-			}
-			i = 0;
-			j++;
-		}
-		file.close();
-	}
-	for (int y = 0; y <= 11; y++)
+	//ifstream file("PickALevel.txt"); // read file from PickALevel.txt to print the ascii art
+	//COORD c;
+	//if (file.is_open())
+	//{
+	//	while (j <= 11)
+	//	{
+	//		while (i <= 72)
+	//		{
+	//			file >> main[i][j];
+	//			i++;
+	//		}
+	//		i = 0;
+	//		j++;
+	//	}
+	//	file.close();
+	//}
+	/*for (int y = 0; y <= 11; y++)
 	{
 		c.Y = y + 4;
 		for (int x = 0; x <= 72; x++)
@@ -1833,7 +1834,7 @@ void renderToMainMenu()
 				g_Console.writeToBuffer(c, main[x][y], 0x09);
 			}
 		}
-	}
+	}*/
 	c = g_Console.getConsoleSize();
 	c.Y /= 3 + 10;
 	c.X = c.X / 2 - 35;
@@ -1841,17 +1842,27 @@ void renderToMainMenu()
 	c.X = g_Console.getConsoleSize().X / 2 - 20;
 	g_Console.writeToBuffer(c, "Press enter to choose your level (1-5).", 0x03);
 
+	const int selected = 0x73;
+	const int unselected = 0x03;
+	int colour = 0;
+
 	c.Y += 1;
 	c.X = g_Console.getConsoleSize().X / 2 - 7;
-	g_Console.writeToBuffer(c, "Level 1", 0x73);
+	if level == 1
+		colour = selected;
+	else
+		colour = unselcted
+		colour = level == 1 ? selected : unselcted;
+	getColour(currentLevel, selectedlevel, seltectcoloru, unselected colurt)
+	g_Console.writeToBuffer(c, "Level 1", colour);
 	c.Y += 1;
-	g_Console.writeToBuffer(c, "Level 2", 0x03);
+	g_Console.writeToBuffer(c, "Level 2", colour);
 	c.Y += 1;
-	g_Console.writeToBuffer(c, "Level 3", 0x03);
+	g_Console.writeToBuffer(c, "Level 3", colour);
 	c.Y += 1;
-	g_Console.writeToBuffer(c, "Level 4", 0x03);
+	g_Console.writeToBuffer(c, "Level 4", colour);
 	c.Y += 1;
-	g_Console.writeToBuffer(c, "Level 5", 0x03);
+	g_Console.writeToBuffer(c, "Level 5", colour);
 }
 
 void renderToMainMenu2()
