@@ -1759,6 +1759,18 @@ void mainmenuchoice4()
 		g_eGameState = S_MAINMENU5;
 	}
 
+	if (g_abKeyPressed[K_RETURN])
+	{
+
+		g_sChar.m_cLocation.X = 0;
+		g_sChar.m_cLocation.Y = 2;
+		g_sChar2.m_cLocation.X = 1;
+		g_sChar2.m_cLocation.Y = 2;
+		level = 41;
+		load_game(level);
+
+		g_eGameState = S_GAME;
+	}
 	if (g_abKeyPressed[K_ESCAPE])
 		g_bQuitGame = true;
 }
@@ -1770,6 +1782,18 @@ void mainmenuchoice5()
 		g_eGameState = S_MAINMENU4;
 	}
 
+	if (g_abKeyPressed[K_RETURN])
+	{
+
+		g_sChar.m_cLocation.X = 0;
+		g_sChar.m_cLocation.Y = 19;
+		g_sChar2.m_cLocation.X = 1;
+		g_sChar2.m_cLocation.Y = 19;
+		level = 51;
+		load_game(level);
+
+		g_eGameState = S_GAME;
+	}
 	if (g_abKeyPressed[K_ESCAPE])
 		g_bQuitGame = true;
 }

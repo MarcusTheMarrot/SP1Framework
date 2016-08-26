@@ -32,5 +32,10 @@ string text(int level)
 		text = "Quit now and cake will be served immediately.";
 	}
 
+	if (level == 0)
+	{
+		text = "OMG GGWP EZPZ NOOB SCRUBS!";
+	}
+
 	return text;
 }
