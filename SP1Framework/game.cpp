@@ -273,7 +273,6 @@ void moveCharacter()
 			{
 				if (g_sChar.m_cLocation.X == boxx.X && g_sChar.m_cLocation.Y - 2 == boxx.Y && map[boxx.X][boxx.Y - 1] != 'x' && boxx.Y && map[boxx.X][boxx.Y - 1] != 'd' && boxx.Y && map[boxx.X][boxx.Y - 1] != 'f')
 				{
-
 					boxx.Y--;
 					thingthing = something;
 					something = map[boxx.X][boxx.Y];
@@ -633,8 +632,6 @@ void moveCharacter()
 		g_sChar2.m_cLocation = Player2Position(g_sChar2.m_cLocation, portal1, portal2, portal3, portal4, PortActive1, PortActive2, PortActive3, PortActive4);
 	}
 }
-
-
 
 void processUserInput()
 {
@@ -1644,7 +1641,6 @@ void renderCharacter()
 	}
 }
 
-
 void renderFramerate()
 {
 	COORD c;
@@ -1732,6 +1728,19 @@ void mainmenuchoice3()
 	if (g_abKeyPressed[PLAYER_2_K_DOWN])
 	{
 		g_eGameState = S_MAINMENU4;
+	}
+
+	if (g_abKeyPressed[K_RETURN])
+	{
+
+		g_sChar.m_cLocation.X = 0;
+		g_sChar.m_cLocation.Y = 19;
+		g_sChar2.m_cLocation.X = 1;
+		g_sChar2.m_cLocation.Y = 19;
+		level = 31;
+		load_game(level);
+
+		g_eGameState = S_GAME;
 	}
 
 	if (g_abKeyPressed[K_ESCAPE])
