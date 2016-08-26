@@ -80,7 +80,7 @@ string extractMap(int *level)
 	}
 	if (*level == 52)
 	{
-		myfile = "Level 6/level5-2.txt";
+		myfile = "Level 5/level5-2.txt";
 	}
 	if (*level == 0)
 	{

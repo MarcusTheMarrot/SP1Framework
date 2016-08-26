@@ -103,7 +103,7 @@ COORD mapTransition(COORD spawn,int x, int y, int *level, bool *transisted)
 		*level = 52;
 		*transisted = true;
 	}
-	if (x == 59 && y == 19 && *level == 52)
+	if (x == 60 && y == 19 && *level == 52)
 	{
 		spawn.X = 5;
 		spawn.Y = 15;
