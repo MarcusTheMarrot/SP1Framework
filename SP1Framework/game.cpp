@@ -86,7 +86,7 @@ void init(void)
 	g_sChar2.m_cLocation.Y = 6;
 	g_sChar2.m_bActive = true;
 	// sets the width, height and the font name to use in the console
-	g_Console.setConsoleFont(0, 16, L"Consolas");
+	g_Console.setConsoleFont(0, 24, L"Consolas");
 }
 
 //--------------------------------------------------------------
