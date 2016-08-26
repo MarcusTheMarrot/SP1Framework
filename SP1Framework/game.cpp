@@ -1704,6 +1704,17 @@ void mainmenuchoice2()
 	{
 		g_eGameState = S_MAINMENU3;
 	}
+	if (g_abKeyPressed[K_RETURN])
+	{
+
+		g_sChar.m_cLocation.X = 2;
+		g_sChar.m_cLocation.Y = 19;
+		g_sChar2.m_cLocation.X = 2;
+		g_sChar2.m_cLocation.Y = 18;
+		level = 21;
+
+		g_eGameState = S_GAME;
+	}
 
 	if (g_abKeyPressed[K_ESCAPE])
 		g_bQuitGame = true;
