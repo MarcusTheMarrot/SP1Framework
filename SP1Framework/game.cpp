@@ -1685,6 +1685,7 @@ void mainmenuchoice()
 		g_sChar2.m_cLocation.X = 2;
 		g_sChar2.m_cLocation.Y = 18;
 		level = 11;
+		load_game(level);
 
 		g_eGameState = S_GAME;
 	}
@@ -1707,11 +1708,12 @@ void mainmenuchoice2()
 	if (g_abKeyPressed[K_RETURN])
 	{
 
-		g_sChar.m_cLocation.X = 2;
-		g_sChar.m_cLocation.Y = 19;
-		g_sChar2.m_cLocation.X = 2;
-		g_sChar2.m_cLocation.Y = 18;
+		g_sChar.m_cLocation.X = 0;
+		g_sChar.m_cLocation.Y = 4;
+		g_sChar2.m_cLocation.X = 1;
+		g_sChar2.m_cLocation.Y = 4;
 		level = 21;
+		load_game(level);
 
 		g_eGameState = S_GAME;
 	}

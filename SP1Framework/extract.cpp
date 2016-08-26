@@ -38,10 +38,18 @@ string extractMap(int *level)
 	{
 		myfile = "Level 1/level1-4.txt";
 	}
-	//if (*level = 21)
-	//{
-	//	myfile = "Level 2/level2-1.txt";
-	//}
+	if (*level == 21)
+	{
+		myfile = "Level 2/level2-1.txt";
+	}
+	if (*level == 22)
+	{
+		myfile = "Level 2/level2-2.txt";
+	}
+	if (*level == 23)
+	{
+		myfile = "Level 2/level2-3.txt";
+	}
 
 	ifstream file(myfile);
 	if (file.is_open())

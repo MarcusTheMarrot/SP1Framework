@@ -24,7 +24,6 @@ int load_game(int);
 int main( void )
 {
     init();      // initialize your variables
-	load_game(11);
     mainLoop();  // main loop
     shutdown();  // do clean up, if any. free memory.
     
