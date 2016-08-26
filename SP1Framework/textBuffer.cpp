@@ -29,7 +29,7 @@ string text(int level)
 	}
 	if (level == 23)
 	{
-		text = "Quit now and cake will be served immediately."
+		text = "Quit now and cake will be served immediately.";
 	}
 
 	return text;
