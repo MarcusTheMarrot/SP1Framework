@@ -249,12 +249,12 @@ void splashScreenWait()    // waits for time to pass in splash screen
 void gameplay()            // gameplay logic
 {
 	processUserInput(); // checks if you should change states or do something else with the game, e.g. pause, exit
-	moveCharacter_1();
-	moveCharacter_2();// moves the character, collision detection, physics, etc
+	moveCharacter();
+	// moves the character, collision detection, physics, etc
 					  // sound can be played here too.
 }
 
-void moveCharacter_1()
+void moveCharacter()
 {
 	COORD xy;
 	bool bSomethingHappened = false;
@@ -445,11 +445,6 @@ void moveCharacter_1()
 
 		g_sChar.m_cLocation = Player1Position(g_sChar.m_cLocation, portal1, portal2, portal3, portal4, PortActive1, PortActive2, PortActive3, PortActive4); // allow g_sChar to teleport between portals
 	}
-}
-
-void moveCharacter_2()
-{
-	COORD xy;
 	bool bSomethingHappened_2 = false;
 	if (g_dBounceTime2 > g_dElapsedTime)
 		return;
@@ -638,6 +633,8 @@ void moveCharacter_2()
 		g_sChar2.m_cLocation = Player2Position(g_sChar2.m_cLocation, portal1, portal2, portal3, portal4, PortActive1, PortActive2, PortActive3, PortActive4);
 	}
 }
+
+
 
 void processUserInput()
 {
@@ -1340,7 +1337,7 @@ void renderGame()
 {
 	rendermap();// renders the map to the buffer first	
 	renderCharacter();
-	renderCharacter_2();// renders the character into the buffer
+	// renders the character into the buffer
 	renderhealth();
 
 }
@@ -1497,10 +1494,6 @@ void renderCharacter()
 	{
 		g_Console.writeToBuffer(g_sChar.m_cLocation, Character.Up, charColor);
 	}
-}
-
-void renderCharacter_2()
-{
 	WORD charColor2 = 0x8C;
 	// Draw the location of the character
 	//change player direction
@@ -1650,6 +1643,7 @@ void renderCharacter_2()
 		g_Console.writeToBuffer(g_sChar2.m_cLocation, Character.Up, charColor2);
 	}
 }
+
 
 void renderFramerate()
 {

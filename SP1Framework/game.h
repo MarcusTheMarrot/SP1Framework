@@ -91,8 +91,8 @@ void shutdown    ( void );      // do clean up, free memory
 void splashScreenWait();    // waits for time to pass in splash screen
 
 void gameplay();            // gameplay logic
-void moveCharacter_1();
-void moveCharacter_2();// moves the character, collision detection, physics, etc
+void moveCharacter();
+// moves the character, collision detection, physics, etc
 void processUserInput();    // checks if you should change states or do something else with the game, e.g. pause, exit
 
 void clearScreen();         // clears the current screen and draw from scratch 
@@ -102,7 +102,7 @@ void renderGame();          // renders the game stuff
 int load_game(int level);
 void renderMap();           // renders the map to the buffer first
 void renderCharacter();     // renders the character into the buffer
-void renderCharacter_2();
+
 void renderFramerate();     // renders debug information, frame rate, elapsed time, etc
 void renderToScreen();      // dump the contents of the buffer to the screen, one frame worth of game
 
