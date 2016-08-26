@@ -9,7 +9,7 @@ string text(int level)
 	}
 	if (level == 12)
 	{
-		text = "Now it's harder, because it's a maze and a brain is needed.";
+		text = "Now it's harder, because simply walking to the exit is too easy.";
 	}
 	if (level == 13)
 	{
