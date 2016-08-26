@@ -19,6 +19,18 @@ string text(int level)
 	{
 		text = "That's quite the sea of fire, if only you can teleport there...";
 	}
+	if (level == 21)
+	{
+		text = "These intra-dimensional gates have proven to be completely safe.";
+	}
+	if (level == 22)
+	{
+		text = "The Device, however, has not.";
+	}
+	if (level == 23)
+	{
+		text = "Quit now and cake will be served immediately.";
+	}
 
 	return text;
 }
