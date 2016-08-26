@@ -1697,17 +1697,23 @@ void mainmenuchoice2()
 {
 	if (g_abKeyPressed[PLAYER_2_K_UP])
 	{
-		g_sChar.m_cLocation.X = 2;
-		g_sChar.m_cLocation.Y = 19;
-		g_sChar2.m_cLocation.X = 2;
-		g_sChar2.m_cLocation.Y = 18;
-		level = 21;
-		g_eGameState = S_GAME;
+		g_eGameState = S_MAINMENU;
 	}
 
 	if (g_abKeyPressed[PLAYER_2_K_DOWN])
 	{
 		g_eGameState = S_MAINMENU3;
+	}
+	if (g_abKeyPressed[K_RETURN])
+	{
+
+		g_sChar.m_cLocation.X = 2;
+		g_sChar.m_cLocation.Y = 19;
+		g_sChar2.m_cLocation.X = 2;
+		g_sChar2.m_cLocation.Y = 18;
+		level = 21;
+
+		g_eGameState = S_GAME;
 	}
 
 	if (g_abKeyPressed[K_ESCAPE])
