@@ -42,10 +42,6 @@ enum EGAMESTATES
 	S_INSTRUCT,
 	S_GAME,
 	S_MAINMENU,
-	S_MAINMENU2,
-	S_MAINMENU3,
-	S_MAINMENU4,
-	S_MAINMENU5,
 	S_LEVELONE,
 	S_LEVELTWO,
 	S_LEVELTHREE,
@@ -96,7 +92,9 @@ void moveCharacter();
 void processUserInput();    // checks if you should change states or do something else with the game, e.g. pause, exit
 
 void clearScreen();         // clears the current screen and draw from scratch 
-void renderSplashScreen();  // renders the splash screen
+void renderSplashScreen();	// renders the splash screen
+void splashscreenextract();
+void splashscreenextract2();
 
 void renderGame();          // renders the game stuff
 int load_game(int level);
@@ -107,21 +105,12 @@ void renderFramerate();     // renders debug information, frame rate, elapsed ti
 void renderToScreen();      // dump the contents of the buffer to the screen, one frame worth of game
 
 void mainmenuchoice();
-void mainmenuchoice2();
-void mainmenuchoice3();
-void mainmenuchoice4();
-void mainmenuchoice5();
 void renderToMainMenu();
-void renderToMainMenu2();
-void renderToMainMenu3();
-void renderToMainMenu4();
-void renderToMainMenu5();
+void mainmenuextract();
 
 void renderhealth();
 void renderGameOver();
 
-void renderSplashScreen2();
-void Splashwait2();
 void renderinstruct();
 void instructwait();
 
