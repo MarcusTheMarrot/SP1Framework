@@ -442,7 +442,7 @@ void moveCharacter()
 		teleport.erase(0, teledel);
 		teledel = 0;
 
-		g_sChar.m_cLocation = Player1Position(g_sChar.m_cLocation, portal1, portal2, portal3, portal4, PortActive1, PortActive2, PortActive3, PortActive4); // allow g_sChar to teleport between portals
+		g_sChar.m_cLocation = PlayerPositionTeleport(g_sChar.m_cLocation, portal1, portal2, portal3, portal4, PortActive1, PortActive2, PortActive3, PortActive4); // allow g_sChar to teleport between portals
 	}
 	bool bSomethingHappened_2 = false;
 	if (g_dBounceTime2 > g_dElapsedTime)
@@ -629,7 +629,7 @@ void moveCharacter()
 		teleport.erase(0, teledel);
 		teledel = 0;
 
-		g_sChar2.m_cLocation = Player2Position(g_sChar2.m_cLocation, portal1, portal2, portal3, portal4, PortActive1, PortActive2, PortActive3, PortActive4);
+		g_sChar2.m_cLocation = PlayerPositionTeleport(g_sChar2.m_cLocation, portal1, portal2, portal3, portal4, PortActive1, PortActive2, PortActive3, PortActive4);
 	}
 }
 
@@ -638,40 +638,14 @@ void processUserInput()
 	// quits the game if player hits the escape key
 	if (g_abKeyPressed[K_ESCAPE])
 		g_bQuitGame = true;
-	if (g_abKeyPressed[K_E] && (g_sChar.m_cLocation.Y - 1) != 'x')
+	if (g_abKeyPressed[K_E])
 		shotPortal = true;
-	if (g_abKeyPressed[K_R] && (g_sChar.m_cLocation.Y - 1) != 'x')
+	if (g_abKeyPressed[K_R])
 		shotPortal2 = true;
-	if (g_abKeyPressed[K_E] && (g_sChar.m_cLocation.Y + 1) != 'x')
-		shotPortal = true;
-	if (g_abKeyPressed[K_R] && (g_sChar.m_cLocation.Y + 1) != 'x')
-		shotPortal2 = true;
-	if (g_abKeyPressed[K_E] && (g_sChar.m_cLocation.X + 1) != 'x')
-		shotPortal = true;
-	if (g_abKeyPressed[K_R] && (g_sChar.m_cLocation.X + 1) != 'x')
-		shotPortal2 = true;
-	if (g_abKeyPressed[K_E] && (g_sChar.m_cLocation.X - 1) != 'x')
-		shotPortal = true;
-	if (g_abKeyPressed[K_R] && (g_sChar.m_cLocation.X - 1) != 'x')
-		shotPortal2 = true;
-
-	if (g_abKeyPressed[K_K] && (g_sChar2.m_cLocation.Y - 1) != 'x')
+	if (g_abKeyPressed[K_K])
 		shotPortal3 = true;
-	if (g_abKeyPressed[K_L] && (g_sChar2.m_cLocation.Y - 1) != 'x')
+	if (g_abKeyPressed[K_L])
 		shotPortal4 = true;
-	if (g_abKeyPressed[K_K] && (g_sChar2.m_cLocation.Y + 1) != 'x')
-		shotPortal3 = true;
-	if (g_abKeyPressed[K_L] && (g_sChar2.m_cLocation.Y + 1) != 'x')
-		shotPortal4 = true;
-	if (g_abKeyPressed[K_K] && (g_sChar2.m_cLocation.X + 1) != 'x')
-		shotPortal3 = true;
-	if (g_abKeyPressed[K_L] && (g_sChar2.m_cLocation.X + 1) != 'x')
-		shotPortal4 = true;
-	if (g_abKeyPressed[K_K] && (g_sChar2.m_cLocation.X - 1) != 'x')
-		shotPortal3 = true;
-	if (g_abKeyPressed[K_L] && (g_sChar2.m_cLocation.X - 1) != 'x')
-		shotPortal4 = true;
-
 }
 
 void clearScreen()
