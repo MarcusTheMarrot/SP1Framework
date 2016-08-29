@@ -21,6 +21,10 @@ double  g_dDeltaTime;
 bool    g_abKeyPressed[K_COUNT], teleporter = false, gateOpen = false, shotPortal = false, shotPortal2 = false, PortActive1 = false, PortActive2 = false;
 bool transisted, shotPortal3 = false, shotPortal4 = false, PortActive3 = false, PortActive4, removeportal = false;
 
+char splash[59][21];
+char mainmenuart[73][12];
+int splashscreen;
+int lvl;
 char	healthbar = 223;
 char	map[61][21];
 char something = '1', thingthing = '1';
@@ -172,19 +176,9 @@ void update(double dt)
 	{
 	case S_SPLASHSCREEN: splashScreenWait(); // game logic for the splash screen
 		break;
-	case S_SPLASH2: Splashwait2();
-		break;
 	case S_INSTRUCT: instructwait();
 		break;
 	case S_MAINMENU: mainmenuchoice();
-		break;
-	case S_MAINMENU2: mainmenuchoice2();
-		break;
-	case S_MAINMENU3: mainmenuchoice3();
-		break;
-	case S_MAINMENU4: mainmenuchoice4();
-		break;
-	case S_MAINMENU5: mainmenuchoice5();
 		break;
 	case S_GAME: gameplay(); // gameplay logic when we are in the game
 		break;
@@ -207,19 +201,9 @@ void render()
 	{
 	case S_SPLASHSCREEN: renderSplashScreen();
 		break;
-	case S_SPLASH2: renderSplashScreen2();
-		break;
 	case S_INSTRUCT: renderinstruct();
 		break;
 	case S_MAINMENU: renderToMainMenu();
-		break;
-	case S_MAINMENU2: renderToMainMenu2();
-		break;
-	case S_MAINMENU3: renderToMainMenu3();
-		break;
-	case S_MAINMENU4: renderToMainMenu4();
-		break;
-	case S_MAINMENU5: renderToMainMenu5();
 		break;
 	case S_GAME: renderGame();
 		break;
@@ -232,14 +216,19 @@ void render()
 
 void splashScreenWait()    // waits for time to pass in splash screen
 {
-	if (g_abKeyPressed[K_SPACE]) // press space to start game
+	if (splashscreen == 0)
 	{
-		g_eGameState = S_MAINMENU;
+		if (g_abKeyPressed[K_RETURN])
+		{
+			g_eGameState = S_MAINMENU;
+		}
 	}
-
-	if (g_abKeyPressed[PLAYER_2_K_DOWN])
+	if (splashscreen == 1)
 	{
-		g_eGameState = S_SPLASH2;
+		if (g_abKeyPressed[K_RETURN])
+		{
+			g_eGameState = S_INSTRUCT;
+		}
 	}
 
 	if (g_abKeyPressed[K_ESCAPE])
@@ -654,29 +643,58 @@ void clearScreen()
 	g_Console.clearBuffer(0x00);
 }
 
+void splashscreenextract()
+{
+
+	int i = 0;
+	int j = 0;
+
+	ifstream file("title.txt"); // read from title.txt to print the ascii art
+
+	if (file.is_open())
+	{
+		while (j <= 20)
+		{
+			while (i <= 58)
+			{
+				file >> splash[i][j];
+				i++;
+			}
+			i = 0;
+			j++;
+		}
+		file.close();
+	}
+}
+
+void splashscreenextract2()
+{
+	int i = 0;
+	int j = 0;
+	ifstream file("title2.txt"); // read from title.txt to print the ascii art
+	COORD c;
+	if (file.is_open())
+	{
+		while (j <= 20)
+		{
+			while (i <= 58)
+			{
+				file >> splash[i][j];
+				i++;
+			}
+			i = 0;
+			j++;
+		}
+		file.close();
+	}
+}
+
 void renderSplashScreen()  // renders the splash screen
 {
-	if ((int)(g_dElapsedTime) % 2 == 0)
+	COORD c;
+	if ((int)(g_dElapsedTime) % (2) == 0)
 	{
-		int i = 0;
-		int j = 0;
-		char splash[59][21];
-		ifstream file("title.txt"); // read from title.txt to print the ascii art
-		COORD c;
-		if (file.is_open())
-		{
-			while (j <= 20)
-			{
-				while (i <= 58)
-				{
-					file >> splash[i][j];
-					i++;
-				}
-				i = 0;
-				j++;
-			}
-			file.close();
-		}
+		splashscreenextract();
 		for (int y = 0; y <= 20; y++)
 		{
 			c.Y = y + 4;
@@ -704,42 +722,77 @@ void renderSplashScreen()  // renders the splash screen
 					g_Console.writeToBuffer(c, splash[x][y], 0x07);
 				}
 			}
+		
 		}
 
 		c = g_Console.getConsoleSize();
 		c.Y /= 3;
 		c.X = c.X / 2 - 35;
 		c.Y += 3;
-		c.X = g_Console.getConsoleSize().X / 2 - 8;
-		g_Console.writeToBuffer(c, "Start Game", 0x70);
-		c.Y += 1;
-		c.X = g_Console.getConsoleSize().X / 2 - 9;
-		g_Console.writeToBuffer(c, "Instructions", 0x07);
-		c.Y += 1;
-		c.X = g_Console.getConsoleSize().X / 2 - 13;
-		g_Console.writeToBuffer(c, "Press 'Esc' to quit", 0x07);
+		switch (splashscreen)
+		{
+		case 0:
+			{	
+				c.X = g_Console.getConsoleSize().X / 2 - 8;
+				g_Console.writeToBuffer(c, "Start Game", 0x70);
+				c.Y += 1;
+				c.X = g_Console.getConsoleSize().X / 2 - 9;
+				g_Console.writeToBuffer(c, "Instructions", 0x07);
+				c.Y += 1;
+				c.X = g_Console.getConsoleSize().X / 2 - 13;
+				g_Console.writeToBuffer(c, "Press 'Esc' to quit", 0x07);
+				break;
+			}
+		case 1:
+			{
+				c.X = g_Console.getConsoleSize().X / 2 - 8;
+				g_Console.writeToBuffer(c, "Start Game", 0x07);
+				c.Y += 1;
+				c.X = g_Console.getConsoleSize().X / 2 - 9;
+				g_Console.writeToBuffer(c, "Instructions", 0x70);
+				c.Y += 1;
+				c.X = g_Console.getConsoleSize().X / 2 - 13;
+				g_Console.writeToBuffer(c, "Press 'Esc' to quit", 0x07);
+				break;
+			}
+		default:
+		{
+				   if (splashscreen > 1)
+				   {
+					   splashscreen = 0;
+				   }
+				   else if (splashscreen < 0)
+				   {
+					   splashscreen = 1;
+				   }
+		}
+		}
+
+		if (g_dElapsedTime < g_dBounceTime)
+		{
+			return;
+		}
+
+		bool presskey = false;
+		if (g_abKeyPressed[PLAYER_2_K_DOWN])
+		{
+			splashscreen++;
+			presskey = true;
+		}
+		else if (g_abKeyPressed[PLAYER_2_K_UP])
+		{
+			splashscreen--;
+			presskey = true;
+		}
+
+		if (presskey == true)
+		{
+			g_dBounceTime = g_dElapsedTime + 0.125;
+		}
 	}
 	else
 	{
-		int i = 0;
-		int j = 0;
-		char splash[59][21];
-		ifstream file("title2.txt"); // read from title.txt to print the ascii art
-		COORD c;
-		if (file.is_open())
-		{
-			while (j <= 20)
-			{
-				while (i <= 58)
-				{
-					file >> splash[i][j];
-					i++;
-				}
-				i = 0;
-				j++;
-			}
-			file.close();
-		}
+		splashscreenextract2();
 		for (int y = 0; y <= 20; y++)
 		{
 			c.Y = y + 4;
@@ -769,156 +822,65 @@ void renderSplashScreen()  // renders the splash screen
 		c.Y /= 3;
 		c.X = c.X / 2 - 35;
 		c.Y += 3;
-		c.X = g_Console.getConsoleSize().X / 2 - 8;
-		g_Console.writeToBuffer(c, "Start Game", 0x70);
-		c.Y += 1;
-		c.X = g_Console.getConsoleSize().X / 2 - 9;
-		g_Console.writeToBuffer(c, "Instructions", 0x07);
-		c.Y += 1;
-		c.X = g_Console.getConsoleSize().X / 2 - 13;
-		g_Console.writeToBuffer(c, "Press 'Esc' to quit", 0x07);
-	}
-}
-
-void Splashwait2()
-{
-	if (g_abKeyPressed[K_SPACE]) // press space to start game
-	{
-		g_eGameState = S_INSTRUCT;
-	}
-
-	if (g_abKeyPressed[PLAYER_2_K_UP])
-	{
-		g_eGameState = S_SPLASHSCREEN;
-	}
-
-	if (g_abKeyPressed[K_ESCAPE])
-		g_bQuitGame = true;
-}
-
-void renderSplashScreen2()
-{
-	if ((int)(g_dElapsedTime) % 2 == 0)
-	{
-		int i = 0;
-		int j = 0;
-		char splash[59][21];
-		ifstream file("title.txt"); // read from title.txt to print the ascii art
-		COORD c;
-		if (file.is_open())
+		switch (splashscreen)
 		{
-			while (j <= 20)
-			{
-				while (i <= 58)
-				{
-					file >> splash[i][j];
-					i++;
-				}
-				i = 0;
-				j++;
-			}
-			file.close();
+		case 0:
+		{
+				  c.X = g_Console.getConsoleSize().X / 2 - 8;
+				  g_Console.writeToBuffer(c, "Start Game", 0x70);
+				  c.Y += 1;
+				  c.X = g_Console.getConsoleSize().X / 2 - 9;
+				  g_Console.writeToBuffer(c, "Instructions", 0x07);
+				  c.Y += 1;
+				  c.X = g_Console.getConsoleSize().X / 2 - 13;
+				  g_Console.writeToBuffer(c, "Press 'Esc' to quit", 0x07);
+				  break;
 		}
-		for (int y = 0; y <= 20; y++)
+		case 1:
 		{
-			c.Y = y + 4;
-			for (int x = 0; x <= 58; x++)
-			{
-				c.X = x + 10;
-				if (splash[x][y] != '~' && x < 11)
-				{
-					g_Console.writeToBuffer(c, splash[x][y], 0x0B);
-				}
-				else if (splash[x][y] != '~' && x > 47)
-				{
-					g_Console.writeToBuffer(c, splash[x][y], 0x0B);
-				}
-				else if (splash[x][y] != '~' && y > 5)
-				{
-					g_Console.writeToBuffer(c, splash[x][y], 0x0B);
-				}
-				else if (splash[x][y] != '~' && y > 10)
-				{
-					g_Console.writeToBuffer(c, splash[x][y], 0x0B);
-				}
-				else if (splash[x][y] != '~')
-				{
-					g_Console.writeToBuffer(c, splash[x][y], 0x07);
-				}
-			}
+				  c.X = g_Console.getConsoleSize().X / 2 - 8;
+				  g_Console.writeToBuffer(c, "Start Game", 0x07);
+				  c.Y += 1;
+				  c.X = g_Console.getConsoleSize().X / 2 - 9;
+				  g_Console.writeToBuffer(c, "Instructions", 0x70);
+				  c.Y += 1;
+				  c.X = g_Console.getConsoleSize().X / 2 - 13;
+				  g_Console.writeToBuffer(c, "Press 'Esc' to quit", 0x07);
+				  break;
+		}
+		default:
+		{
+				   if (splashscreen > 1)
+				   {
+					   splashscreen = 0;
+				   }
+				   else if (splashscreen < 0)
+				   {
+					   splashscreen = 1;
+				   }
+		}
+		}
+		if (g_dElapsedTime < g_dBounceTime)
+		{
+			return;
 		}
 
-		c = g_Console.getConsoleSize();
-		c.Y /= 3;
-		c.X = c.X / 2 - 35;
-		c.Y += 3;
-		c.X = g_Console.getConsoleSize().X / 2 - 8;
-		g_Console.writeToBuffer(c, "Start Game", 0x07);
-		c.Y += 1;
-		c.X = g_Console.getConsoleSize().X / 2 - 9;
-		g_Console.writeToBuffer(c, "Instructions", 0x70);
-		c.Y += 1;
-		c.X = g_Console.getConsoleSize().X / 2 - 13;
-		g_Console.writeToBuffer(c, "Press 'Esc' to quit", 0x07);
-	}
-	else
-	{
-		int i = 0;
-		int j = 0;
-		char splash[59][21];
-		ifstream file("title2.txt"); // read from title.txt to print the ascii art
-		COORD c;
-		if (file.is_open())
+		bool presskey = false;
+		if (g_abKeyPressed[PLAYER_2_K_DOWN])
 		{
-			while (j <= 20)
-			{
-				while (i <= 58)
-				{
-					file >> splash[i][j];
-					i++;
-				}
-				i = 0;
-				j++;
-			}
-			file.close();
+			splashscreen++;
+			presskey = true;
 		}
-		for (int y = 0; y <= 20; y++)
+		else if (g_abKeyPressed[PLAYER_2_K_UP])
 		{
-			c.Y = y + 4;
-			for (int x = 0; x <= 58; x++)
-			{
-				c.X = x + 10;
-				if (splash[x][y] != '~' && x < 11)
-				{
-					g_Console.writeToBuffer(c, splash[x][y], 0x0B);
-				}
-				else if (splash[x][y] != '~' && x > 47)
-				{
-					g_Console.writeToBuffer(c, splash[x][y], 0x0B);
-				}
-				else if (splash[x][y] != '~' && y > 5)
-				{
-					g_Console.writeToBuffer(c, splash[x][y], 0x0B);
-				}
-				else if (splash[x][y] != '~')
-				{
-					g_Console.writeToBuffer(c, splash[x][y], 0x07);
-				}
-			}
+			splashscreen--;
+			presskey = true;
 		}
 
-		c = g_Console.getConsoleSize();
-		c.Y /= 3;
-		c.X = c.X / 2 - 35;
-		c.Y += 3;
-		c.X = g_Console.getConsoleSize().X / 2 - 8;
-		g_Console.writeToBuffer(c, "Start Game", 0x07);
-		c.Y += 1;
-		c.X = g_Console.getConsoleSize().X / 2 - 9;
-		g_Console.writeToBuffer(c, "Instructions", 0x70);
-		c.Y += 1;
-		c.X = g_Console.getConsoleSize().X / 2 - 13;
-		g_Console.writeToBuffer(c, "Press 'Esc' to quit", 0x07);
+		if (presskey == true)
+		{
+			g_dBounceTime = g_dElapsedTime + 0.125;
+		}
 	}
 }
 
@@ -1642,153 +1604,103 @@ void renderToScreen()
 
 void mainmenuchoice()
 {
-	if (g_abKeyPressed[PLAYER_2_K_DOWN])
+	if (lvl == 0)
 	{
-		g_eGameState = S_MAINMENU2;
+		if (g_abKeyPressed[K_RETURN])
+		{
+
+			g_sChar.m_cLocation.X = 2;
+			g_sChar.m_cLocation.Y = 19;
+			g_sChar2.m_cLocation.X = 2;
+			g_sChar2.m_cLocation.Y = 18;
+			level = 11;
+			load_game(level);
+
+			g_eGameState = S_GAME;
+		}
 	}
 
-	if (g_abKeyPressed[K_RETURN])
+	if (lvl == 1)
 	{
+		if (g_abKeyPressed[K_RETURN])
+		{
 
-		g_sChar.m_cLocation.X = 2;
-		g_sChar.m_cLocation.Y = 19;
-		g_sChar2.m_cLocation.X = 2;
-		g_sChar2.m_cLocation.Y = 18;
-		level = 11;
-		load_game(level);
+			g_sChar.m_cLocation.X = 0;
+			g_sChar.m_cLocation.Y = 4;
+			g_sChar2.m_cLocation.X = 1;
+			g_sChar2.m_cLocation.Y = 4;
+			level = 21;
+			load_game(level);
 
-		g_eGameState = S_GAME;
+			g_eGameState = S_GAME;
+		}
+	}
+	if (lvl == 2)
+	{
+		if (g_abKeyPressed[K_RETURN])
+		{
+
+			g_sChar.m_cLocation.X = 0;
+			g_sChar.m_cLocation.Y = 19;
+			g_sChar2.m_cLocation.X = 1;
+			g_sChar2.m_cLocation.Y = 19;
+			level = 31;
+			load_game(level);
+
+			g_eGameState = S_GAME;
+		}
+	}
+	if (lvl == 3)
+	{
+		if (g_abKeyPressed[K_RETURN])
+		{
+
+			g_sChar.m_cLocation.X = 0;
+			g_sChar.m_cLocation.Y = 2;
+			g_sChar2.m_cLocation.X = 1;
+			g_sChar2.m_cLocation.Y = 2;
+			level = 41;
+			load_game(level);
+
+			g_eGameState = S_GAME;
+		}
+	}
+	if (lvl == 4)
+	{
+		if (g_abKeyPressed[K_RETURN])
+		{
+
+			g_sChar.m_cLocation.X = 0;
+			g_sChar.m_cLocation.Y = 19;
+			g_sChar2.m_cLocation.X = 1;
+			g_sChar2.m_cLocation.Y = 19;
+			level = 51;
+			load_game(level);
+
+			g_eGameState = S_GAME;
+		}
 	}
 
 	if (g_abKeyPressed[K_ESCAPE])
 		g_bQuitGame = true;
 }
 
-void mainmenuchoice2()
-{
-	if (g_abKeyPressed[PLAYER_2_K_UP])
-	{
-		g_eGameState = S_MAINMENU;
-	}
-
-	if (g_abKeyPressed[PLAYER_2_K_DOWN])
-	{
-		g_eGameState = S_MAINMENU3;
-	}
-	if (g_abKeyPressed[K_RETURN])
-	{
-
-		g_sChar.m_cLocation.X = 0;
-		g_sChar.m_cLocation.Y = 4;
-		g_sChar2.m_cLocation.X = 1;
-		g_sChar2.m_cLocation.Y = 4;
-		level = 21;
-		load_game(level);
-
-		g_eGameState = S_GAME;
-	}
-
-	if (g_abKeyPressed[K_ESCAPE])
-		g_bQuitGame = true;
-}
-
-void mainmenuchoice3()
-{
-	if (g_abKeyPressed[PLAYER_2_K_UP])
-	{
-		g_eGameState = S_MAINMENU2;
-	}
-
-	if (g_abKeyPressed[PLAYER_2_K_DOWN])
-	{
-		g_eGameState = S_MAINMENU4;
-	}
-
-	if (g_abKeyPressed[K_RETURN])
-	{
-
-		g_sChar.m_cLocation.X = 0;
-		g_sChar.m_cLocation.Y = 19;
-		g_sChar2.m_cLocation.X = 1;
-		g_sChar2.m_cLocation.Y = 19;
-		level = 31;
-		load_game(level);
-
-		g_eGameState = S_GAME;
-	}
-
-	if (g_abKeyPressed[K_ESCAPE])
-		g_bQuitGame = true;
-}
-
-void mainmenuchoice4()
-{
-	if (g_abKeyPressed[PLAYER_2_K_UP])
-	{
-		g_eGameState = S_MAINMENU3;
-	}
-
-	if (g_abKeyPressed[PLAYER_2_K_DOWN])
-	{
-		g_eGameState = S_MAINMENU5;
-	}
-
-	if (g_abKeyPressed[K_RETURN])
-	{
-
-		g_sChar.m_cLocation.X = 0;
-		g_sChar.m_cLocation.Y = 2;
-		g_sChar2.m_cLocation.X = 1;
-		g_sChar2.m_cLocation.Y = 2;
-		level = 41;
-		load_game(level);
-
-		g_eGameState = S_GAME;
-	}
-	if (g_abKeyPressed[K_ESCAPE])
-		g_bQuitGame = true;
-}
-
-void mainmenuchoice5()
-{
-	if (g_abKeyPressed[PLAYER_2_K_UP])
-	{
-		g_eGameState = S_MAINMENU4;
-	}
-
-	if (g_abKeyPressed[K_RETURN])
-	{
-
-		g_sChar.m_cLocation.X = 0;
-		g_sChar.m_cLocation.Y = 19;
-		g_sChar2.m_cLocation.X = 1;
-		g_sChar2.m_cLocation.Y = 19;
-		level = 51;
-		load_game(level);
-
-		g_eGameState = S_GAME;
-	}
-	if (g_abKeyPressed[K_ESCAPE])
-		g_bQuitGame = true;
-}
-
-void renderToMainMenu()
+void mainmenuextract()
 {
 	int i = 0;
 	int j = 0;
-	char main[73][12];
 
 	int count = 0;
 
 	ifstream file("PickALevel.txt"); // read file from PickALevel.txt to print the ascii art
-	COORD c;
+	
 	if (file.is_open())
 	{
 		while (j <= 11)
 		{
 			while (i <= 72)
 			{
-				file >> main[i][j];
+				file >> mainmenuart[i][j];
 				i++;
 			}
 			i = 0;
@@ -1796,68 +1708,21 @@ void renderToMainMenu()
 		}
 		file.close();
 	}
-	for (int y = 0; y <= 11; y++)
-	{
-		c.Y = y + 4;
-		for (int x = 0; x <= 72; x++)
-		{
-			c.X = x + 3;
-			if (main[x][y] != '~')
-			{
-				g_Console.writeToBuffer(c, main[x][y], 0x09);
-			}
-		}
-	}
-	c = g_Console.getConsoleSize();
-	c.Y /= 3 + 10;
-	c.X = c.X / 2 - 35;
-	c.Y += 15;
-	c.X = g_Console.getConsoleSize().X / 2 - 20;
-	g_Console.writeToBuffer(c, "Press enter to choose your level (1-5).", 0x03);
-
-	c.Y += 1;
-	c.X = g_Console.getConsoleSize().X / 2 - 7;
-	g_Console.writeToBuffer(c, "Level 1", 0x73);
-	c.Y += 1;
-	g_Console.writeToBuffer(c, "Level 2", 0x03);
-	c.Y += 1;
-	g_Console.writeToBuffer(c, "Level 3", 0x03);
-	c.Y += 1;
-	g_Console.writeToBuffer(c, "Level 4", 0x03);
-	c.Y += 1;
-	g_Console.writeToBuffer(c, "Level 5", 0x03);
 }
 
-void renderToMainMenu2()
+void renderToMainMenu()
 {
-	int i = 0;
-	int j = 0;
-	char main[73][12];
-	ifstream file("PickALevel.txt"); // read file from PickALevel.txt to print the ascii art
+	mainmenuextract();
 	COORD c;
-	if (file.is_open())
-	{
-		while (j <= 11)
-		{
-			while (i <= 72)
-			{
-				file >> main[i][j];
-				i++;
-			}
-			i = 0;
-			j++;
-		}
-		file.close();
-	}
 	for (int y = 0; y <= 11; y++)
 	{
 		c.Y = y + 4;
 		for (int x = 0; x <= 72; x++)
 		{
 			c.X = x + 3;
-			if (main[x][y] != '~')
+			if (mainmenuart[x][y] != '~')
 			{
-				g_Console.writeToBuffer(c, main[x][y], 0x09);
+				g_Console.writeToBuffer(c, mainmenuart[x][y], 0x09);
 			}
 		}
 	}
@@ -1867,171 +1732,121 @@ void renderToMainMenu2()
 	c.Y += 15;
 	c.X = g_Console.getConsoleSize().X / 2 - 20;
 	g_Console.writeToBuffer(c, "Press enter to choose your level (1-5).", 0x03);
-	c.Y += 1;
-	c.X = g_Console.getConsoleSize().X / 2 - 7;
-	g_Console.writeToBuffer(c, "Level 1", 0x03);
-	c.Y += 1;
-	g_Console.writeToBuffer(c, "Level 2", 0x73);
-	c.Y += 1;
-	g_Console.writeToBuffer(c, "Level 3", 0x03);
-	c.Y += 1;
-	g_Console.writeToBuffer(c, "Level 4", 0x03);
-	c.Y += 1;
-	g_Console.writeToBuffer(c, "Level 5", 0x03);
-}
+	
+	switch (lvl)
+	{
+	case 0:
+	{
+		c.Y += 1;
+		c.X = g_Console.getConsoleSize().X / 2 - 5;
+		g_Console.writeToBuffer(c, "Level 1", 0x73);
+		c.Y += 1;
+		g_Console.writeToBuffer(c, "Level 2", 0x03);
+		c.Y += 1;
+		g_Console.writeToBuffer(c, "Level 3", 0x03);
+		c.Y += 1;
+		g_Console.writeToBuffer(c, "Level 4", 0x03);
+		c.Y += 1;
+		g_Console.writeToBuffer(c, "Level 5", 0x03);
 
-void renderToMainMenu3()
-{
-	int i = 0;
-	int j = 0;
-	char main[73][12];
-	ifstream file("PickALevel.txt"); // read file from PickALevel.txt to print the ascii art
-	COORD c;
-	if (file.is_open())
-	{
-		while (j <= 11)
-		{
-			while (i <= 72)
-			{
-				file >> main[i][j];
-				i++;
-			}
-			i = 0;
-			j++;
-		}
-		file.close();
+		break;
 	}
-	for (int y = 0; y <= 11; y++)
+	case 1:
 	{
-		c.Y = y + 4;
-		for (int x = 0; x <= 72; x++)
-		{
-			c.X = x + 3;
-			if (main[x][y] != '~')
-			{
-				g_Console.writeToBuffer(c, main[x][y], 0x09);
-			}
-		}
-	}
-	c = g_Console.getConsoleSize();
-	c.Y /= 3 + 10;
-	c.X = c.X / 2 - 35;
-	c.Y += 15;
-	c.X = g_Console.getConsoleSize().X / 2 - 20;
-	g_Console.writeToBuffer(c, "Press enter to choose your level (1-5).", 0x03);
-	c.Y += 1;
-	c.X = g_Console.getConsoleSize().X / 2 - 7;
-	g_Console.writeToBuffer(c, "Level 1", 0x03);
-	c.Y += 1;
-	g_Console.writeToBuffer(c, "Level 2", 0x03);
-	c.Y += 1;
-	g_Console.writeToBuffer(c, "Level 3", 0x73);
-	c.Y += 1;
-	g_Console.writeToBuffer(c, "Level 4", 0x03);
-	c.Y += 1;
-	g_Console.writeToBuffer(c, "Level 5", 0x03);
-}
+		c.Y += 1;
+		c.X = g_Console.getConsoleSize().X / 2 - 5;
+		g_Console.writeToBuffer(c, "Level 1", 0x03);
+		c.Y += 1;
+		g_Console.writeToBuffer(c, "Level 2", 0x73);
+		c.Y += 1;
+		g_Console.writeToBuffer(c, "Level 3", 0x03);
+		c.Y += 1;
+		g_Console.writeToBuffer(c, "Level 4", 0x03);
+		c.Y += 1;
+		g_Console.writeToBuffer(c, "Level 5", 0x03);
 
-void renderToMainMenu4()
-{
-	int i = 0;
-	int j = 0;
-	char main[73][12];
-	ifstream file("PickALevel.txt"); // read file from PickALevel.txt to print the ascii art
-	COORD c;
-	if (file.is_open())
-	{
-		while (j <= 11)
-		{
-			while (i <= 72)
-			{
-				file >> main[i][j];
-				i++;
-			}
-			i = 0;
-			j++;
-		}
-		file.close();
+		break;
 	}
-	for (int y = 0; y <= 11; y++)
+	case 2:
 	{
-		c.Y = y + 4;
-		for (int x = 0; x <= 72; x++)
-		{
-			c.X = x + 3;
-			if (main[x][y] != '~')
-			{
-				g_Console.writeToBuffer(c, main[x][y], 0x09);
-			}
-		}
-	}
-	c = g_Console.getConsoleSize();
-	c.Y /= 3 + 10;
-	c.X = c.X / 2 - 35;
-	c.Y += 15;
-	c.X = g_Console.getConsoleSize().X / 2 - 20;
-	g_Console.writeToBuffer(c, "Press enter to choose your level (1-5).", 0x03);
-	c.Y += 1;
-	c.X = g_Console.getConsoleSize().X / 2 - 7;
-	g_Console.writeToBuffer(c, "Level 1", 0x03);
-	c.Y += 1;
-	g_Console.writeToBuffer(c, "Level 2", 0x03);
-	c.Y += 1;
-	g_Console.writeToBuffer(c, "Level 3", 0x03);
-	c.Y += 1;
-	g_Console.writeToBuffer(c, "Level 4", 0x73);
-	c.Y += 1;
-	g_Console.writeToBuffer(c, "Level 5", 0x03);
-}
+		c.Y += 1;
+		c.X = g_Console.getConsoleSize().X / 2 - 5;
+		g_Console.writeToBuffer(c, "Level 1", 0x03);
+		c.Y += 1;
+		g_Console.writeToBuffer(c, "Level 2", 0x03);
+		c.Y += 1;
+		g_Console.writeToBuffer(c, "Level 3", 0x73);
+		c.Y += 1;
+		g_Console.writeToBuffer(c, "Level 4", 0x03);
+		c.Y += 1;
+		g_Console.writeToBuffer(c, "Level 5", 0x03);
 
-void renderToMainMenu5()
-{
-	int i = 0;
-	int j = 0;
-	char main[73][12];
-	ifstream file("PickALevel.txt"); // read file from PickALevel.txt to print the ascii art
-	COORD c;
-	if (file.is_open())
-	{
-		while (j <= 11)
-		{
-			while (i <= 72)
-			{
-				file >> main[i][j];
-				i++;
-			}
-			i = 0;
-			j++;
-		}
-		file.close();
+		break;
 	}
-	for (int y = 0; y <= 11; y++)
+	case 3:
 	{
-		c.Y = y + 4;
-		for (int x = 0; x <= 72; x++)
+		c.Y += 1;
+		c.X = g_Console.getConsoleSize().X / 2 - 5;
+		g_Console.writeToBuffer(c, "Level 1", 0x03);
+		c.Y += 1;
+		g_Console.writeToBuffer(c, "Level 2", 0x03);
+		c.Y += 1;
+		g_Console.writeToBuffer(c, "Level 3", 0x03);
+		c.Y += 1;
+		g_Console.writeToBuffer(c, "Level 4", 0x73);
+		c.Y += 1;
+		g_Console.writeToBuffer(c, "Level 5", 0x03);
+		
+		break;
+	}
+	case 4:
+	{
+		c.Y += 1;
+		c.X = g_Console.getConsoleSize().X / 2 - 5;
+		g_Console.writeToBuffer(c, "Level 1", 0x03);
+		c.Y += 1;
+		g_Console.writeToBuffer(c, "Level 2", 0x03);
+		c.Y += 1;
+		g_Console.writeToBuffer(c, "Level 3", 0x03);
+		c.Y += 1;
+		g_Console.writeToBuffer(c, "Level 4", 0x03);
+		c.Y += 1;
+		g_Console.writeToBuffer(c, "Level 5", 0x73);
+		
+		break;
+	}
+		default:
 		{
-			c.X = x + 3;
-			if (main[x][y] != '~')
-			{
-				g_Console.writeToBuffer(c, main[x][y], 0x09);
-			}
+			   if (lvl > 4)
+			   {
+				   lvl = 0;
+			   }
+			   else if (lvl < 0)
+			   {
+				   lvl = 4;
+			   }
+		break;
 		}
 	}
-	c = g_Console.getConsoleSize();
-	c.Y /= 3 + 10;
-	c.X = c.X / 2 - 35;
-	c.Y += 15;
-	c.X = g_Console.getConsoleSize().X / 2 - 20;
-	g_Console.writeToBuffer(c, "Press enter to choose your level (1-5).", 0x03);
-	c.Y += 1;
-	c.X = g_Console.getConsoleSize().X / 2 - 7;
-	g_Console.writeToBuffer(c, "Level 1", 0x03);
-	c.Y += 1;
-	g_Console.writeToBuffer(c, "Level 2", 0x03);
-	c.Y += 1;
-	g_Console.writeToBuffer(c, "Level 3", 0x03);
-	c.Y += 1;
-	g_Console.writeToBuffer(c, "Level 4", 0x03);
-	c.Y += 1;
-	g_Console.writeToBuffer(c, "Level 5", 0x73);
+	if (g_dElapsedTime < g_dBounceTime)
+	{
+		return;
+	}
+	
+	bool presskey = false;
+	if (g_abKeyPressed[PLAYER_2_K_DOWN])
+	{
+		lvl++;
+		presskey = true;
+	}
+	else if (g_abKeyPressed[PLAYER_2_K_UP])
+	{
+		lvl--;
+		presskey = true;
+	}
+	
+	if (presskey == true)
+	{
+		g_dBounceTime = g_dElapsedTime + 0.125;
+	}
 }
