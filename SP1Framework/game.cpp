@@ -5,7 +5,13 @@
 #include "Framework\console.h"
 #include "mapInteract.h"
 #include "extract.h"
+#include "extractmain.h"
+#include "extractSplashOne.h"
+#include "extractSplashTwo.h"
+#include "extractfirework.h"
+#include "extractfireworks2.h"
 #include "levelTransition.h"
+#include "extractClearGame.h"
 #include "Portalgun-teleporting.h"
 #include "textBuffer.h"
 #include <iostream>
@@ -21,8 +27,12 @@ double  g_dDeltaTime;
 bool    g_abKeyPressed[K_COUNT], teleporter = false, gateOpen = false, shotPortal = false, shotPortal2 = false, PortActive1 = false, PortActive2 = false;
 bool transisted, shotPortal3 = false, shotPortal4 = false, PortActive3 = false, PortActive4, removeportal = false;
 
+char fireart[56][12];
+char fireart2[56][12];
+char clearscreen[60][6];
 char splash[59][21];
 char mainmenuart[73][12];
+char main[63][6];
 int splashscreen;
 int lvl;
 char	healthbar = 223;
@@ -182,6 +192,10 @@ void update(double dt)
 		break;
 	case S_GAME: gameplay(); // gameplay logic when we are in the game
 		break;
+	case S_GAMEOVER: gameoverwait();
+		break;
+	case S_CLEARGAME: cleargamewait();
+		break;
 	}
 }
 
@@ -208,6 +222,8 @@ void render()
 	case S_GAME: renderGame();
 		break;
 	case S_GAMEOVER: renderGameOver();
+		break;
+	case S_CLEARGAME: rendercleargame();
 		break;
 	}
 	renderFramerate();  // renders debug information, frame rate, elapsed time, etc
@@ -420,13 +436,20 @@ void moveCharacter()
 		g_sChar.m_cLocation = mapTransition(g_sChar.m_cLocation, g_sChar.m_cLocation.X, g_sChar.m_cLocation.Y, &level, &transisted);
 		if (transisted == true)
 		{
-			load_game(level);
-			g_sChar2.m_cLocation.X = g_sChar.m_cLocation.X + 1;
-			g_sChar2.m_cLocation.Y = g_sChar.m_cLocation.Y;
-			transisted = false;
-			removeportal = true;
-			/*thingthing = '\0';*/
-			something = '\0';
+			if (level == 0)
+			{
+				g_eGameState = S_CLEARGAME;
+			}
+			else
+			{
+				load_game(level);
+				g_sChar2.m_cLocation.X = g_sChar.m_cLocation.X + 1;
+				g_sChar2.m_cLocation.Y = g_sChar.m_cLocation.Y;
+				transisted = false;
+				removeportal = true;
+				/*thingthing = '\0';*/
+				something = '\0';
+			}
 		}
 		teleport.erase(0, teledel);
 		teledel = 0;
@@ -609,11 +632,18 @@ void moveCharacter()
 		g_sChar2.m_cLocation = mapTransition(g_sChar2.m_cLocation, g_sChar2.m_cLocation.X, g_sChar2.m_cLocation.Y, &level, &transisted);
 		if (transisted == true)
 		{
-			load_game(level);
-			g_sChar.m_cLocation.X = g_sChar2.m_cLocation.X + 1;
-			g_sChar.m_cLocation.Y = g_sChar2.m_cLocation.Y;
-			transisted = false;
-			removeportal = true;
+			if (level == 0)
+			{
+				g_eGameState = S_CLEARGAME;
+			}
+			else
+			{
+				load_game(level);
+				g_sChar.m_cLocation.X = g_sChar2.m_cLocation.X + 1;
+				g_sChar.m_cLocation.Y = g_sChar2.m_cLocation.Y;
+				transisted = false;
+				removeportal = true;
+			}
 		}
 		teleport.erase(0, teledel);
 		teledel = 0;
@@ -643,62 +673,29 @@ void clearScreen()
 	g_Console.clearBuffer(0x00);
 }
 
-void splashscreenextract()
-{
-
-	int i = 0;
-	int j = 0;
-
-	ifstream file("title.txt"); // read from title.txt to print the ascii art
-
-	if (file.is_open())
-	{
-		while (j <= 20)
-		{
-			while (i <= 58)
-			{
-				file >> splash[i][j];
-				i++;
-			}
-			i = 0;
-			j++;
-		}
-		file.close();
-	}
-}
-
-void splashscreenextract2()
-{
-	int i = 0;
-	int j = 0;
-	ifstream file("title2.txt"); // read from title.txt to print the ascii art
-	COORD c;
-	if (file.is_open())
-	{
-		while (j <= 20)
-		{
-			while (i <= 58)
-			{
-				file >> splash[i][j];
-				i++;
-			}
-			i = 0;
-			j++;
-		}
-		file.close();
-	}
-}
-
 void renderSplashScreen()  // renders the splash screen
 {
+	int z = 0;
+	int z2 = 0;
+	string sp = extractSplashOne(splashscreen);
+	string sp2 = extractSplashTwo(splashscreen);
 	COORD c;
+	
 	if ((int)(g_dElapsedTime) % (2) == 0)
 	{
-		splashscreenextract();
-		for (int y = 0; y <= 20; y++)
+		for (int y = 0; y < 21; y++)
+		{
+			for (int x = 0; x < 59; x++)
+			{
+				splash[x][y] = sp[z];
+				z++;
+			}
+			z = (y + 1) * 59;
+		}
+		for (int y = 0; y < 21; y++)
 		{
 			c.Y = y + 4;
-			for (int x = 0; x <= 58; x++)
+			for (int x = 0; x < 59; x++)
 			{
 				c.X = x + 10;
 				if (splash[x][y] != '~' && x < 11)
@@ -724,75 +721,18 @@ void renderSplashScreen()  // renders the splash screen
 			}
 		
 		}
-
-		c = g_Console.getConsoleSize();
-		c.Y /= 3;
-		c.X = c.X / 2 - 35;
-		c.Y += 3;
-		switch (splashscreen)
-		{
-		case 0:
-			{	
-				c.X = g_Console.getConsoleSize().X / 2 - 8;
-				g_Console.writeToBuffer(c, "Start Game", 0x70);
-				c.Y += 1;
-				c.X = g_Console.getConsoleSize().X / 2 - 9;
-				g_Console.writeToBuffer(c, "Instructions", 0x07);
-				c.Y += 1;
-				c.X = g_Console.getConsoleSize().X / 2 - 13;
-				g_Console.writeToBuffer(c, "Press 'Esc' to quit", 0x07);
-				break;
-			}
-		case 1:
-			{
-				c.X = g_Console.getConsoleSize().X / 2 - 8;
-				g_Console.writeToBuffer(c, "Start Game", 0x07);
-				c.Y += 1;
-				c.X = g_Console.getConsoleSize().X / 2 - 9;
-				g_Console.writeToBuffer(c, "Instructions", 0x70);
-				c.Y += 1;
-				c.X = g_Console.getConsoleSize().X / 2 - 13;
-				g_Console.writeToBuffer(c, "Press 'Esc' to quit", 0x07);
-				break;
-			}
-		default:
-		{
-				   if (splashscreen > 1)
-				   {
-					   splashscreen = 0;
-				   }
-				   else if (splashscreen < 0)
-				   {
-					   splashscreen = 1;
-				   }
-		}
-		}
-
-		if (g_dElapsedTime < g_dBounceTime)
-		{
-			return;
-		}
-
-		bool presskey = false;
-		if (g_abKeyPressed[PLAYER_2_K_DOWN])
-		{
-			splashscreen++;
-			presskey = true;
-		}
-		else if (g_abKeyPressed[PLAYER_2_K_UP])
-		{
-			splashscreen--;
-			presskey = true;
-		}
-
-		if (presskey == true)
-		{
-			g_dBounceTime = g_dElapsedTime + 0.125;
-		}
 	}
 	else
 	{
-		splashscreenextract2();
+		for (int y = 0; y < 21; y++)
+		{
+			for (int x = 0; x < 59; x++)
+			{
+				splash[x][y] = sp2[z2];
+				z2++;
+			}
+			z2 = (y + 1) * 59;
+		}
 		for (int y = 0; y <= 20; y++)
 		{
 			c.Y = y + 4;
@@ -817,70 +757,70 @@ void renderSplashScreen()  // renders the splash screen
 				}
 			}
 		}
+	}
+	
+	c = g_Console.getConsoleSize();
+	c.Y /= 3;
+	c.X = c.X / 2 - 35;
+	c.Y += 3;
+	switch (splashscreen)
+	{
+	case 0:
+	{
+			  c.X = g_Console.getConsoleSize().X / 2 - 8;
+			  g_Console.writeToBuffer(c, "Start Game", 0x70);
+			  c.Y += 1;
+			  c.X = g_Console.getConsoleSize().X / 2 - 9;
+			  g_Console.writeToBuffer(c, "Instructions", 0x07);
+			  c.Y += 1;
+			  c.X = g_Console.getConsoleSize().X / 2 - 13;
+			  g_Console.writeToBuffer(c, "Press 'Esc' to quit", 0x07);
+			  break;
+	}
+	case 1:
+	{
+			  c.X = g_Console.getConsoleSize().X / 2 - 8;
+			  g_Console.writeToBuffer(c, "Start Game", 0x07);
+			  c.Y += 1;
+			  c.X = g_Console.getConsoleSize().X / 2 - 9;
+			  g_Console.writeToBuffer(c, "Instructions", 0x70);
+			  c.Y += 1;
+			  c.X = g_Console.getConsoleSize().X / 2 - 13;
+			  g_Console.writeToBuffer(c, "Press 'Esc' to quit", 0x07);
+			  break;
+	}
+	default:
+	{
+			   if (splashscreen > 1)
+			   {
+				   splashscreen = 0;
+			   }
+			   else if (splashscreen < 0)
+			   {
+				   splashscreen = 1;
+			   }
+	}
+	}
+	if (g_dElapsedTime < g_dBounceTime)
+	{
+		return;
+	}
 
-		c = g_Console.getConsoleSize();
-		c.Y /= 3;
-		c.X = c.X / 2 - 35;
-		c.Y += 3;
-		switch (splashscreen)
-		{
-		case 0:
-		{
-				  c.X = g_Console.getConsoleSize().X / 2 - 8;
-				  g_Console.writeToBuffer(c, "Start Game", 0x70);
-				  c.Y += 1;
-				  c.X = g_Console.getConsoleSize().X / 2 - 9;
-				  g_Console.writeToBuffer(c, "Instructions", 0x07);
-				  c.Y += 1;
-				  c.X = g_Console.getConsoleSize().X / 2 - 13;
-				  g_Console.writeToBuffer(c, "Press 'Esc' to quit", 0x07);
-				  break;
-		}
-		case 1:
-		{
-				  c.X = g_Console.getConsoleSize().X / 2 - 8;
-				  g_Console.writeToBuffer(c, "Start Game", 0x07);
-				  c.Y += 1;
-				  c.X = g_Console.getConsoleSize().X / 2 - 9;
-				  g_Console.writeToBuffer(c, "Instructions", 0x70);
-				  c.Y += 1;
-				  c.X = g_Console.getConsoleSize().X / 2 - 13;
-				  g_Console.writeToBuffer(c, "Press 'Esc' to quit", 0x07);
-				  break;
-		}
-		default:
-		{
-				   if (splashscreen > 1)
-				   {
-					   splashscreen = 0;
-				   }
-				   else if (splashscreen < 0)
-				   {
-					   splashscreen = 1;
-				   }
-		}
-		}
-		if (g_dElapsedTime < g_dBounceTime)
-		{
-			return;
-		}
+	bool presskey = false;
+	if (g_abKeyPressed[PLAYER_2_K_DOWN])
+	{
+		splashscreen++;
+		presskey = true;
+	}
+	else if (g_abKeyPressed[PLAYER_2_K_UP])
+	{
+		splashscreen--;
+		presskey = true;
+	}
 
-		bool presskey = false;
-		if (g_abKeyPressed[PLAYER_2_K_DOWN])
-		{
-			splashscreen++;
-			presskey = true;
-		}
-		else if (g_abKeyPressed[PLAYER_2_K_UP])
-		{
-			splashscreen--;
-			presskey = true;
-		}
-
-		if (presskey == true)
-		{
-			g_dBounceTime = g_dElapsedTime + 0.125;
-		}
+	if (presskey == true)
+	{
+		g_dBounceTime = g_dElapsedTime + 0.125;
 	}
 }
 
@@ -958,13 +898,24 @@ void renderinstruct()
 
 }
 
-void renderGameOver()
+void gameoverwait()
 {
+	if (g_abKeyPressed[K_RETURN])
+	{
+		g_eGameState = S_SPLASHSCREEN;
+	}
+	if (g_abKeyPressed[K_ESCAPE])
+	{
+		g_bQuitGame = true;
+	}
+}
+
+void extractover()
+{
+
 	int i = 0;
 	int j = 0;
-	char main[63][6];
 	ifstream file("GameOver.txt"); // read file from PickALevel.txt to print the ascii art
-	COORD c;
 	if (file.is_open())
 	{
 		while (j <= 5)
@@ -979,6 +930,12 @@ void renderGameOver()
 		}
 		file.close();
 	}
+}
+
+void renderGameOver()
+{
+	COORD c;
+	extractover();
 	for (int y = 0; y <= 5; y++)
 	{
 		c.Y = y + 4;
@@ -997,15 +954,6 @@ void renderGameOver()
 	c.Y += 10;
 	c.X = g_Console.getConsoleSize().X / 2 - 20;
 	g_Console.writeToBuffer(c, "Press enter to go back to Starting Screen.", 0x03);
-
-	if (g_abKeyPressed[K_RETURN])
-	{
-		g_eGameState = S_SPLASHSCREEN;
-	}
-	if (g_abKeyPressed[K_ESCAPE])
-	{
-		g_bQuitGame = true;
-	}
 }
 
 void renderhealth()
@@ -1674,7 +1622,7 @@ void mainmenuchoice()
 			g_sChar.m_cLocation.Y = 19;
 			g_sChar2.m_cLocation.X = 1;
 			g_sChar2.m_cLocation.Y = 19;
-			level = 51;
+			level = 0;
 			load_game(level);
 
 			g_eGameState = S_GAME;
@@ -1685,39 +1633,26 @@ void mainmenuchoice()
 		g_bQuitGame = true;
 }
 
-void mainmenuextract()
-{
-	int i = 0;
-	int j = 0;
-
-	int count = 0;
-
-	ifstream file("PickALevel.txt"); // read file from PickALevel.txt to print the ascii art
-	
-	if (file.is_open())
-	{
-		while (j <= 11)
-		{
-			while (i <= 72)
-			{
-				file >> mainmenuart[i][j];
-				i++;
-			}
-			i = 0;
-			j++;
-		}
-		file.close();
-	}
-}
-
 void renderToMainMenu()
 {
-	mainmenuextract();
+	int z = 0;
+	string mainex = extractmain(lvl);
+
 	COORD c;
-	for (int y = 0; y <= 11; y++)
+
+	for (int y = 0; y < 12; y++)
+	{
+		for (int x = 0; x < 73; x++)
+		{
+			mainmenuart[x][y] = mainex[z];
+			z++;
+		}
+		z = (y + 1) * 73;
+	}
+	for (int y = 0; y < 12; y++)
 	{
 		c.Y = y + 4;
-		for (int x = 0; x <= 72; x++)
+		for (int x = 0; x < 73; x++)
 		{
 			c.X = x + 3;
 			if (mainmenuart[x][y] != '~')
@@ -1848,5 +1783,107 @@ void renderToMainMenu()
 	if (presskey == true)
 	{
 		g_dBounceTime = g_dElapsedTime + 0.125;
+	}
+}
+
+void rendercleargame()
+{
+	int z = 0;
+	string clear = extractclear(g_sChar.m_cLocation, g_sChar.m_cLocation.X, g_sChar.m_cLocation.Y, &level);
+
+	COORD c;
+
+	for (int y = 0; y < 6; y++)
+	{
+		for (int x = 0; x < 60; x++)
+		{
+			clearscreen[x][y] = clear[z];
+			z++;
+		}
+		z = (y + 1) * 60;
+	}
+	for (int y = 0; y < 6; y++)
+	{
+		c.Y = y + 4;
+		for (int x = 0; x < 60; x++)
+		{
+			c.X = x + 10;
+			if (clearscreen[x][y] != '~')
+			{
+				g_Console.writeToBuffer(c, clearscreen[x][y], 0x07);
+			}
+		}
+	}
+	c = g_Console.getConsoleSize();
+	c.Y /= 3 + 10;
+	c.X = c.X / 2 - 35;
+	c.Y += 10;
+	c.X = g_Console.getConsoleSize().X / 2 - 20;
+	g_Console.writeToBuffer(c, "Press enter to go back to Starting Screen.", 0x07);
+	int z2 = 0;
+	string fireex = extractfirework(g_sChar.m_cLocation, g_sChar.m_cLocation.X, g_sChar.m_cLocation.Y, &level);
+
+	for (int y = 0; y < 12; y++)
+	{
+		for (int x = 0; x < 56; x++)
+		{
+			fireart[x][y] = fireex[z2];
+			z2++;
+		}
+		z = (y + 1) * 56;
+	}
+	int z3 = 0;
+	string fireex2 = extractfireworks2(g_sChar.m_cLocation, g_sChar.m_cLocation.X, g_sChar.m_cLocation.Y, &level);
+
+	for (int y = 0; y < 12; y++)
+	{
+		for (int x = 0; x < 56; x++)
+		{
+			fireart2[x][y] = fireex2[z3];
+			z3++;
+		}
+		z = (y + 1) * 56;
+	}
+	if ((int)(g_dElapsedTime) % 2 == 0)
+	{
+		for (int y = 0; y < 12; y++)
+		{
+			c.Y = y + 12;
+			for (int x = 0; x < 56; x++)
+			{
+				c.X = x + 10;
+				if (fireart[x][y] != '~')
+				{
+					g_Console.writeToBuffer(c, fireart[x][y], 0x07);
+				}
+			}
+		}
+	}
+	else
+	{
+		for (int y = 0; y < 12; y++)
+		{
+			c.Y = y + 12;
+			for (int x = 0; x < 56; x++)
+			{
+				c.X = x + 10;
+				if (fireart2[x][y] != '~')
+				{
+					g_Console.writeToBuffer(c, fireart2[x][y], 0x07);
+				}
+			}
+		}
+	}
+}
+
+void cleargamewait()
+{
+	if (g_abKeyPressed[K_RETURN])
+	{
+		g_eGameState = S_SPLASHSCREEN;
+	}
+	if (g_abKeyPressed[K_ESCAPE])
+	{
+		g_bQuitGame = true;
 	}
 }

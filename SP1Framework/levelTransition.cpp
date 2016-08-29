@@ -110,6 +110,10 @@ COORD mapTransition(COORD spawn,int x, int y, int *level, bool *transisted)
 		*level = 0;
 		*transisted = true;
 	}
+	if (x == 59 && y == 19 && *level == 0)
+	{
+		*transisted = true;
+	}
 	//else if (x == 59 && y == 2 && *level == 11)
 	//{
 	//	*level += 1;

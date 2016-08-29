@@ -48,6 +48,7 @@ enum EGAMESTATES
 	S_LEVELFOUR,
 	S_LEVELFIVE,
 	S_GAMEOVER,
+	S_CLEARGAME,
 	S_COUNT
 };
 
@@ -106,12 +107,16 @@ void renderToScreen();      // dump the contents of the buffer to the screen, on
 
 void mainmenuchoice();
 void renderToMainMenu();
-void mainmenuextract();
 
 void renderhealth();
 void renderGameOver();
+void gameoverwait();
+void extractover();
 
 void renderinstruct();
 void instructwait();
+
+void rendercleargame();
+void cleargamewait();
 
 #endif // _GAME_H

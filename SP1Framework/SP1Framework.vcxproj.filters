@@ -48,6 +48,24 @@
     <ClCompile Include="Framework\console.cpp">
       <Filter>Source Files\Framework</Filter>
     </ClCompile>
+    <ClCompile Include="extractmain.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="extractSplashOne.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="extractSplashTwo.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="extractClearGame.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="extractfirework.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="extractfireworks2.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Framework\console.h">
@@ -72,6 +90,24 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="textBuffer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="extractmain.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="extractSplashOne.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="extractSplashTwo.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="extractClearGame.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="extractfirework.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="extractfireworks2.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
