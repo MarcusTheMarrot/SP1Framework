@@ -113,5 +113,6 @@ void renderGameOver();
 
 void renderinstruct();
 void instructwait();
+void renderPortalgun();
 
 #endif // _GAME_H
