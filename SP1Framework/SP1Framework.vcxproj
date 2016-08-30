@@ -78,6 +78,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="colour.cpp" />
     <ClCompile Include="extract.cpp" />
     <ClCompile Include="extractClearGame.cpp" />
     <ClCompile Include="extractfirework.cpp" />
@@ -95,6 +96,7 @@
     <ClCompile Include="textBuffer.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="colour.h" />
     <ClInclude Include="extract.h" />
     <ClInclude Include="extractClearGame.h" />
     <ClInclude Include="extractfirework.h" />

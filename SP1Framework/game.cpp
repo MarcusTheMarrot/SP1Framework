@@ -5,6 +5,7 @@
 #include "Framework\console.h"
 #include "mapInteract.h"
 #include "extract.h"
+#include "colour.h"
 #include "extractmain.h"
 #include "extractSplashOne.h"
 #include "extractSplashTwo.h"
@@ -761,44 +762,16 @@ void renderSplashScreen()  // renders the splash screen
 	c.Y /= 3;
 	c.X = c.X / 2 - 35;
 	c.Y += 3;
-	switch (splashscreen)
-	{
-	case 0:
-	{
-			  c.X = g_Console.getConsoleSize().X / 2 - 8;
-			  g_Console.writeToBuffer(c, "Start Game", 0x70);
-			  c.Y += 1;
-			  c.X = g_Console.getConsoleSize().X / 2 - 9;
-			  g_Console.writeToBuffer(c, "Instructions", 0x07);
-			  c.Y += 1;
-			  c.X = g_Console.getConsoleSize().X / 2 - 13;
-			  g_Console.writeToBuffer(c, "Press 'Esc' to quit", 0x07);
-			  break;
-	}
-	case 1:
-	{
-			  c.X = g_Console.getConsoleSize().X / 2 - 8;
-			  g_Console.writeToBuffer(c, "Start Game", 0x07);
-			  c.Y += 1;
-			  c.X = g_Console.getConsoleSize().X / 2 - 9;
-			  g_Console.writeToBuffer(c, "Instructions", 0x70);
-			  c.Y += 1;
-			  c.X = g_Console.getConsoleSize().X / 2 - 13;
-			  g_Console.writeToBuffer(c, "Press 'Esc' to quit", 0x07);
-			  break;
-	}
-	default:
-	{
-			   if (splashscreen > 1)
-			   {
-				   splashscreen = 0;
-			   }
-			   else if (splashscreen < 0)
-			   {
-				   splashscreen = 1;
-			   }
-	}
-	}
+
+	c.X = g_Console.getConsoleSize().X / 2 - 8;
+	g_Console.writeToBuffer(c, "Start Game", getColour(splashscreen, 0));
+	c.Y += 1;
+	c.X = g_Console.getConsoleSize().X / 2 - 9;
+	g_Console.writeToBuffer(c, "Instructions", getColour(splashscreen,1));
+	c.Y += 1;
+	c.X = g_Console.getConsoleSize().X / 2 - 13;
+	g_Console.writeToBuffer(c, "Press 'Esc' to quit", 0x07);
+
 	if (g_dElapsedTime < g_dBounceTime)
 	{
 		return;
@@ -1222,8 +1195,6 @@ void rendermap()
 		g_Console.writeToBuffer(0, 21, text(level), 0x0D);
 	}
 }
-
-
 
 void renderGame()
 {
@@ -1692,101 +1663,24 @@ void renderToMainMenu()
 	c.X = g_Console.getConsoleSize().X / 2 - 20;
 	g_Console.writeToBuffer(c, "Press enter to choose your level (1-5).", 0x03);
 	
-	switch (lvl)
-	{
-	case 0:
-	{
-		c.Y += 1;
-		c.X = g_Console.getConsoleSize().X / 2 - 5;
-		g_Console.writeToBuffer(c, "Level 1", 0x73);
-		c.Y += 1;
-		g_Console.writeToBuffer(c, "Level 2", 0x03);
-		c.Y += 1;
-		g_Console.writeToBuffer(c, "Level 3", 0x03);
-		c.Y += 1;
-		g_Console.writeToBuffer(c, "Level 4", 0x03);
-		c.Y += 1;
-		g_Console.writeToBuffer(c, "Level 5", 0x03);
-			 
-		break;
-	}
-	case 1:
-	{
-		c.Y += 1;
-		c.X = g_Console.getConsoleSize().X / 2 - 5;
-		g_Console.writeToBuffer(c, "Level 1", 0x03);
-		c.Y += 1;
-		g_Console.writeToBuffer(c, "Level 2", 0x73);
-		c.Y += 1;
-		g_Console.writeToBuffer(c, "Level 3", 0x03);
-		c.Y += 1;
-		g_Console.writeToBuffer(c, "Level 4", 0x03);
-		c.Y += 1;
-		g_Console.writeToBuffer(c, "Level 5", 0x03);
+	c.Y += 1;
+	c.X = g_Console.getConsoleSize().X / 2 - 5;
+	g_Console.writeToBuffer(c.X, c.Y++, "Level 1", getColour(lvl, 0));
+	g_Console.writeToBuffer(c.X, c.Y++, "Level 2", getColour(lvl, 1));
+	g_Console.writeToBuffer(c.X, c.Y++, "Level 3", getColour(lvl, 2));
+	g_Console.writeToBuffer(c.X, c.Y++, "Level 4", getColour(lvl, 3));
+	g_Console.writeToBuffer(c.X, c.Y++, "Level 5", getColour(lvl, 4));
 
-		break;
-	}
-	case 2:
+	
+	if (lvl > 4)
 	{
-		c.Y += 1;
-		c.X = g_Console.getConsoleSize().X / 2 - 5;
-		g_Console.writeToBuffer(c, "Level 1", 0x03);
-		c.Y += 1;
-		g_Console.writeToBuffer(c, "Level 2", 0x03);
-		c.Y += 1;
-		g_Console.writeToBuffer(c, "Level 3", 0x73);
-		c.Y += 1;
-		g_Console.writeToBuffer(c, "Level 4", 0x03);
-		c.Y += 1;
-		g_Console.writeToBuffer(c, "Level 5", 0x03);
-
-		break;
+		lvl = 0;
 	}
-	case 3:
+	else if (lvl < 0)
 	{
-		c.Y += 1;
-		c.X = g_Console.getConsoleSize().X / 2 - 5;
-		g_Console.writeToBuffer(c, "Level 1", 0x03);
-		c.Y += 1;
-		g_Console.writeToBuffer(c, "Level 2", 0x03);
-		c.Y += 1;
-		g_Console.writeToBuffer(c, "Level 3", 0x03);
-		c.Y += 1;
-		g_Console.writeToBuffer(c, "Level 4", 0x73);
-		c.Y += 1;
-		g_Console.writeToBuffer(c, "Level 5", 0x03);
+		lvl = 4;
+	}
 		
-		break;
-	}
-	case 4:
-	{
-		c.Y += 1;
-		c.X = g_Console.getConsoleSize().X / 2 - 5;
-		g_Console.writeToBuffer(c, "Level 1", 0x03);
-		c.Y += 1;
-		g_Console.writeToBuffer(c, "Level 2", 0x03);
-		c.Y += 1;
-		g_Console.writeToBuffer(c, "Level 3", 0x03);
-		c.Y += 1;
-		g_Console.writeToBuffer(c, "Level 4", 0x03);
-		c.Y += 1;
-		g_Console.writeToBuffer(c, "Level 5", 0x73);
-		
-		break;
-	}
-		default:
-		{
-			   if (lvl > 4)
-			   {
-				   lvl = 0;
-			   }
-			   else if (lvl < 0)
-			   {
-				   lvl = 4;
-			   }
-		break;
-		}
-	}
 	if (g_dElapsedTime < g_dBounceTime)
 	{
 		return;
