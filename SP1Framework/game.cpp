@@ -35,7 +35,7 @@ char mainmenuart[73][12];
 char main[63][6];
 int splashscreen;
 int lvl;
-char	healthbar = 223;
+char	healthbar = 219;
 char	map[61][21];
 char something = '1', thingthing = '1';
 int level;
@@ -969,6 +969,8 @@ void renderhealth()
 	c.X = g_Console.getConsoleSize().X / 2 + 25;
 	/*c.X = g_Console.getConsoleSize().X / 2 + 30;
 	g_Console.writeToBuffer(c, health, 0x07);*/
+	g_Console.writeToBuffer(c.X - 1, c.Y, '[', 0x0F);
+	g_Console.writeToBuffer(c.X + 10, c.Y, ']', 0x0F);
 	for (int i = 0; i < healthcount; i++)
 	{
 		g_Console.writeToBuffer(c, healthbar, 0x0C);
