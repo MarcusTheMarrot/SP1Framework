@@ -7,4 +7,4 @@
 #include <string>
 using namespace std;
 
-string extractSplashTwo(int spl);
+string extractscreen(int x);
