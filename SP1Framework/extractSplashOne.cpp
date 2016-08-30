@@ -6,17 +6,19 @@ string extractSplashOne(int spl)
 	string row;
 	string splashart;
 
-	ifstream file("title.txt");
-
-	if (file.is_open())
+	if (spl >= -1 && spl <= 2)
 	{
-		while (file.good())
+		ifstream file("title.txt");
+
+		if (file.is_open())
 		{
-			getline(file, row);
-			splashart += row;
+			while (file.good())
+			{
+				getline(file, row);
+				splashart += row;
+			}
+			file.close();
 		}
-		file.close();
 	}
-	
 	return splashart;
 }

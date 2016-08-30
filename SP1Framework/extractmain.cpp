@@ -6,16 +6,20 @@ string extractmain(int lvl)
 	string row;
 	string menuart;
 
-	ifstream file("PickALevel.txt"); // read file from PickALevel.txt to print the ascii art
-
-	if (file.is_open())
+	if (lvl >= -1 && lvl <= 5)
 	{
-		while (file.good())
+		ifstream file("PickALevel.txt"); // read file from PickALevel.txt to print the ascii art
+
+		if (file.is_open())
 		{
-			getline(file, row);
-			menuart += row;
+			while (file.good())
+			{
+				getline(file, row);
+				menuart += row;
+			}
+			file.close();
 		}
-		file.close();
 	}
+
 	return menuart;
 }

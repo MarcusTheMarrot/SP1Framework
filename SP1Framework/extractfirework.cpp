@@ -1,21 +1,22 @@
 #include "extractfirework.h"
 
-string extractfirework(COORD spawn, int x, int y, int *level)
+string extractfirework(int *level)
 {
 	string myfile;
 	string row;
 	string fwart;
-
-	ifstream file("firework.txt"); 
-
-	if (file.is_open())
+	if (*level == 0)
 	{
-		while (file.good())
+		ifstream file("firework.txt");
+		if (file.is_open())
 		{
-			getline(file, row);
-			fwart += row;
+			while (file.good())
+			{
+				getline(file, row);
+				fwart += row;
+			}
+			file.close();
 		}
-		file.close();
 	}
 	return fwart;
 }
