@@ -1160,15 +1160,6 @@ void rendermap()
 			}
 			if (map[x][y] == 'f')
 			{
-
-				if ((g_sChar.m_cLocation.X + 4) >= x && x >= (g_sChar.m_cLocation.X - 4) && (g_sChar.m_cLocation.Y - 3) <= (y + 1) && (g_sChar.m_cLocation.Y + 3) >= (y + 1))
-				{
-					g_Console.writeToBuffer(coord, ground, 0xCE);
-				}
-				
-				if ((g_sChar2.m_cLocation.X + 4) >= x && x >= (g_sChar2.m_cLocation.X - 4) && (g_sChar2.m_cLocation.Y - 3) <= (y + 1) && (g_sChar2.m_cLocation.Y + 3) >= (y + 1))
-				{
-
 					//if ((g_sChar.m_cLocation.X + 4) >= x && x >= (g_sChar.m_cLocation.X - 4) && (g_sChar.m_cLocation.Y - 3) <= (y + 1) && (g_sChar.m_cLocation.Y + 3) >= (y + 1))
 					//{
 
@@ -1178,7 +1169,6 @@ void rendermap()
 					//{
 						/*g_Console.writeToBuffer(coord, ground, 0xCE);*/
 					//}
-				}
 			}
 			if (map[x][y] == 'n')
 			{
