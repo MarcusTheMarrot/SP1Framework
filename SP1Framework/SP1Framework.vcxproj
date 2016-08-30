@@ -21,7 +21,7 @@
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
     <CharacterSet>Unicode</CharacterSet>
-    <PlatformToolset>v120</PlatformToolset>
+    <PlatformToolset>v140</PlatformToolset>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
@@ -79,6 +79,12 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="extract.cpp" />
+    <ClCompile Include="extractClearGame.cpp" />
+    <ClCompile Include="extractfirework.cpp" />
+    <ClCompile Include="extractfireworks2.cpp" />
+    <ClCompile Include="extractmain.cpp" />
+    <ClCompile Include="extractSplashOne.cpp" />
+    <ClCompile Include="extractSplashTwo.cpp" />
     <ClCompile Include="Framework\console.cpp" />
     <ClCompile Include="Framework\timer.cpp" />
     <ClCompile Include="game.cpp" />
@@ -90,6 +96,12 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="extract.h" />
+    <ClInclude Include="extractClearGame.h" />
+    <ClInclude Include="extractfirework.h" />
+    <ClInclude Include="extractfireworks2.h" />
+    <ClInclude Include="extractmain.h" />
+    <ClInclude Include="extractSplashOne.h" />
+    <ClInclude Include="extractSplashTwo.h" />
     <ClInclude Include="Framework\console.h" />
     <ClInclude Include="Framework\timer.h" />
     <ClInclude Include="game.h" />

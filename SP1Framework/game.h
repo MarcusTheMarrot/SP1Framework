@@ -48,6 +48,7 @@ enum EGAMESTATES
 	S_LEVELFOUR,
 	S_LEVELFIVE,
 	S_GAMEOVER,
+	S_CLEARGAME,
 	S_COUNT
 };
 
@@ -67,7 +68,7 @@ struct portalgun
 {
 	unsigned char portal = 79;
 	unsigned char UpDownProjectile = 179;
-	unsigned char LeftRightProjectile = 45;
+	unsigned char LeftRightProjectile = 196;
 };
 
 struct Direction
@@ -106,13 +107,17 @@ void renderToScreen();      // dump the contents of the buffer to the screen, on
 
 void mainmenuchoice();
 void renderToMainMenu();
-void mainmenuextract();
 
 void renderhealth();
 void renderGameOver();
+void gameoverwait();
+void extractover();
 
 void renderinstruct();
 void instructwait();
 void renderPortalgun();
+
+void rendercleargame();
+void cleargamewait();
 
 #endif // _GAME_H
