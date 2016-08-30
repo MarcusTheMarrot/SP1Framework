@@ -116,6 +116,7 @@ void extractover();
 void renderinstruct();
 void instructwait();
 void renderPortalgun();
+void renderPortalgun(COORD playerLocation, char playerDirection, COORD& portal, bool& portalActive);
 
 void rendercleargame();
 void cleargamewait();
