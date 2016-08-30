@@ -68,7 +68,7 @@ struct portalgun
 {
 	unsigned char portal = 79;
 	unsigned char UpDownProjectile = 179;
-	unsigned char LeftRightProjectile = 45;
+	unsigned char LeftRightProjectile = 196;
 };
 
 struct Direction
