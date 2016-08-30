@@ -1234,6 +1234,40 @@ void renderGame()
 	renderPortalgun();
 }
 
+void renderPortalgun(COORD playerLocation, char playerDirection, COORD& portal, bool& portalActive)
+{
+	COORD trajectory = playerLocation;
+	COORD nextLocation = trajectory;
+
+	// initialize the next direction
+	switch (playerDirection)
+	{
+	case 'u': trajectory.Y--;
+			nextLocation.X = trajectory.X;
+			nextLocation.Y = trajectory.Y - 1;
+
+	}
+
+	while ((map[nextLocation.X][nextLocation.Y] != 'x') && (map[nextLocation.X][nextLocation.Y] != 'e') && (map[nextLocation.X][nextLocation.Y] != 'd'))
+	{
+		// update the trajectory
+		trajectory = nextLocation;
+		switch (playerDirection)
+		{
+		case 'u': nextLocation.Y--;
+			break;
+			// do the same for other 3 directions
+		}
+		
+		g_Console.writeToBuffer(trajectory, RenderPortal.UpDownProjectile, 0x8C);
+	}
+	
+	// update the parameters that were passed in
+	portal.X = trajectory.X;
+	portal.Y = trajectory.Y;
+	portalActive = true;
+
+
 void renderPortalgun()
 {	
 	cord1.X = g_sChar.m_cLocation.X;
@@ -1244,6 +1278,14 @@ void renderPortalgun()
 	cord3.Y = g_sChar2.m_cLocation.Y;
 	cord4.X = g_sChar2.m_cLocation.X;
 	cord4.Y = g_sChar2.m_cLocation.Y;
+
+
+	if (shotPortal)
+	{
+		renderPortalgun(g_sChar.m_cLocation, direction, portal1, PortActive1);
+	}
+
+
 	if (direction == 'u' || direction2 == 'u')
 	{
 		while (shotPortal)
@@ -1646,7 +1688,7 @@ void mainmenuchoice()
 			g_sChar.m_cLocation.Y = 19;
 			g_sChar2.m_cLocation.X = 1;
 			g_sChar2.m_cLocation.Y = 19;
-			level = 51;
+			level = 0;
 			load_game(level);
 
 			g_eGameState = S_GAME;
