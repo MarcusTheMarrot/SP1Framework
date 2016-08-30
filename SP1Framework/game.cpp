@@ -44,7 +44,7 @@ unsigned char wall = 178;
 unsigned char direction, direction2;
 unsigned char ground = 176;
 unsigned char destination = 177;
-unsigned char box = 219;
+unsigned char box = 254;
 string	teleport;
 string	null = { '\0', };
 
@@ -446,7 +446,7 @@ void moveCharacter()
 				transisted = false;
 				removeportal = true;
 				/*thingthing = '\0';*/
-				something = '\0';
+				something = '-';
 			}
 		}
 		teleport.erase(0, teledel);
@@ -1184,11 +1184,11 @@ void rendermap()
 			{
 				if ((g_sChar.m_cLocation.X + 4) >= x && x >= (g_sChar.m_cLocation.X - 4) && (g_sChar.m_cLocation.Y - 3) <= (y + 1) && (g_sChar.m_cLocation.Y + 3) >= (y + 1))
 				{
-					g_Console.writeToBuffer(coord, box, 0xFE);
+					g_Console.writeToBuffer(coord, box, 0x8E);
 				}
 				if ((g_sChar2.m_cLocation.X + 4) >= x && x >= (g_sChar2.m_cLocation.X - 4) && (g_sChar2.m_cLocation.Y - 3) <= (y + 1) && (g_sChar2.m_cLocation.Y + 3) >= (y + 1))
 				{
-					g_Console.writeToBuffer(coord, box, 0xFE);
+					g_Console.writeToBuffer(coord, box, 0x8E);
 				}
 			}
 			if (shotPortal == false)
