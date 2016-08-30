@@ -7,4 +7,4 @@
 #include <string>
 using namespace std;
 
-string extractclear(COORD spawn, int x, int y, int *level);
+string extractclear(int *level);

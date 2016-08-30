@@ -1622,7 +1622,7 @@ void mainmenuchoice()
 			g_sChar.m_cLocation.Y = 19;
 			g_sChar2.m_cLocation.X = 1;
 			g_sChar2.m_cLocation.Y = 19;
-			level = 0;
+			level = 51;
 			load_game(level);
 
 			g_eGameState = S_GAME;
@@ -1683,7 +1683,7 @@ void renderToMainMenu()
 		g_Console.writeToBuffer(c, "Level 4", 0x03);
 		c.Y += 1;
 		g_Console.writeToBuffer(c, "Level 5", 0x03);
-
+			 
 		break;
 	}
 	case 1:
@@ -1789,7 +1789,7 @@ void renderToMainMenu()
 void rendercleargame()
 {
 	int z = 0;
-	string clear = extractclear(g_sChar.m_cLocation, g_sChar.m_cLocation.X, g_sChar.m_cLocation.Y, &level);
+	string clear = extractclear(&level);
 
 	COORD c;
 
@@ -1821,7 +1821,7 @@ void rendercleargame()
 	c.X = g_Console.getConsoleSize().X / 2 - 20;
 	g_Console.writeToBuffer(c, "Press enter to go back to Starting Screen.", 0x07);
 	int z2 = 0;
-	string fireex = extractfirework(g_sChar.m_cLocation, g_sChar.m_cLocation.X, g_sChar.m_cLocation.Y, &level);
+	string fireex = extractfirework(&level);
 
 	for (int y = 0; y < 12; y++)
 	{
@@ -1832,8 +1832,9 @@ void rendercleargame()
 		}
 		z = (y + 1) * 56;
 	}
+	
 	int z3 = 0;
-	string fireex2 = extractfireworks2(g_sChar.m_cLocation, g_sChar.m_cLocation.X, g_sChar.m_cLocation.Y, &level);
+	string fireex2 = extractfireworks2(&level);
 
 	for (int y = 0; y < 12; y++)
 	{
@@ -1844,6 +1845,7 @@ void rendercleargame()
 		}
 		z = (y + 1) * 56;
 	}
+
 	if ((int)(g_dElapsedTime) % 2 == 0)
 	{
 		for (int y = 0; y < 12; y++)

@@ -1,22 +1,23 @@
 #include "extractClearGame.h"
 
-string extractclear(COORD spawn, int x, int y, int *level)
+string extractclear(int *level)
 {
 	string myfile;
 	string row;
 	string clearart;
-
-	ifstream file("cleargame.txt"); 
-	
-	if (file.is_open())
+	if (*level == 0)
 	{
-		while (file.good())
+		ifstream file("cleargame.txt");
+
+		if (file.is_open())
 		{
-			getline(file, row);
-			clearart += row;
+			while (file.good())
+			{
+				getline(file, row);
+				clearart += row;
+			}
+			file.close();
 		}
-		file.close();
 	}
-	
 	return clearart;
 }

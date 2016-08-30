@@ -7,4 +7,4 @@
 #include <string>
 using namespace std;
 
-string extractfireworks2(COORD spawn, int x, int y, int *level);
+string extractfireworks2(int *level);
