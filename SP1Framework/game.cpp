@@ -403,8 +403,6 @@ void moveCharacter()
 
 	if (bSomethingHappened == true)
 	{
-
-
 		if (map[g_sChar.m_cLocation.X][g_sChar.m_cLocation.Y - 1] == 'f')
 		{
 			direction = 'u';
@@ -463,7 +461,7 @@ void moveCharacter()
 	{
 		//Beep(1440, 30);
 		//only move if player is facing in the direction he wants to move
-		if (map[g_sChar2.m_cLocation.X][g_sChar2.m_cLocation.Y - 2] != 'x' && map[g_sChar2.m_cLocation.X][g_sChar2.m_cLocation.Y - 2] != 'd' && direction2 == 't')
+		if (map[g_sChar2.m_cLocation.X][g_sChar2.m_cLocation.Y - 2] != 'x' && map[g_sChar2.m_cLocation.X][g_sChar2.m_cLocation.Y - 2] != 'd' && direction2 == 'u')
 		{
 			if (g_sChar.m_cLocation.X != g_sChar2.m_cLocation.X || g_sChar2.m_cLocation.Y - 1 != g_sChar.m_cLocation.Y)
 			{
@@ -491,12 +489,12 @@ void moveCharacter()
 				}
 			}
 		}
-		direction2 = 't';
+		direction2 = 'u';
 	}
 	if (g_abKeyPressed[PLAYER_2_K_LEFT] && g_sChar2.m_cLocation.X > 0)
 	{
 		//Beep(1440, 30);
-		if (map[g_sChar2.m_cLocation.X - 1][g_sChar2.m_cLocation.Y - 1] != 'x' && map[g_sChar2.m_cLocation.X - 1][g_sChar2.m_cLocation.Y - 1] != 'd' && direction2 == 'f')
+		if (map[g_sChar2.m_cLocation.X - 1][g_sChar2.m_cLocation.Y - 1] != 'x' && map[g_sChar2.m_cLocation.X - 1][g_sChar2.m_cLocation.Y - 1] != 'd' && direction2 == 'l')
 		{
 			if (g_sChar.m_cLocation.X != g_sChar2.m_cLocation.X - 1 || g_sChar2.m_cLocation.Y != g_sChar.m_cLocation.Y)
 			{
@@ -524,12 +522,12 @@ void moveCharacter()
 				}
 			}
 		}
-		direction2 = 'f';
+		direction2 = 'l';
 	}
 	if (g_abKeyPressed[PLAYER_2_K_DOWN] && g_sChar2.m_cLocation.Y < g_Console.getConsoleSize().Y - 1)
 	{
 		//Beep(1440, 30);
-		if (map[g_sChar2.m_cLocation.X][g_sChar2.m_cLocation.Y] != 'x' && map[g_sChar2.m_cLocation.X][g_sChar2.m_cLocation.Y] != 'd' && direction2 == 'g')
+		if (map[g_sChar2.m_cLocation.X][g_sChar2.m_cLocation.Y] != 'x' && map[g_sChar2.m_cLocation.X][g_sChar2.m_cLocation.Y] != 'd' && direction2 == 'd')
 		{
 			if (g_sChar.m_cLocation.X != g_sChar2.m_cLocation.X || g_sChar2.m_cLocation.Y + 1 != g_sChar.m_cLocation.Y)
 			{
@@ -557,14 +555,14 @@ void moveCharacter()
 				}
 			}
 		}
-		direction2 = 'g';
+		direction2 = 'd';
 	}
 	if (g_abKeyPressed[PLAYER_2_K_RIGHT] && g_sChar2.m_cLocation.X < g_Console.getConsoleSize().X - 1)
 	{
 		//Beep(1440, 30);
-		if (map[g_sChar2.m_cLocation.X + 1][g_sChar2.m_cLocation.Y - 1] != 'x' && map[g_sChar2.m_cLocation.X + 1][g_sChar2.m_cLocation.Y - 1] != 'd' && direction2 == 'h')
+		if (map[g_sChar2.m_cLocation.X + 1][g_sChar2.m_cLocation.Y - 1] != 'x' && map[g_sChar2.m_cLocation.X + 1][g_sChar2.m_cLocation.Y - 1] != 'd' && direction2 == 'r')
 		{
-			if (g_sChar2.m_cLocation.X != g_sChar2.m_cLocation.X + 1 || g_sChar2.m_cLocation.Y != g_sChar2.m_cLocation.Y)
+			if (g_sChar.m_cLocation.X != g_sChar2.m_cLocation.X + 1 || g_sChar2.m_cLocation.Y != g_sChar.m_cLocation.Y)
 			{
 				if (g_sChar2.m_cLocation.X + 1 == boxx.X && g_sChar2.m_cLocation.Y - 1 == boxx.Y && map[boxx.X + 1][boxx.Y] != 'x' && boxx.Y && map[boxx.X + 1][boxx.Y] != 'd' && boxx.Y && map[boxx.X + 1][boxx.Y] != 'f')
 				{
@@ -592,7 +590,7 @@ void moveCharacter()
 			}
 
 		}
-		direction2 = 'h';
+		direction2 = 'r';
 	}
 
 
@@ -603,7 +601,7 @@ void moveCharacter()
 
 		if (map[g_sChar2.m_cLocation.X][g_sChar2.m_cLocation.Y - 1] == 'f')
 		{
-			direction2 = 't';
+			direction2 = 'u';
 			healthcount--;
 		}
 
@@ -657,13 +655,13 @@ void processUserInput()
 	// quits the game if player hits the escape key
 	if (g_abKeyPressed[K_ESCAPE])
 		g_bQuitGame = true;
-	if (g_abKeyPressed[K_E])
+	if (g_abKeyPressed[K_E])	// Player1 shoot portal 1
 		shotPortal = true;
-	if (g_abKeyPressed[K_R])
+	if (g_abKeyPressed[K_R])	// Player1 shoot portal 2
 		shotPortal2 = true;
-	if (g_abKeyPressed[K_K])
+	if (g_abKeyPressed[K_K])	// Player2 shoot portal 1
 		shotPortal3 = true;
-	if (g_abKeyPressed[K_L])
+	if (g_abKeyPressed[K_L])	// Player2 shoot portal 2
 		shotPortal4 = true;
 }
 
@@ -965,6 +963,10 @@ void renderhealth()
 	c.Y += 5;
 	c.X = g_Console.getConsoleSize().X / 2 + 25;
 	g_Console.writeToBuffer(c, "Health", 0x07);
+	if (map[g_sChar.m_cLocation.X][g_sChar.m_cLocation.Y - 1] == 'f' || map[g_sChar2.m_cLocation.X][g_sChar2.m_cLocation.Y - 1] == 'f')
+	{
+		g_Console.writeToBuffer(c, "Health", 0x0C);
+	}
 	c.Y += 1;
 	c.X = g_Console.getConsoleSize().X / 2 + 25;
 	/*c.X = g_Console.getConsoleSize().X / 2 + 30;
@@ -975,8 +977,11 @@ void renderhealth()
 	{
 		g_Console.writeToBuffer(c, healthbar, 0x0C);
 		c.X += 1;
+		if (map[g_sChar.m_cLocation.X][g_sChar.m_cLocation.Y - 1] == 'f' || map[g_sChar2.m_cLocation.X][g_sChar2.m_cLocation.Y - 1] == 'f')
+		{
+			g_Console.writeToBuffer(c, healthbar, 0x07);
+		}
 	}
-	
 	if (healthcount < 4)
 	{
 		if ((int)(g_dElapsedTime) % 2 == 0)
@@ -1003,6 +1008,7 @@ void renderhealth()
 		g_eGameState = S_GAMEOVER;
 		healthcount = 10;
 	}
+	
 
 }
 
@@ -1154,14 +1160,25 @@ void rendermap()
 			}
 			if (map[x][y] == 'f')
 			{
-				//if ((g_sChar.m_cLocation.X + 4) >= x && x >= (g_sChar.m_cLocation.X - 4) && (g_sChar.m_cLocation.Y - 3) <= (y + 1) && (g_sChar.m_cLocation.Y + 3) >= (y + 1))
-				//{
+
+				if ((g_sChar.m_cLocation.X + 4) >= x && x >= (g_sChar.m_cLocation.X - 4) && (g_sChar.m_cLocation.Y - 3) <= (y + 1) && (g_sChar.m_cLocation.Y + 3) >= (y + 1))
+				{
 					g_Console.writeToBuffer(coord, ground, 0xCE);
-				//}
-				//if ((g_sChar2.m_cLocation.X + 4) >= x && x >= (g_sChar2.m_cLocation.X - 4) && (g_sChar2.m_cLocation.Y - 3) <= (y + 1) && (g_sChar2.m_cLocation.Y + 3) >= (y + 1))
-				//{
-					/*g_Console.writeToBuffer(coord, ground, 0xCE);*/
-				//}
+				}
+				
+				if ((g_sChar2.m_cLocation.X + 4) >= x && x >= (g_sChar2.m_cLocation.X - 4) && (g_sChar2.m_cLocation.Y - 3) <= (y + 1) && (g_sChar2.m_cLocation.Y + 3) >= (y + 1))
+				{
+
+					//if ((g_sChar.m_cLocation.X + 4) >= x && x >= (g_sChar.m_cLocation.X - 4) && (g_sChar.m_cLocation.Y - 3) <= (y + 1) && (g_sChar.m_cLocation.Y + 3) >= (y + 1))
+					//{
+
+					g_Console.writeToBuffer(coord, ground, 0xCE);
+					//}
+					//if ((g_sChar2.m_cLocation.X + 4) >= x && x >= (g_sChar2.m_cLocation.X - 4) && (g_sChar2.m_cLocation.Y - 3) <= (y + 1) && (g_sChar2.m_cLocation.Y + 3) >= (y + 1))
+					//{
+						/*g_Console.writeToBuffer(coord, ground, 0xCE);*/
+					//}
+				}
 			}
 			if (map[x][y] == 'n')
 			{
@@ -1216,29 +1233,29 @@ void rendermap()
 	}
 }
 
+
+
 void renderGame()
 {
 	rendermap();// renders the map to the buffer first	
 	renderCharacter();
 	// renders the character into the buffer
 	renderhealth();
-
+	renderPortalgun();
 }
 
-void renderCharacter()
-{
-	WORD charColor = 0x89;
-	// Draw the location of the character
-	//change player direction
-	
+void renderPortalgun()
+{	
 	cord1.X = g_sChar.m_cLocation.X;
 	cord1.Y = g_sChar.m_cLocation.Y;
 	cord2.X = g_sChar.m_cLocation.X;
 	cord2.Y = g_sChar.m_cLocation.Y;
-	if (direction == 'u')
+	cord3.X = g_sChar2.m_cLocation.X;
+	cord3.Y = g_sChar2.m_cLocation.Y;
+	cord4.X = g_sChar2.m_cLocation.X;
+	cord4.Y = g_sChar2.m_cLocation.Y;
+	if (direction == 'u' || direction2 == 'u')
 	{
-		g_Console.writeToBuffer(g_sChar.m_cLocation, Character.Up, charColor);
-
 		while (shotPortal)
 		{
 			if ((map[cord1.X][cord1.Y - 2] != 'x') && (map[cord1.X][cord1.Y - 2] != 'e') && (map[cord1.X][cord1.Y - 2] != 'd'))
@@ -1254,7 +1271,6 @@ void renderCharacter()
 				PortActive1 = true;
 			}
 		}
-
 		while (shotPortal2)
 		{
 			if ((map[cord2.X][cord2.Y - 2] != 'x') && (map[cord2.X][cord2.Y - 2] != 'e') && (map[cord2.X][cord2.Y - 2] != 'd'))
@@ -1270,10 +1286,39 @@ void renderCharacter()
 				PortActive2 = true;
 			}
 		}
+		while (shotPortal3)
+		{
+			if ((map[cord3.X][cord3.Y - 2] != 'x') && (map[cord3.X][cord3.Y - 2] != 'e') && (map[cord3.X][cord3.Y - 2] != 'd'))
+			{
+				cord3.Y--;
+				g_Console.writeToBuffer(cord3, RenderPortal.UpDownProjectile, 0x8D);
+			}
+			else
+			{
+				portal3.X = cord3.X;
+				portal3.Y = cord3.Y;
+				shotPortal3 = false;
+				PortActive3 = true;
+			}
+		}
+		while (shotPortal4)
+		{
+			if ((map[cord4.X][cord4.Y - 2] != 'x') && (map[cord4.X][cord4.Y - 2] != 'e') && (map[cord4.X][cord4.Y - 2] != 'd'))
+			{
+				cord4.Y--;
+				g_Console.writeToBuffer(cord4, RenderPortal.UpDownProjectile, 0x8B);
+			}
+			else
+			{
+				portal4.X = cord4.X;
+				portal4.Y = cord4.Y;
+				shotPortal4 = false;
+				PortActive4 = true;
+			}
+		}
 	}
-	else if (direction == 'd')
+	if (direction == 'd' || direction2 == 'd')
 	{
-		g_Console.writeToBuffer(g_sChar.m_cLocation, Character.Down, charColor);
 		while (shotPortal)
 		{
 			if ((map[cord1.X][cord1.Y] != 'x') && (map[cord1.X][cord1.Y] != 'e') && (map[cord1.X][cord1.Y] != 'd'))
@@ -1286,7 +1331,7 @@ void renderCharacter()
 				portal1.X = cord1.X;
 				portal1.Y = cord1.Y;
 				shotPortal = false;
-				PortActive1 = true;		
+				PortActive1 = true;
 			}
 		}
 		while (shotPortal2)
@@ -1304,124 +1349,6 @@ void renderCharacter()
 				PortActive2 = true;
 			}
 		}
-	}
-	else if (direction == 'l')
-	{
-		g_Console.writeToBuffer(g_sChar.m_cLocation, Character.Left, charColor);
-		while (shotPortal)
-		{
-			if ((map[cord1.X-1][cord1.Y-1] != 'x') && (map[cord1.X - 1][cord1.Y - 1] != 'e') && (map[cord1.X - 1][cord1.Y - 1] != 'd'))
-			{
-				cord1.X--;
-				g_Console.writeToBuffer(cord1, RenderPortal.LeftRightProjectile, 0x8C);
-			}
-			else
-			{
-				portal1.X = cord1.X;
-				portal1.Y = cord1.Y;
-				shotPortal = false;
-				PortActive1 = true;
-			}
-		}
-		while (shotPortal2)
-		{
-			if ((map[cord2.X-1][cord2.Y-1] != 'x') && (map[cord2.X - 1][cord2.Y - 1] != 'e') && (map[cord2.X - 1][cord2.Y - 1] != 'd'))
-			{
-				cord2.X--;
-				g_Console.writeToBuffer(cord2, RenderPortal.LeftRightProjectile, 0x81);
-			}
-			else
-			{
-				portal2.X = cord2.X;
-				portal2.Y = cord2.Y;
-				shotPortal2 = false;
-				PortActive2 = true;
-			}
-		}
-	}
-	else if (direction == 'r')
-	{
-		g_Console.writeToBuffer(g_sChar.m_cLocation, Character.Right, charColor);
-		while (shotPortal)
-		{
-			if ((map[cord1.X + 1][cord1.Y-1] != 'x') && (map[cord1.X + 1][cord1.Y - 1] != 'e') && (map[cord1.X + 1][cord1.Y - 1] != 'd'))
-			{
-				cord1.X++;
-				g_Console.writeToBuffer(cord1, RenderPortal.LeftRightProjectile, 0x8C);
-			}
-			else
-			{
-				portal1.X = cord1.X;
-				portal1.Y = cord1.Y;
-				shotPortal = false;
-				PortActive1 = true;
-			}
-		}
-		while (shotPortal2)
-		{
-			if ((map[cord2.X + 1][cord2.Y-1] != 'x') && (map[cord2.X + 1][cord2.Y - 1] != 'e') && (map[cord2.X + 1][cord2.Y - 1] != 'd'))
-			{
-				cord2.X++;
-				g_Console.writeToBuffer(cord2, RenderPortal.LeftRightProjectile, 0x81);
-			}
-			else
-			{
-				portal2.X = cord2.X;
-				portal2.Y = cord2.Y;
-				shotPortal2 = false;
-				PortActive2 = true;
-			}
-		}
-	}
-	else
-	{
-		g_Console.writeToBuffer(g_sChar.m_cLocation, Character.Up, charColor);
-	}
-	WORD charColor2 = 0x8C;
-	// Draw the location of the character
-	//change player direction
-	cord3.X = g_sChar2.m_cLocation.X;
-	cord3.Y = g_sChar2.m_cLocation.Y;
-	cord4.X = g_sChar2.m_cLocation.X;
-	cord4.Y = g_sChar2.m_cLocation.Y;
-	if (direction2 == 't')
-	{
-		g_Console.writeToBuffer(g_sChar2.m_cLocation, Character.Up, charColor2);
-		while (shotPortal3)
-		{
-			if ((map[cord3.X][cord3.Y - 2] != 'x') && (map[cord3.X][cord3.Y - 2] != 'e') && (map[cord3.X][cord3.Y - 2] != 'd'))
-			{
-				cord3.Y--;
-				g_Console.writeToBuffer(cord3, RenderPortal.UpDownProjectile, 0x8D);
-			}
-			else
-			{
-				portal3.X = cord3.X;
-				portal3.Y = cord3.Y;
-				shotPortal3 = false;
-				PortActive3 = true;
-			}
-		}
-
-		while (shotPortal4)
-		{
-			if ((map[cord4.X][cord4.Y - 2] != 'x') && (map[cord4.X][cord4.Y - 2] != 'e') && (map[cord4.X][cord4.Y - 2] != 'd'))
-			{
-				cord4.Y--;
-				g_Console.writeToBuffer(cord4, RenderPortal.UpDownProjectile, 0x8B);
-			}
-			else
-			{
-				portal4.X = cord4.X;
-				portal4.Y = cord4.Y;
-				shotPortal4 = false;
-				PortActive4 = true;
-			}
-		}
-	}
-	else if (direction2 == 'g')
-	{
-		g_Console.writeToBuffer(g_sChar2.m_cLocation, Character.Down, charColor2);
 		while (shotPortal3)
 		{
 			if ((map[cord3.X][cord3.Y] != 'x') && (map[cord3.X][cord3.Y] != 'e') && (map[cord3.X][cord3.Y] != 'd'))
@@ -1453,9 +1380,38 @@ void renderCharacter()
 			}
 		}
 	}
-	else if (direction2 == 'f')
+	if (direction == 'l' || direction2 == 'l')
 	{
-		g_Console.writeToBuffer(g_sChar2.m_cLocation, Character.Left, charColor2);
+		while (shotPortal)
+		{
+			if ((map[cord1.X - 1][cord1.Y - 1] != 'x') && (map[cord1.X - 1][cord1.Y - 1] != 'e') && (map[cord1.X - 1][cord1.Y - 1] != 'd'))
+			{
+				cord1.X--;
+				g_Console.writeToBuffer(cord1, RenderPortal.LeftRightProjectile, 0x8C);
+			}
+			else
+			{
+				portal1.X = cord1.X;
+				portal1.Y = cord1.Y;
+				shotPortal = false;
+				PortActive1 = true;
+			}
+		}
+		while (shotPortal2)
+		{
+			if ((map[cord2.X - 1][cord2.Y - 1] != 'x') && (map[cord2.X - 1][cord2.Y - 1] != 'e') && (map[cord2.X - 1][cord2.Y - 1] != 'd'))
+			{
+				cord2.X--;
+				g_Console.writeToBuffer(cord2, RenderPortal.LeftRightProjectile, 0x81);
+			}
+			else
+			{
+				portal2.X = cord2.X;
+				portal2.Y = cord2.Y;
+				shotPortal2 = false;
+				PortActive2 = true;
+			}
+		}
 		while (shotPortal3)
 		{
 			if ((map[cord3.X - 1][cord3.Y - 1] != 'x') && (map[cord3.X - 1][cord3.Y - 1] != 'e') && (map[cord3.X - 1][cord3.Y - 1] != 'd'))
@@ -1487,9 +1443,38 @@ void renderCharacter()
 			}
 		}
 	}
-	else if (direction2 == 'h')
+	if (direction == 'r' || direction2 == 'r')
 	{
-		g_Console.writeToBuffer(g_sChar2.m_cLocation, Character.Right, charColor2);
+		while (shotPortal)
+		{
+			if ((map[cord1.X + 1][cord1.Y - 1] != 'x') && (map[cord1.X + 1][cord1.Y - 1] != 'e') && (map[cord1.X + 1][cord1.Y - 1] != 'd'))
+			{
+				cord1.X++;
+				g_Console.writeToBuffer(cord1, RenderPortal.LeftRightProjectile, 0x8C);
+			}
+			else
+			{
+				portal1.X = cord1.X;
+				portal1.Y = cord1.Y;
+				shotPortal = false;
+				PortActive1 = true;
+			}
+		}
+		while (shotPortal2)
+		{
+			if ((map[cord2.X + 1][cord2.Y - 1] != 'x') && (map[cord2.X + 1][cord2.Y - 1] != 'e') && (map[cord2.X + 1][cord2.Y - 1] != 'd'))
+			{
+				cord2.X++;
+				g_Console.writeToBuffer(cord2, RenderPortal.LeftRightProjectile, 0x81);
+			}
+			else
+			{
+				portal2.X = cord2.X;
+				portal2.Y = cord2.Y;
+				shotPortal2 = false;
+				PortActive2 = true;
+			}
+		}
 		while (shotPortal3)
 		{
 			if ((map[cord3.X + 1][cord3.Y - 1] != 'x') && (map[cord3.X + 1][cord3.Y - 1] != 'e') && (map[cord3.X + 1][cord3.Y - 1] != 'd'))
@@ -1520,6 +1505,53 @@ void renderCharacter()
 				PortActive4 = true;
 			}
 		}
+	}
+}
+
+void renderCharacter()
+{
+	WORD charColor = 0x89;
+	// Draw the location of the character
+	//change player direction
+	if (direction == 'u')
+	{
+		g_Console.writeToBuffer(g_sChar.m_cLocation, Character.Up, charColor);
+	}
+	else if (direction == 'd')
+	{
+		g_Console.writeToBuffer(g_sChar.m_cLocation, Character.Down, charColor);
+	}
+	else if (direction == 'l')
+	{
+		g_Console.writeToBuffer(g_sChar.m_cLocation, Character.Left, charColor);
+	}
+	else if (direction == 'r')
+	{
+		g_Console.writeToBuffer(g_sChar.m_cLocation, Character.Right, charColor);
+	}
+	else
+	{
+		g_Console.writeToBuffer(g_sChar.m_cLocation, Character.Up, charColor);
+	}
+	WORD charColor2 = 0x8C;
+	// Draw the location of the character
+	//change player direction
+	
+	if (direction2 == 'u')
+	{
+		g_Console.writeToBuffer(g_sChar2.m_cLocation, Character.Up, charColor2);
+	}
+	else if (direction2 == 'd')
+	{
+		g_Console.writeToBuffer(g_sChar2.m_cLocation, Character.Down, charColor2);
+	}
+	else if (direction2 == 'l')
+	{
+		g_Console.writeToBuffer(g_sChar2.m_cLocation, Character.Left, charColor2);
+	}
+	else if (direction2 == 'r')
+	{
+		g_Console.writeToBuffer(g_sChar2.m_cLocation, Character.Right, charColor2);
 	}
 	else
 	{
