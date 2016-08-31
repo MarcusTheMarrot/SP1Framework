@@ -1152,19 +1152,19 @@ void rendermap()
 					g_Console.writeToBuffer(coord, box, 0x8E);
 				}
 			}
-			if (shotPortal == false)
+			if (PortActive1 == true)
 			{
 				g_Console.writeToBuffer(portal1, RenderPortal.portal, 0x8C);
 			}
-			if (shotPortal2 == false)
+			if (PortActive2 == true)
 			{
 				g_Console.writeToBuffer(portal2, RenderPortal.portal, 0x81);
 			}
-			if (shotPortal3 == false)
+			if (PortActive3 == true)
 			{
 				g_Console.writeToBuffer(portal3, RenderPortal.portal, 0x8D);
 			}
-			if (shotPortal4 == false)
+			if (PortActive4 == true)
 			{
 				g_Console.writeToBuffer(portal4, RenderPortal.portal, 0x8B);
 
@@ -1172,10 +1172,6 @@ void rendermap()
 			if (removeportal)
 			{
 					
-				shotPortal = true;
-				shotPortal2 = true;
-				shotPortal3 = true;
-				shotPortal4 = true;
 				PortActive1 = false;
 				PortActive2 = false;
 				PortActive3 = false;
@@ -1195,46 +1191,6 @@ void renderGame()
 	renderPortalgun();
 }
 
-//void Portalgun(COORD playerLocation, char playerDirection, COORD& portal, bool& portalActive)
-//{
-//	COORD trajectory = playerLocation;
-//	COORD nextLocation = trajectory;
-//
-//	// initialize the next direction
-//	switch (playerDirection)
-//	{
-//	case 'u': /*trajectory.Y--;*/
-//		nextLocation.X = trajectory.X;
-//		nextLocation.Y = trajectory.Y - 2;
-//		break;
-//
-//	case 'd': /*trajectory.Y++;*/
-//		nextLocation.X = trajectory.X;
-//		nextLocation.Y = trajectory.Y;
-//	}
-//
-//	while ((map[nextLocation.X][nextLocation.Y] != 'x') && (map[nextLocation.X][nextLocation.Y] != 'e') && (map[nextLocation.X][nextLocation.Y] != 'd'))
-//	{
-//		// update the trajectory
-//		/*trajectory = nextLocation;*/
-//		switch (playerDirection)
-//		{
-//		case 'u': nextLocation.Y--;	
-//			break;
-//		case 'd': nextLocation.Y++;
-//			break;
-//			// do the same for other 3 directions
-//		}
-//		
-//			g_Console.writeToBuffer(nextLocation, RenderPortal.UpDownProjectile, 0x8C);
-//	}
-//	
-//
-//	// update the parameters that were passed in
-//	portal.X = nextLocation.X;
-//	portal.Y = nextLocation.Y;
-//	portalActive = true;
-//}
 
 void renderPortalgun(COORD playerLocation, char playerDirection, COORD& portal, bool& portalActive)
 {
@@ -1612,21 +1568,21 @@ void renderCharacter()
 
 void renderFramerate()
 {
-	COORD c;
-	// displays the framerate
-	std::ostringstream ss;
-	ss << std::fixed << std::setprecision(3);
-	ss << 1.0 / g_dDeltaTime << "fps";
-	c.X = g_Console.getConsoleSize().X - 9;
-	c.Y = 0;
-	g_Console.writeToBuffer(c, ss.str());
+	//COORD c;
+	//// displays the framerate
+	//std::ostringstream ss;
+	//ss << std::fixed << std::setprecision(3);
+	//ss << 1.0 / g_dDeltaTime << "fps";
+	//c.X = g_Console.getConsoleSize().X - 9;
+	//c.Y = 0;
+	//g_Console.writeToBuffer(c, ss.str());
 
-	// displays the elapsed time
-	ss.str("");
-	ss << g_dElapsedTime << "secs";
-	c.X = 0;
-	c.Y = 0;
-	g_Console.writeToBuffer(c, ss.str());
+	//// displays the elapsed time
+	//ss.str("");
+	//ss << g_dElapsedTime << "secs";
+	//c.X = 0;
+	//c.Y = 0;
+	//g_Console.writeToBuffer(c, ss.str());
 }
 
 void renderToScreen()
