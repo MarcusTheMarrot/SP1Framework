@@ -14,7 +14,7 @@ xxxxnx---------------------------------------------x--x----x
 x----x----xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx--x-fffx
 x----x----x-------f----f-----f-----f-----f-----f------x----x
 x----xp---xp---f----f-----f-----f-----f-----f------xxxffff-x
-x----xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx--------x
-x----xL----------------------------------------------xxxxxxx
------xl----------------------------------------------d-----e
+x----xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx--xxxxxxx
+x----xL----------------------------------------------d-----e
+-----xl----------------------------------------------x-----x
 xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx

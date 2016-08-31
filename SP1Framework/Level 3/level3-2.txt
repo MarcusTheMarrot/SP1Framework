@@ -13,8 +13,8 @@ x--xxxxxxfffffffff--fffffffffx--xxxxxxxxxxxxxx----x---x----x
 x-------xfffffffff--fffffffffx--x-----------------x---x----x
 xxxxxx--xfffffffff--fffffffffx--x-----------------x---x----x
 x-------xfffffffff--fffffffffx--xxxxxxxxxxxxxxxxxxx---xxxxxx
-x-------x-----------fffffffffx--x--------------------------x
-x--n----x---fffffffffffff---Lx--x--ffffffffffffffffffffffffx
-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx--xxxxxxxxxxxxxxxxxxxxxxxxx
+x---n---x-----------fffffffffx--x--------------------------x
+xxx-----x---fffffffffffff---Lx--x--ffffffffffffffffffffffffx
+--xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx--xxxxxxxxxxxxxxxxxxxxxxxxx
 -----------------------------------d-----------------------e
 xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
