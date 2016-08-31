@@ -1200,18 +1200,11 @@ void rendermap()
 			}
 			if (removeportal)
 			{
-				portal1.X = 0;
-				portal1.Y = 0;
-				portal2.X = 0;
-				portal2.Y = 0;
-				portal3.X = 0;
-				portal3.Y = 0;
-				portal4.X = 0;
-				portal4.Y = 0;
-				g_Console.writeToBuffer(portal1, ' ');
-				g_Console.writeToBuffer(portal2, ' ');
-				g_Console.writeToBuffer(portal3, ' ');
-				g_Console.writeToBuffer(portal4, ' ');
+					
+				shotPortal = true;
+				shotPortal2 = true;
+				shotPortal3 = true;
+				shotPortal4 = true;
 				PortActive1 = false;
 				PortActive2 = false;
 				PortActive3 = false;
@@ -1228,44 +1221,51 @@ void rendermap()
 void renderGame()
 {
 	rendermap();// renders the map to the buffer first	
-	renderCharacter();
-	// renders the character into the buffer
+	renderCharacter();	// renders the character into the buffer
 	renderhealth();
 	renderPortalgun();
 }
 
-void renderPortalgun(COORD playerLocation, char playerDirection, COORD& portal, bool& portalActive)
-{
-	COORD trajectory = playerLocation;
-	COORD nextLocation = trajectory;
-
-	// initialize the next direction
-	switch (playerDirection)
-	{
-	case 'u': trajectory.Y--;
-			nextLocation.X = trajectory.X;
-			nextLocation.Y = trajectory.Y - 1;
-
-	}
-
-	while ((map[nextLocation.X][nextLocation.Y] != 'x') && (map[nextLocation.X][nextLocation.Y] != 'e') && (map[nextLocation.X][nextLocation.Y] != 'd'))
-	{
-		// update the trajectory
-		trajectory = nextLocation;
-		switch (playerDirection)
-		{
-		case 'u': nextLocation.Y--;
-			break;
-			// do the same for other 3 directions
-		}
-		
-		g_Console.writeToBuffer(trajectory, RenderPortal.UpDownProjectile, 0x8C);
-	}
-	
-	// update the parameters that were passed in
-	portal.X = trajectory.X;
-	portal.Y = trajectory.Y;
-	portalActive = true;
+//void Portalgun(COORD playerLocation, char playerDirection, COORD& portal, bool& portalActive)
+//{
+//	COORD trajectory = playerLocation;
+//	COORD nextLocation = trajectory;
+//
+//	// initialize the next direction
+//	switch (playerDirection)
+//	{
+//	case 'u': /*trajectory.Y--;*/
+//		nextLocation.X = trajectory.X;
+//		nextLocation.Y = trajectory.Y - 2;
+//		break;
+//
+//	case 'd': /*trajectory.Y++;*/
+//		nextLocation.X = trajectory.X;
+//		nextLocation.Y = trajectory.Y;
+//	}
+//
+//	while ((map[nextLocation.X][nextLocation.Y] != 'x') && (map[nextLocation.X][nextLocation.Y] != 'e') && (map[nextLocation.X][nextLocation.Y] != 'd'))
+//	{
+//		// update the trajectory
+//		/*trajectory = nextLocation;*/
+//		switch (playerDirection)
+//		{
+//		case 'u': nextLocation.Y--;	
+//			break;
+//		case 'd': nextLocation.Y++;
+//			break;
+//			// do the same for other 3 directions
+//		}
+//		
+//			g_Console.writeToBuffer(nextLocation, RenderPortal.UpDownProjectile, 0x8C);
+//	}
+//	
+//
+//	// update the parameters that were passed in
+//	portal.X = nextLocation.X;
+//	portal.Y = nextLocation.Y;
+//	portalActive = true;
+//}
 
 
 void renderPortalgun()
@@ -1280,13 +1280,14 @@ void renderPortalgun()
 	cord4.Y = g_sChar2.m_cLocation.Y;
 
 
-	if (shotPortal)
-	{
-		renderPortalgun(g_sChar.m_cLocation, direction, portal1, PortActive1);
-	}
+	//if (shotPortal)
+	//{
+	//	Portalgun(g_sChar.m_cLocation, direction, portal1, PortActive1);
+	//	shotPortal = false;
+	//}
 
 
-	if (direction == 'u' || direction2 == 'u')
+	if (direction == 'u')
 	{
 		while (shotPortal)
 		{
@@ -1318,38 +1319,42 @@ void renderPortalgun()
 				PortActive2 = true;
 			}
 		}
-		while (shotPortal3)
-		{
-			if ((map[cord3.X][cord3.Y - 2] != 'x') && (map[cord3.X][cord3.Y - 2] != 'e') && (map[cord3.X][cord3.Y - 2] != 'd'))
-			{
-				cord3.Y--;
-				g_Console.writeToBuffer(cord3, RenderPortal.UpDownProjectile, 0x8D);
-			}
-			else
-			{
-				portal3.X = cord3.X;
-				portal3.Y = cord3.Y;
-				shotPortal3 = false;
-				PortActive3 = true;
-			}
-		}
-		while (shotPortal4)
-		{
-			if ((map[cord4.X][cord4.Y - 2] != 'x') && (map[cord4.X][cord4.Y - 2] != 'e') && (map[cord4.X][cord4.Y - 2] != 'd'))
-			{
-				cord4.Y--;
-				g_Console.writeToBuffer(cord4, RenderPortal.UpDownProjectile, 0x8B);
-			}
-			else
-			{
-				portal4.X = cord4.X;
-				portal4.Y = cord4.Y;
-				shotPortal4 = false;
-				PortActive4 = true;
-			}
-		}
 	}
-	if (direction == 'd' || direction2 == 'd')
+		if (direction2 == 'u')
+		{
+			while (shotPortal3)
+			{
+				if ((map[cord3.X][cord3.Y - 2] != 'x') && (map[cord3.X][cord3.Y - 2] != 'e') && (map[cord3.X][cord3.Y - 2] != 'd'))
+				{
+					cord3.Y--;
+					g_Console.writeToBuffer(cord3, RenderPortal.UpDownProjectile, 0x8D);
+				}
+				else
+				{
+					portal3.X = cord3.X;
+					portal3.Y = cord3.Y;
+					shotPortal3 = false;
+					PortActive3 = true;
+				}
+			}
+			while (shotPortal4)
+			{
+				if ((map[cord4.X][cord4.Y - 2] != 'x') && (map[cord4.X][cord4.Y - 2] != 'e') && (map[cord4.X][cord4.Y - 2] != 'd'))
+				{
+					cord4.Y--;
+					g_Console.writeToBuffer(cord4, RenderPortal.UpDownProjectile, 0x8B);
+				}
+				else
+				{
+					portal4.X = cord4.X;
+					portal4.Y = cord4.Y;
+					shotPortal4 = false;
+					PortActive4 = true;
+				}
+			}
+		}
+	
+	if (direction == 'd')
 	{
 		while (shotPortal)
 		{
@@ -1381,101 +1386,108 @@ void renderPortalgun()
 				PortActive2 = true;
 			}
 		}
-		while (shotPortal3)
-		{
-			if ((map[cord3.X][cord3.Y] != 'x') && (map[cord3.X][cord3.Y] != 'e') && (map[cord3.X][cord3.Y] != 'd'))
-			{
-				cord3.Y++;
-				g_Console.writeToBuffer(cord3, RenderPortal.UpDownProjectile, 0x8D);
-			}
-			else
-			{
-				portal3.X = cord3.X;
-				portal3.Y = cord3.Y;
-				shotPortal3 = false;
-				PortActive3 = true;
-			}
-		}
-		while (shotPortal4)
-		{
-			if ((map[cord4.X][cord4.Y] != 'x') && (map[cord4.X][cord4.Y] != 'e') && (map[cord4.X][cord4.Y] != 'd'))
-			{
-				cord4.Y++;
-				g_Console.writeToBuffer(cord4, RenderPortal.UpDownProjectile, 0x8B);
-			}
-			else
-			{
-				portal4.X = cord4.X;
-				portal4.Y = cord4.Y;
-				shotPortal4 = false;
-				PortActive4 = true;
-			}
-		}
 	}
-	if (direction == 'l' || direction2 == 'l')
-	{
-		while (shotPortal)
+		if (direction2 == 'd')
 		{
-			if ((map[cord1.X - 1][cord1.Y - 1] != 'x') && (map[cord1.X - 1][cord1.Y - 1] != 'e') && (map[cord1.X - 1][cord1.Y - 1] != 'd'))
+			while (shotPortal3)
 			{
-				cord1.X--;
-				g_Console.writeToBuffer(cord1, RenderPortal.LeftRightProjectile, 0x8C);
+				if ((map[cord3.X][cord3.Y] != 'x') && (map[cord3.X][cord3.Y] != 'e') && (map[cord3.X][cord3.Y] != 'd'))
+				{
+					cord3.Y++;
+					g_Console.writeToBuffer(cord3, RenderPortal.UpDownProjectile, 0x8D);
+				}
+				else
+				{
+					portal3.X = cord3.X;
+					portal3.Y = cord3.Y;
+					shotPortal3 = false;
+					PortActive3 = true;
+				}
 			}
-			else
+			while (shotPortal4)
 			{
-				portal1.X = cord1.X;
-				portal1.Y = cord1.Y;
-				shotPortal = false;
-				PortActive1 = true;
+				if ((map[cord4.X][cord4.Y] != 'x') && (map[cord4.X][cord4.Y] != 'e') && (map[cord4.X][cord4.Y] != 'd'))
+				{
+					cord4.Y++;
+					g_Console.writeToBuffer(cord4, RenderPortal.UpDownProjectile, 0x8B);
+				}
+				else
+				{
+					portal4.X = cord4.X;
+					portal4.Y = cord4.Y;
+					shotPortal4 = false;
+					PortActive4 = true;
+				}
 			}
 		}
-		while (shotPortal2)
+	
+		if (direction == 'l')
 		{
-			if ((map[cord2.X - 1][cord2.Y - 1] != 'x') && (map[cord2.X - 1][cord2.Y - 1] != 'e') && (map[cord2.X - 1][cord2.Y - 1] != 'd'))
+			while (shotPortal)
 			{
-				cord2.X--;
-				g_Console.writeToBuffer(cord2, RenderPortal.LeftRightProjectile, 0x81);
+				if ((map[cord1.X - 1][cord1.Y - 1] != 'x') && (map[cord1.X - 1][cord1.Y - 1] != 'e') && (map[cord1.X - 1][cord1.Y - 1] != 'd'))
+				{
+					cord1.X--;
+					g_Console.writeToBuffer(cord1, RenderPortal.LeftRightProjectile, 0x8C);
+				}
+				else
+				{
+					portal1.X = cord1.X;
+					portal1.Y = cord1.Y;
+					shotPortal = false;
+					PortActive1 = true;
+				}
 			}
-			else
+			while (shotPortal2)
 			{
-				portal2.X = cord2.X;
-				portal2.Y = cord2.Y;
-				shotPortal2 = false;
-				PortActive2 = true;
+				if ((map[cord2.X - 1][cord2.Y - 1] != 'x') && (map[cord2.X - 1][cord2.Y - 1] != 'e') && (map[cord2.X - 1][cord2.Y - 1] != 'd'))
+				{
+					cord2.X--;
+					g_Console.writeToBuffer(cord2, RenderPortal.LeftRightProjectile, 0x81);
+				}
+				else
+				{
+					portal2.X = cord2.X;
+					portal2.Y = cord2.Y;
+					shotPortal2 = false;
+					PortActive2 = true;
+				}
 			}
 		}
-		while (shotPortal3)
+		if (direction2 == 'l')
 		{
-			if ((map[cord3.X - 1][cord3.Y - 1] != 'x') && (map[cord3.X - 1][cord3.Y - 1] != 'e') && (map[cord3.X - 1][cord3.Y - 1] != 'd'))
+			while (shotPortal3)
 			{
-				cord3.X--;
-				g_Console.writeToBuffer(cord3, RenderPortal.LeftRightProjectile, 0x8D);
+				if ((map[cord3.X - 1][cord3.Y - 1] != 'x') && (map[cord3.X - 1][cord3.Y - 1] != 'e') && (map[cord3.X - 1][cord3.Y - 1] != 'd'))
+				{
+					cord3.X--;
+					g_Console.writeToBuffer(cord3, RenderPortal.LeftRightProjectile, 0x8D);
+				}
+				else
+				{
+					portal3.X = cord3.X;
+					portal3.Y = cord3.Y;
+					shotPortal3 = false;
+					PortActive3 = true;
+				}
 			}
-			else
+			while (shotPortal4)
 			{
-				portal3.X = cord3.X;
-				portal3.Y = cord3.Y;
-				shotPortal3 = false;
-				PortActive3 = true;
+				if ((map[cord4.X - 1][cord4.Y - 1] != 'x') && (map[cord4.X - 1][cord4.Y - 1] != 'e') && (map[cord4.X - 1][cord4.Y - 1] != 'd'))
+				{
+					cord4.X--;
+					g_Console.writeToBuffer(cord4, RenderPortal.LeftRightProjectile, 0x8B);
+				}
+				else
+				{
+					portal4.X = cord4.X;
+					portal4.Y = cord4.Y;
+					shotPortal4 = false;
+					PortActive4 = true;
+				}
 			}
 		}
-		while (shotPortal4)
-		{
-			if ((map[cord4.X - 1][cord4.Y - 1] != 'x') && (map[cord4.X - 1][cord4.Y - 1] != 'e') && (map[cord4.X - 1][cord4.Y - 1] != 'd'))
-			{
-				cord4.X--;
-				g_Console.writeToBuffer(cord4, RenderPortal.LeftRightProjectile, 0x8B);
-			}
-			else
-			{
-				portal4.X = cord4.X;
-				portal4.Y = cord4.Y;
-				shotPortal4 = false;
-				PortActive4 = true;
-			}
-		}
-	}
-	if (direction == 'r' || direction2 == 'r')
+	if (direction == 'r')
 	{
 		while (shotPortal)
 		{
@@ -1507,6 +1519,9 @@ void renderPortalgun()
 				PortActive2 = true;
 			}
 		}
+	}
+	if (direction2 == 'r')
+	{
 		while (shotPortal3)
 		{
 			if ((map[cord3.X + 1][cord3.Y - 1] != 'x') && (map[cord3.X + 1][cord3.Y - 1] != 'e') && (map[cord3.X + 1][cord3.Y - 1] != 'd'))
