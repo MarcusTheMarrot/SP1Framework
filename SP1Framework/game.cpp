@@ -5,13 +5,11 @@
 #include "Framework\console.h"
 #include "mapInteract.h"
 #include "extract.h"
-#include "extractmain.h"
-#include "extractSplashOne.h"
-#include "extractSplashTwo.h"
+#include "colour.h"
+#include "extractscreen.h"
 #include "extractfirework.h"
 #include "extractfireworks2.h"
 #include "levelTransition.h"
-#include "extractClearGame.h"
 #include "Portalgun-teleporting.h"
 #include "textBuffer.h"
 #include <iostream>
@@ -27,9 +25,12 @@ double  g_dDeltaTime;
 bool    g_abKeyPressed[K_COUNT], teleporter = false, gateOpen = false, shotPortal = false, shotPortal2 = false, PortActive1 = false, PortActive2 = false;
 bool transisted, shotPortal3 = false, shotPortal4 = false, PortActive3 = false, PortActive4, removeportal = false;
 
+int exscreen;
+char over[63][6];
+char instruct[58][6];
 char fireart[56][12];
 char fireart2[56][12];
-char clearscreen[60][6];
+char clearscreen[60][20];
 char splash[59][21];
 char mainmenuart[73][12];
 char main[63][6];
@@ -675,12 +676,13 @@ void renderSplashScreen()  // renders the splash screen
 {
 	int z = 0;
 	int z2 = 0;
-	string sp = extractSplashOne(splashscreen);
-	string sp2 = extractSplashTwo(splashscreen);
+
 	COORD c;
 	
 	if ((int)(g_dElapsedTime) % (2) == 0)
 	{
+		exscreen = 0;
+		string sp = extractscreen(exscreen);
 		for (int y = 0; y < 21; y++)
 		{
 			for (int x = 0; x < 59; x++)
@@ -722,6 +724,8 @@ void renderSplashScreen()  // renders the splash screen
 	}
 	else
 	{
+		exscreen = 1;
+		string sp2 = extractscreen(exscreen);
 		for (int y = 0; y < 21; y++)
 		{
 			for (int x = 0; x < 59; x++)
@@ -761,43 +765,23 @@ void renderSplashScreen()  // renders the splash screen
 	c.Y /= 3;
 	c.X = c.X / 2 - 35;
 	c.Y += 3;
-	switch (splashscreen)
+
+	c.X = g_Console.getConsoleSize().X / 2 - 8;
+	g_Console.writeToBuffer(c, "Start Game", getColour(splashscreen, 0));
+	c.Y += 1;
+	c.X = g_Console.getConsoleSize().X / 2 - 9;
+	g_Console.writeToBuffer(c, "Instructions", getColour(splashscreen,1));
+	c.Y += 1;
+	c.X = g_Console.getConsoleSize().X / 2 - 13;
+	g_Console.writeToBuffer(c, "Press 'Esc' to quit", 0x07);
+
+	if (splashscreen > 1)
 	{
-	case 0:
-	{
-			  c.X = g_Console.getConsoleSize().X / 2 - 8;
-			  g_Console.writeToBuffer(c, "Start Game", 0x70);
-			  c.Y += 1;
-			  c.X = g_Console.getConsoleSize().X / 2 - 9;
-			  g_Console.writeToBuffer(c, "Instructions", 0x07);
-			  c.Y += 1;
-			  c.X = g_Console.getConsoleSize().X / 2 - 13;
-			  g_Console.writeToBuffer(c, "Press 'Esc' to quit", 0x07);
-			  break;
+		splashscreen = 0;
 	}
-	case 1:
+	else if (splashscreen < 0)
 	{
-			  c.X = g_Console.getConsoleSize().X / 2 - 8;
-			  g_Console.writeToBuffer(c, "Start Game", 0x07);
-			  c.Y += 1;
-			  c.X = g_Console.getConsoleSize().X / 2 - 9;
-			  g_Console.writeToBuffer(c, "Instructions", 0x70);
-			  c.Y += 1;
-			  c.X = g_Console.getConsoleSize().X / 2 - 13;
-			  g_Console.writeToBuffer(c, "Press 'Esc' to quit", 0x07);
-			  break;
-	}
-	default:
-	{
-			   if (splashscreen > 1)
-			   {
-				   splashscreen = 0;
-			   }
-			   else if (splashscreen < 0)
-			   {
-				   splashscreen = 1;
-			   }
-	}
+		splashscreen = 1;
 	}
 	if (g_dElapsedTime < g_dBounceTime)
 	{
@@ -837,34 +821,30 @@ void instructwait()
 
 void renderinstruct()
 {
-	int i = 0;
-	int j = 0;
-	char main[58][6];
-	ifstream file("instruction.txt");
+	int z = 0;
+	exscreen = 2;
+	string instruction = extractscreen(exscreen);
+
 	COORD c;
-	if (file.is_open())
+
+	for (int y = 0; y < 6; y++)
 	{
-		while (j <= 5)
+		for (int x = 0; x < 58; x++)
 		{
-			while (i <= 57)
-			{
-				file >> main[i][j];
-				i++;
-			}
-			i = 0;
-			j++;
+			instruct[x][y] = instruction[z];
+			z++;
 		}
-		file.close();
+		z = (y + 1) * 58;
 	}
-	for (int y = 0; y <= 5; y++)
+	for (int y = 0; y < 6; y++)
 	{
 		c.Y = y + 4;
-		for (int x = 0; x <= 57; x++)
+		for (int x = 0; x < 58; x++)
 		{
 			c.X = x + 10;
-			if (main[x][y] != '~')
+			if (instruct[x][y] != '~')
 			{
-				g_Console.writeToBuffer(c, main[x][y], 0x07);
+				g_Console.writeToBuffer(c, instruct[x][y], 0x07);
 			}
 		}
 	}
@@ -908,41 +888,32 @@ void gameoverwait()
 	}
 }
 
-void extractover()
-{
-
-	int i = 0;
-	int j = 0;
-	ifstream file("GameOver.txt"); // read file from PickALevel.txt to print the ascii art
-	if (file.is_open())
-	{
-		while (j <= 5)
-		{
-			while (i <= 62)
-			{
-				file >> main[i][j];
-				i++;
-			}
-			i = 0;
-			j++;
-		}
-		file.close();
-	}
-}
-
 void renderGameOver()
 {
+	int z = 0;
+	exscreen = 4;
+	string gover = extractscreen(exscreen);
+
 	COORD c;
-	extractover();
-	for (int y = 0; y <= 5; y++)
+
+	for (int y = 0; y < 6; y++)
+	{
+		for (int x = 0; x < 63; x++)
+		{
+			over[x][y] = gover[z];
+			z++;
+		}
+		z = (y + 1) * 63;
+	}
+	for (int y = 0; y < 6; y++)
 	{
 		c.Y = y + 4;
-		for (int x = 0; x <= 62; x++)
+		for (int x = 0; x < 63; x++)
 		{
 			c.X = x + 10;
-			if (main[x][y] != '~')
+			if (over[x][y] != '~')
 			{
-				g_Console.writeToBuffer(c, main[x][y], 0x0C);
+				g_Console.writeToBuffer(c, over[x][y], 0x0C);
 			}
 		}
 	}
@@ -1216,8 +1187,6 @@ void rendermap()
 	}
 }
 
-
-
 void renderGame()
 {
 	rendermap();// renders the map to the buffer first	
@@ -1226,6 +1195,7 @@ void renderGame()
 	renderPortalgun();
 }
 
+<<<<<<< HEAD
 //void Portalgun(COORD playerLocation, char playerDirection, COORD& portal, bool& portalActive)
 //{
 //	COORD trajectory = playerLocation;
@@ -1266,7 +1236,42 @@ void renderGame()
 //	portal.Y = nextLocation.Y;
 //	portalActive = true;
 //}
+=======
+void renderPortalgun(COORD playerLocation, char playerDirection, COORD& portal, bool& portalActive)
+{
+	COORD trajectory = playerLocation;
+	COORD nextLocation = trajectory;
 
+	// initialize the next direction
+	switch (playerDirection)
+	{
+	case 'u': trajectory.Y--;
+		nextLocation.X = trajectory.X;
+		nextLocation.Y = trajectory.Y - 1;
+
+	}
+
+	while ((map[nextLocation.X][nextLocation.Y] != 'x') && (map[nextLocation.X][nextLocation.Y] != 'e') && (map[nextLocation.X][nextLocation.Y] != 'd'))
+	{
+		// update the trajectory
+		trajectory = nextLocation;
+		switch (playerDirection)
+		{
+		case 'u': nextLocation.Y--;
+			break;
+			// do the same for other 3 directions
+		}
+
+		g_Console.writeToBuffer(trajectory, RenderPortal.UpDownProjectile, 0x8C);
+	}
+
+	// update the parameters that were passed in
+	portal.X = trajectory.X;
+	portal.Y = trajectory.Y;
+	portalActive = true;
+>>>>>>> 976845c016ee0def913d1b59121dc192a73c8b17
+
+}
 
 void renderPortalgun()
 {	
@@ -1717,7 +1722,8 @@ void mainmenuchoice()
 void renderToMainMenu()
 {
 	int z = 0;
-	string mainex = extractmain(lvl);
+	exscreen = 3;
+	string mainex = extractscreen(exscreen);
 
 	COORD c;
 
@@ -1749,101 +1755,24 @@ void renderToMainMenu()
 	c.X = g_Console.getConsoleSize().X / 2 - 20;
 	g_Console.writeToBuffer(c, "Press enter to choose your level (1-5).", 0x03);
 	
-	switch (lvl)
-	{
-	case 0:
-	{
-		c.Y += 1;
-		c.X = g_Console.getConsoleSize().X / 2 - 5;
-		g_Console.writeToBuffer(c, "Level 1", 0x73);
-		c.Y += 1;
-		g_Console.writeToBuffer(c, "Level 2", 0x03);
-		c.Y += 1;
-		g_Console.writeToBuffer(c, "Level 3", 0x03);
-		c.Y += 1;
-		g_Console.writeToBuffer(c, "Level 4", 0x03);
-		c.Y += 1;
-		g_Console.writeToBuffer(c, "Level 5", 0x03);
-			 
-		break;
-	}
-	case 1:
-	{
-		c.Y += 1;
-		c.X = g_Console.getConsoleSize().X / 2 - 5;
-		g_Console.writeToBuffer(c, "Level 1", 0x03);
-		c.Y += 1;
-		g_Console.writeToBuffer(c, "Level 2", 0x73);
-		c.Y += 1;
-		g_Console.writeToBuffer(c, "Level 3", 0x03);
-		c.Y += 1;
-		g_Console.writeToBuffer(c, "Level 4", 0x03);
-		c.Y += 1;
-		g_Console.writeToBuffer(c, "Level 5", 0x03);
+	c.Y += 1;
+	c.X = g_Console.getConsoleSize().X / 2 - 5;
+	g_Console.writeToBuffer(c.X, c.Y++, "Level 1", getColour(lvl, 0));
+	g_Console.writeToBuffer(c.X, c.Y++, "Level 2", getColour(lvl, 1));
+	g_Console.writeToBuffer(c.X, c.Y++, "Level 3", getColour(lvl, 2));
+	g_Console.writeToBuffer(c.X, c.Y++, "Level 4", getColour(lvl, 3));
+	g_Console.writeToBuffer(c.X, c.Y++, "Level 5", getColour(lvl, 4));
 
-		break;
-	}
-	case 2:
+	
+	if (lvl > 4)
 	{
-		c.Y += 1;
-		c.X = g_Console.getConsoleSize().X / 2 - 5;
-		g_Console.writeToBuffer(c, "Level 1", 0x03);
-		c.Y += 1;
-		g_Console.writeToBuffer(c, "Level 2", 0x03);
-		c.Y += 1;
-		g_Console.writeToBuffer(c, "Level 3", 0x73);
-		c.Y += 1;
-		g_Console.writeToBuffer(c, "Level 4", 0x03);
-		c.Y += 1;
-		g_Console.writeToBuffer(c, "Level 5", 0x03);
-
-		break;
+		lvl = 0;
 	}
-	case 3:
+	else if (lvl < 0)
 	{
-		c.Y += 1;
-		c.X = g_Console.getConsoleSize().X / 2 - 5;
-		g_Console.writeToBuffer(c, "Level 1", 0x03);
-		c.Y += 1;
-		g_Console.writeToBuffer(c, "Level 2", 0x03);
-		c.Y += 1;
-		g_Console.writeToBuffer(c, "Level 3", 0x03);
-		c.Y += 1;
-		g_Console.writeToBuffer(c, "Level 4", 0x73);
-		c.Y += 1;
-		g_Console.writeToBuffer(c, "Level 5", 0x03);
+		lvl = 4;
+	}
 		
-		break;
-	}
-	case 4:
-	{
-		c.Y += 1;
-		c.X = g_Console.getConsoleSize().X / 2 - 5;
-		g_Console.writeToBuffer(c, "Level 1", 0x03);
-		c.Y += 1;
-		g_Console.writeToBuffer(c, "Level 2", 0x03);
-		c.Y += 1;
-		g_Console.writeToBuffer(c, "Level 3", 0x03);
-		c.Y += 1;
-		g_Console.writeToBuffer(c, "Level 4", 0x03);
-		c.Y += 1;
-		g_Console.writeToBuffer(c, "Level 5", 0x73);
-		
-		break;
-	}
-		default:
-		{
-			   if (lvl > 4)
-			   {
-				   lvl = 0;
-			   }
-			   else if (lvl < 0)
-			   {
-				   lvl = 4;
-			   }
-		break;
-		}
-	}
 	if (g_dElapsedTime < g_dBounceTime)
 	{
 		return;
@@ -1870,11 +1799,43 @@ void renderToMainMenu()
 void rendercleargame()
 {
 	int z = 0;
-	string clear = extractclear(&level);
 
 	COORD c;
-
-	for (int y = 0; y < 6; y++)
+	
+	if ((int)(g_dElapsedTime) % 2 == 0)
+	{
+		exscreen = 5;
+		for (int y = 0; y < 20; y++)
+		{
+			c.Y = y + 3;
+			for (int x = 0; x < 60; x++)
+			{
+				c.X = x + 10;
+				if (clearscreen[x][y] != '~')
+				{
+					g_Console.writeToBuffer(c, clearscreen[x][y], 0x07);
+				}
+			}
+		}
+	}
+	else
+	{
+		exscreen = 6;
+		for (int y = 0; y < 20; y++)
+		{
+			c.Y = y + 3;
+			for (int x = 0; x < 60; x++)
+			{
+				c.X = x + 10;
+				if (clearscreen[x][y] != '~')
+				{
+					g_Console.writeToBuffer(c, clearscreen[x][y], 0x07);
+				}
+			}
+		}
+	}
+	string clear = extractscreen(exscreen);
+	for (int y = 0; y < 20; y++)
 	{
 		for (int x = 0; x < 60; x++)
 		{
@@ -1883,80 +1844,12 @@ void rendercleargame()
 		}
 		z = (y + 1) * 60;
 	}
-	for (int y = 0; y < 6; y++)
-	{
-		c.Y = y + 4;
-		for (int x = 0; x < 60; x++)
-		{
-			c.X = x + 10;
-			if (clearscreen[x][y] != '~')
-			{
-				g_Console.writeToBuffer(c, clearscreen[x][y], 0x07);
-			}
-		}
-	}
 	c = g_Console.getConsoleSize();
 	c.Y /= 3 + 10;
 	c.X = c.X / 2 - 35;
 	c.Y += 10;
 	c.X = g_Console.getConsoleSize().X / 2 - 20;
 	g_Console.writeToBuffer(c, "Press enter to go back to Starting Screen.", 0x07);
-	int z2 = 0;
-	string fireex = extractfirework(&level);
-
-	for (int y = 0; y < 12; y++)
-	{
-		for (int x = 0; x < 56; x++)
-		{
-			fireart[x][y] = fireex[z2];
-			z2++;
-		}
-		z = (y + 1) * 56;
-	}
-	
-	int z3 = 0;
-	string fireex2 = extractfireworks2(&level);
-
-	for (int y = 0; y < 12; y++)
-	{
-		for (int x = 0; x < 56; x++)
-		{
-			fireart2[x][y] = fireex2[z3];
-			z3++;
-		}
-		z = (y + 1) * 56;
-	}
-
-	if ((int)(g_dElapsedTime) % 2 == 0)
-	{
-		for (int y = 0; y < 12; y++)
-		{
-			c.Y = y + 12;
-			for (int x = 0; x < 56; x++)
-			{
-				c.X = x + 10;
-				if (fireart[x][y] != '~')
-				{
-					g_Console.writeToBuffer(c, fireart[x][y], 0x07);
-				}
-			}
-		}
-	}
-	else
-	{
-		for (int y = 0; y < 12; y++)
-		{
-			c.Y = y + 12;
-			for (int x = 0; x < 56; x++)
-			{
-				c.X = x + 10;
-				if (fireart2[x][y] != '~')
-				{
-					g_Console.writeToBuffer(c, fireart2[x][y], 0x07);
-				}
-			}
-		}
-	}
 }
 
 void cleargamewait()

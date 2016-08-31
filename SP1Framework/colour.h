@@ -7,4 +7,4 @@
 #include <string>
 using namespace std;
 
-string extractclear(int *level);
+WORD getColour(int selected, int current);
