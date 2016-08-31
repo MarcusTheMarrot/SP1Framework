@@ -1268,7 +1268,7 @@ void renderPortalgun(COORD playerLocation, char playerDirection, COORD& portal, 
 	portal.X = trajectory.X;
 	portal.Y = trajectory.Y;
 	portalActive = true;
->>>>>>> 976845c016ee0def913d1b59121dc192a73c8b17
+
 
 }
 
