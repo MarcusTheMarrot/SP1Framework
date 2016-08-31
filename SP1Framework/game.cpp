@@ -1195,7 +1195,6 @@ void renderGame()
 	renderPortalgun();
 }
 
-<<<<<<< HEAD
 //void Portalgun(COORD playerLocation, char playerDirection, COORD& portal, bool& portalActive)
 //{
 //	COORD trajectory = playerLocation;
@@ -1236,7 +1235,7 @@ void renderGame()
 //	portal.Y = nextLocation.Y;
 //	portalActive = true;
 //}
-=======
+
 void renderPortalgun(COORD playerLocation, char playerDirection, COORD& portal, bool& portalActive)
 {
 	COORD trajectory = playerLocation;
