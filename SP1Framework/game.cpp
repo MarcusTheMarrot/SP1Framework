@@ -53,17 +53,11 @@ int teledel = 0;
 COORD door;
 COORD lever1;
 COORD lever2;
-COORD cord1;
-COORD cord2;
-COORD cord3;
-COORD cord4;
 COORD portal1;
 COORD portal2;
-COORD teleportTo1;
-COORD teleportTo2;
-COORD boxx;
 COORD portal3;
 COORD portal4;
+COORD boxx;
 
 
 // Game specific variables here
@@ -403,7 +397,8 @@ void moveCharacter()
 	}
 
 	if (bSomethingHappened == true)
-	{
+	{	
+		//reduces the players health if player 1 walks into the fire
 		if (map[g_sChar.m_cLocation.X][g_sChar.m_cLocation.Y - 1] == 'f')
 		{
 			direction = 'u';
@@ -417,21 +412,14 @@ void moveCharacter()
 			// move player to other teleporter
 			g_sChar.m_cLocation = xy;
 		}
-		//if player location is l
-		//if (map[g_sChar.m_cLocation.X][g_sChar.m_cLocation.Y - 1] == 'l')
-		//{
-		//	//set door to open
-		//	gateOpen = true;
-		//}
 		gateOpen = dooring(lever1, lever2, g_sChar.m_cLocation.X, g_sChar.m_cLocation.Y - 1, g_sChar2.m_cLocation.X, g_sChar2.m_cLocation.Y - 1, boxx.X, boxx.Y);
 		if (gateOpen == true)
 		{
 			map[door.X][door.Y] = '-';
 		}
 		// set the bounce time to some time in the future to prevent accidental triggers
-		g_dBounceTime = g_dElapsedTime + 0.010; // 125ms should not be enough
-												// 125ms should be enough
-												//if player reaches exit for stage 0, move to next map
+		g_dBounceTime = g_dElapsedTime + 0.010;// 125ms should be enough
+		//if player reaches exit for stage 0, move to next map
 		g_sChar.m_cLocation = mapTransition(g_sChar.m_cLocation, g_sChar.m_cLocation.X, g_sChar.m_cLocation.Y, &level, &transisted);
 		if (transisted == true)
 		{
@@ -446,7 +434,6 @@ void moveCharacter()
 				g_sChar2.m_cLocation.Y = g_sChar.m_cLocation.Y;
 				transisted = false;
 				removeportal = true;
-				/*thingthing = '\0';*/
 				something = '-';
 			}
 		}
@@ -596,16 +583,13 @@ void moveCharacter()
 
 
 	if (bSomethingHappened_2 == true)
-	{
-		//restart player at start point(sample level)
-
-
+	{	
+		//reduces the health of the players if player 2 walks into the fire
 		if (map[g_sChar2.m_cLocation.X][g_sChar2.m_cLocation.Y - 1] == 'f')
 		{
 			direction2 = 'u';
 			healthcount--;
 		}
-
 		//check if playr moved into a telporter
 		xy = teleportation(teleport, g_sChar2.m_cLocation.X, g_sChar2.m_cLocation.Y);
 		if (xy.X != 0 && xy.Y != 0)
@@ -613,21 +597,14 @@ void moveCharacter()
 			// move player to other teleporter
 			g_sChar2.m_cLocation = xy;
 		}
-		//if player location is l
-		//if (map[g_sChar2.m_cLocation.X][g_sChar2.m_cLocation.Y - 1] == 'l')
-		//{
-		//	//set door to open
-		//	gateOpen = true;
-		//}
 		// set the bounce time to some time in the future to prevent accidental triggers
 		gateOpen = dooring(lever1, lever2, g_sChar.m_cLocation.X, g_sChar.m_cLocation.Y - 1, g_sChar2.m_cLocation.X, g_sChar2.m_cLocation.Y - 1, boxx.X, boxx.Y);
 		if (gateOpen == true)
 		{
 			map[door.X][door.Y] = '-';
 		}
-		g_dBounceTime2 = g_dElapsedTime + 0.005; // 125ms should not be enough
-												 // 125ms should be enough
-												 //if player reaches exit for stage 0, move to next map
+		g_dBounceTime2 = g_dElapsedTime + 0.005; // 125ms should be enough
+		//if player reaches exit for stage 0, move to next map
 		g_sChar2.m_cLocation = mapTransition(g_sChar2.m_cLocation, g_sChar2.m_cLocation.X, g_sChar2.m_cLocation.Y, &level, &transisted);
 		if (transisted == true)
 		{
@@ -806,7 +783,7 @@ void renderSplashScreen()  // renders the splash screen
 	}
 }
 
-void instructwait()
+void instructwait()		
 {
 
 	if (g_abKeyPressed[K_BACK])
@@ -819,7 +796,7 @@ void instructwait()
 	}
 }
 
-void renderinstruct()
+void renderinstruct()	//renders the instruction screen
 {
 	int z = 0;
 	exscreen = 2;
@@ -876,7 +853,7 @@ void renderinstruct()
 
 }
 
-void gameoverwait()
+void gameoverwait()	
 {
 	if (g_abKeyPressed[K_RETURN])
 	{
@@ -925,7 +902,7 @@ void renderGameOver()
 	g_Console.writeToBuffer(c, "Press enter to go back to Starting Screen.", 0x03);
 }
 
-void renderhealth()
+void renderhealth()		// renders the health bar of the players
 {
 	COORD c;
 	c = g_Console.getConsoleSize();
@@ -936,7 +913,7 @@ void renderhealth()
 	g_Console.writeToBuffer(c, "Health", 0x07);
 	if (map[g_sChar.m_cLocation.X][g_sChar.m_cLocation.Y - 1] == 'f' || map[g_sChar2.m_cLocation.X][g_sChar2.m_cLocation.Y - 1] == 'f')
 	{
-		g_Console.writeToBuffer(c, "Health", 0x0C);
+		g_Console.writeToBuffer(c, "Health", 0xFC);
 	}
 	c.Y += 1;
 	c.X = g_Console.getConsoleSize().X / 2 + 25;
@@ -989,25 +966,9 @@ void rendermap()
 	const WORD colors[] = {
 	0x1A, 0x2B, 0x3C, 0x4D, 0x5E, 0x6F,
 	0xA1, 0xB2, 0xC3, 0xD4, 0xE5, 0xF6
-	};
+	};*/
 
-	COORD c;
-	for (int i = 0; i < 12; ++i)
-	{
-	c.X = 5 * i;
-	c.Y = i + 1;
-	colour(colors[i]);
-	g_Console.writeToBuffer(c, " °±²Û", colors[i]);
-	}*/
-	//write everything in txt to stupid
-	//string stupid = extractMap(&level);
-	//map[b][a] = stupid[c];
 	int c = 0;
-	//int d = 0;
-	//int e = 0;
-	//int f = 0;
-	//int g = 0;
-	
 	for (int a = 0; a < 20; a++)
 	{
 		for (int b = 0; b < 60; b++)
@@ -1042,23 +1003,11 @@ void rendermap()
 				boxx.Y = a;
 			}
 
-			//record where door is, only when door not opened
-			//if (map[b][a] == 'd' && gateOpen == false)
-			//{
-			//	door[d][e] = b;
-			//	d++;
-			//	door[d][e] = a;
-			//}
-			////if player stepped on lever, treat door as open tile
-			//else if (map[b][a] == 'd')
-			//{
-			//	map[b][a] = '-';
-			//}
 			c++;
 		}
 		c = (a + 1) * 60;
 	}
-	//buffer the shit
+	//buffer the map
 	COORD coord;
 	for (int y = 0; y <= 19; y++)
 	{
@@ -1066,7 +1015,7 @@ void rendermap()
 		for (int x = 0; x <= 59; x++)
 		{
 			coord.X = x;
-			//buffer ground
+			//if player is within range, buffers the ground if the map array is '-' in the txt files
 			if (map[x][y] == '-')
 			{
 				if ((g_sChar.m_cLocation.X + 6) >= x && x >= (g_sChar.m_cLocation.X - 6) && (g_sChar.m_cLocation.Y - 6) <= (y - 1) && (g_sChar.m_cLocation.Y + 6) >= (y + 3))
@@ -1078,9 +1027,8 @@ void rendermap()
 					g_Console.writeToBuffer(coord, ground, 0x88);
 				}
 			}
-			//buffer wall
+			//if player is within range, buffers the walls if the map array is 'x' in the txt files
 			if (map[x][y] == 'x')
-				//buffer teleportal
 			{
 				if ((g_sChar.m_cLocation.X + 4) >= x && x >= (g_sChar.m_cLocation.X - 4) && (g_sChar.m_cLocation.Y - 3) <= (y + 1) && (g_sChar.m_cLocation.Y + 3) >= (y + 1))
 				{
@@ -1091,6 +1039,7 @@ void rendermap()
 					g_Console.writeToBuffer(coord, wall, 0x80);
 				}
 			}
+			//buffers a stationary teleporter if the map array is 'p' in the txt files
 			if (map[x][y] == 'p')
 			{
 				if ((g_sChar.m_cLocation.X + 4) >= x && x >= (g_sChar.m_cLocation.X - 4) && (g_sChar.m_cLocation.Y - 3) <= (y + 1) && (g_sChar.m_cLocation.Y + 3) >= (y + 1))
@@ -1102,11 +1051,12 @@ void rendermap()
 					g_Console.writeToBuffer(coord, wall, 0x2B);
 				}
 			}
-			//buffer exit
+			//buffer exit if the map array is 'e' in the txt files
 			if (map[x][y] == 'e')
 			{
 				g_Console.writeToBuffer(coord, destination, 0xA0);
 			}
+			//if player is within range, buffers a door if the map array is 'd' in the txt files
 			if (map[x][y] == 'd')
 			{
 				if ((g_sChar.m_cLocation.X + 4) >= x && x >= (g_sChar.m_cLocation.X - 4) && (g_sChar.m_cLocation.Y - 3) <= (y + 1) && (g_sChar.m_cLocation.Y + 3) >= (y + 1))
@@ -1118,6 +1068,7 @@ void rendermap()
 					g_Console.writeToBuffer(coord, wall, 0x11);
 				}
 			}
+			//if player is within range, buffers lever if the map array is 'l' or 'L' in the txt files
 			if (map[x][y] == 'l' || map[x][y] == 'L')
 			{
 				if ((g_sChar.m_cLocation.X + 4) >= x && x >= (g_sChar.m_cLocation.X - 4) && (g_sChar.m_cLocation.Y - 3) <= (y + 1) && (g_sChar.m_cLocation.Y + 3) >= (y + 1))
@@ -1129,18 +1080,12 @@ void rendermap()
 					g_Console.writeToBuffer(coord, destination, 0x1F);
 				}
 			}
+			//buffers fire(lava) if the map array is 'f' in the txt files
 			if (map[x][y] == 'f')
 			{
-					//if ((g_sChar.m_cLocation.X + 4) >= x && x >= (g_sChar.m_cLocation.X - 4) && (g_sChar.m_cLocation.Y - 3) <= (y + 1) && (g_sChar.m_cLocation.Y + 3) >= (y + 1))
-					//{
-
 					g_Console.writeToBuffer(coord, ground, 0xCE);
-					//}
-					//if ((g_sChar2.m_cLocation.X + 4) >= x && x >= (g_sChar2.m_cLocation.X - 4) && (g_sChar2.m_cLocation.Y - 3) <= (y + 1) && (g_sChar2.m_cLocation.Y + 3) >= (y + 1))
-					//{
-						/*g_Console.writeToBuffer(coord, ground, 0xCE);*/
-					//}
 			}
+			//if player is within range, buffers box(es) if the map array is 'n' in the txt files
 			if (map[x][y] == 'n')
 			{
 				if ((g_sChar.m_cLocation.X + 4) >= x && x >= (g_sChar.m_cLocation.X - 4) && (g_sChar.m_cLocation.Y - 3) <= (y + 1) && (g_sChar.m_cLocation.Y + 3) >= (y + 1))
@@ -1152,7 +1097,8 @@ void rendermap()
 					g_Console.writeToBuffer(coord, box, 0x8E);
 				}
 			}
-			if (PortActive1 == true)
+			// checks if portal was shot and buffers it at where the line of projectile ends 
+			if (PortActive1 == true)											
 			{
 				g_Console.writeToBuffer(portal1, RenderPortal.portal, 0x8C);
 			}
@@ -1169,9 +1115,9 @@ void rendermap()
 				g_Console.writeToBuffer(portal4, RenderPortal.portal, 0x8B);
 
 			}
-			if (removeportal)
+			// if level changes, set the bool PortActive to be false , which stops the portal from buffering
+			if (removeportal)			
 			{
-					
 				PortActive1 = false;
 				PortActive2 = false;
 				PortActive3 = false;
@@ -1187,331 +1133,88 @@ void renderGame()
 {
 	rendermap();// renders the map to the buffer first	
 	renderCharacter();	// renders the character into the buffer
-	renderhealth();
-	renderPortalgun();
+	renderhealth();		//renders the players health 
+	renderPortalgun();	//renders the Portalgun's projectile and the portal
+
 }
 
 
-void renderPortalgun(COORD playerLocation, char playerDirection, COORD& portal, bool& portalActive)
+void Portalgun(COORD playerLocation, char playerDirection, COORD& portal, bool& portalActive)
 {
-	COORD trajectory = playerLocation;
-	COORD nextLocation = trajectory;
+	int colour;
+	COORD nextLocation = playerLocation;
 
-	// initialize the next direction
-	switch (playerDirection)
+	if (shotPortal)			//checks which portal was shot and changes its colour accordingly
+		colour = 140;
+	else if (shotPortal2)
+		colour = 129;
+	else if (shotPortal3)
+		colour = 141;
+	else if (shotPortal4)
+		colour = 139;
+
+	switch (playerDirection)	//checks current player direction and buffers a line of projectile toawrds where the player is facing
 	{
-	case 'u': trajectory.Y--;
-		nextLocation.X = trajectory.X;
-		nextLocation.Y = trajectory.Y - 1;
-
-	}
-
-	while ((map[nextLocation.X][nextLocation.Y] != 'x') && (map[nextLocation.X][nextLocation.Y] != 'e') && (map[nextLocation.X][nextLocation.Y] != 'd'))
-	{
-		// update the trajectory
-		trajectory = nextLocation;
-		switch (playerDirection)
+	case 'u':
+		while ((map[nextLocation.X][nextLocation.Y - 2] != 'x') && (map[nextLocation.X][nextLocation.Y-2] != 'e') && (map[nextLocation.X][nextLocation.Y-2] != 'd'))
 		{
-		case 'u': nextLocation.Y--;
-			break;
-			// do the same for other 3 directions
+			nextLocation.Y--;
+			g_Console.writeToBuffer(nextLocation, RenderPortal.UpDownProjectile, colour);
 		}
+		break;
 
-		g_Console.writeToBuffer(trajectory, RenderPortal.UpDownProjectile, 0x8C);
+	case 'd':
+		while ((map[nextLocation.X][nextLocation.Y] != 'x') && (map[nextLocation.X][nextLocation.Y] != 'e') && (map[nextLocation.X][nextLocation.Y] != 'd'))
+		{
+			nextLocation.Y++;
+			g_Console.writeToBuffer(nextLocation, RenderPortal.UpDownProjectile, colour);
+		}
+		break;
+
+	case 'l':
+		while ((map[nextLocation.X-1][nextLocation.Y - 1] != 'x') && (map[nextLocation.X-1][nextLocation.Y-1] != 'e') && (map[nextLocation.X-1][nextLocation.Y-1] != 'd'))
+		{
+			nextLocation.X--;
+			g_Console.writeToBuffer(nextLocation, RenderPortal.LeftRightProjectile, colour);
+		}
+		break;
+
+	case'r':
+		while ((map[nextLocation.X + 1][nextLocation.Y - 1] != 'x' && (map[nextLocation.X + 1][nextLocation.Y - 1] != 'e' && (map[nextLocation.X + 1][nextLocation.Y - 1]))))
+		{
+			nextLocation.X++;
+			g_Console.writeToBuffer(nextLocation, RenderPortal.LeftRightProjectile, colour);
+		}
+		break;
 	}
 
 	// update the parameters that were passed in
-	portal.X = trajectory.X;
-	portal.Y = trajectory.Y;
+	portal.X = nextLocation.X;
+	portal.Y = nextLocation.Y;
 	portalActive = true;
-
-
 }
 
-void renderPortalgun()
+void renderPortalgun()		
 {	
-	cord1.X = g_sChar.m_cLocation.X;
-	cord1.Y = g_sChar.m_cLocation.Y;
-	cord2.X = g_sChar.m_cLocation.X;
-	cord2.Y = g_sChar.m_cLocation.Y;
-	cord3.X = g_sChar2.m_cLocation.X;
-	cord3.Y = g_sChar2.m_cLocation.Y;
-	cord4.X = g_sChar2.m_cLocation.X;
-	cord4.Y = g_sChar2.m_cLocation.Y;
-
-
-	//if (shotPortal)
-	//{
-	//	Portalgun(g_sChar.m_cLocation, direction, portal1, PortActive1);
-	//	shotPortal = false;
-	//}
-
-
-	if (direction == 'u')
+	if (shotPortal)
 	{
-		while (shotPortal)
-		{
-			if ((map[cord1.X][cord1.Y - 2] != 'x') && (map[cord1.X][cord1.Y - 2] != 'e') && (map[cord1.X][cord1.Y - 2] != 'd'))
-			{
-				cord1.Y--;
-				g_Console.writeToBuffer(cord1, RenderPortal.UpDownProjectile, 0x8C);
-			}
-			else
-			{
-				portal1.X = cord1.X;
-				portal1.Y = cord1.Y;
-				shotPortal = false;
-				PortActive1 = true;
-			}
-		}
-		while (shotPortal2)
-		{
-			if ((map[cord2.X][cord2.Y - 2] != 'x') && (map[cord2.X][cord2.Y - 2] != 'e') && (map[cord2.X][cord2.Y - 2] != 'd'))
-			{
-				cord2.Y--;
-				g_Console.writeToBuffer(cord2, RenderPortal.UpDownProjectile, 0x81);
-			}
-			else
-			{
-				portal2.X = cord2.X;
-				portal2.Y = cord2.Y;
-				shotPortal2 = false;
-				PortActive2 = true;
-			}
-		}
+		Portalgun(g_sChar.m_cLocation, direction, portal1, PortActive1);	
+		shotPortal = false;
 	}
-		if (direction2 == 'u')
-		{
-			while (shotPortal3)
-			{
-				if ((map[cord3.X][cord3.Y - 2] != 'x') && (map[cord3.X][cord3.Y - 2] != 'e') && (map[cord3.X][cord3.Y - 2] != 'd'))
-				{
-					cord3.Y--;
-					g_Console.writeToBuffer(cord3, RenderPortal.UpDownProjectile, 0x8D);
-				}
-				else
-				{
-					portal3.X = cord3.X;
-					portal3.Y = cord3.Y;
-					shotPortal3 = false;
-					PortActive3 = true;
-				}
-			}
-			while (shotPortal4)
-			{
-				if ((map[cord4.X][cord4.Y - 2] != 'x') && (map[cord4.X][cord4.Y - 2] != 'e') && (map[cord4.X][cord4.Y - 2] != 'd'))
-				{
-					cord4.Y--;
-					g_Console.writeToBuffer(cord4, RenderPortal.UpDownProjectile, 0x8B);
-				}
-				else
-				{
-					portal4.X = cord4.X;
-					portal4.Y = cord4.Y;
-					shotPortal4 = false;
-					PortActive4 = true;
-				}
-			}
-		}
-	
-	if (direction == 'd')
+	if (shotPortal2)
 	{
-		while (shotPortal)
-		{
-			if ((map[cord1.X][cord1.Y] != 'x') && (map[cord1.X][cord1.Y] != 'e') && (map[cord1.X][cord1.Y] != 'd'))
-			{
-				cord1.Y++;
-				g_Console.writeToBuffer(cord1, RenderPortal.UpDownProjectile, 0x8C);
-			}
-			else
-			{
-				portal1.X = cord1.X;
-				portal1.Y = cord1.Y;
-				shotPortal = false;
-				PortActive1 = true;
-			}
-		}
-		while (shotPortal2)
-		{
-			if ((map[cord2.X][cord2.Y] != 'x') && (map[cord2.X][cord2.Y] != 'e') && (map[cord2.X][cord2.Y] != 'd'))
-			{
-				cord2.Y++;
-				g_Console.writeToBuffer(cord2, RenderPortal.UpDownProjectile, 0x81);
-			}
-			else
-			{
-				portal2.X = cord2.X;
-				portal2.Y = cord2.Y;
-				shotPortal2 = false;
-				PortActive2 = true;
-			}
-		}
+		Portalgun(g_sChar.m_cLocation, direction, portal2, PortActive2);
+		shotPortal2 = false;
 	}
-		if (direction2 == 'd')
-		{
-			while (shotPortal3)
-			{
-				if ((map[cord3.X][cord3.Y] != 'x') && (map[cord3.X][cord3.Y] != 'e') && (map[cord3.X][cord3.Y] != 'd'))
-				{
-					cord3.Y++;
-					g_Console.writeToBuffer(cord3, RenderPortal.UpDownProjectile, 0x8D);
-				}
-				else
-				{
-					portal3.X = cord3.X;
-					portal3.Y = cord3.Y;
-					shotPortal3 = false;
-					PortActive3 = true;
-				}
-			}
-			while (shotPortal4)
-			{
-				if ((map[cord4.X][cord4.Y] != 'x') && (map[cord4.X][cord4.Y] != 'e') && (map[cord4.X][cord4.Y] != 'd'))
-				{
-					cord4.Y++;
-					g_Console.writeToBuffer(cord4, RenderPortal.UpDownProjectile, 0x8B);
-				}
-				else
-				{
-					portal4.X = cord4.X;
-					portal4.Y = cord4.Y;
-					shotPortal4 = false;
-					PortActive4 = true;
-				}
-			}
-		}
-	
-		if (direction == 'l')
-		{
-			while (shotPortal)
-			{
-				if ((map[cord1.X - 1][cord1.Y - 1] != 'x') && (map[cord1.X - 1][cord1.Y - 1] != 'e') && (map[cord1.X - 1][cord1.Y - 1] != 'd'))
-				{
-					cord1.X--;
-					g_Console.writeToBuffer(cord1, RenderPortal.LeftRightProjectile, 0x8C);
-				}
-				else
-				{
-					portal1.X = cord1.X;
-					portal1.Y = cord1.Y;
-					shotPortal = false;
-					PortActive1 = true;
-				}
-			}
-			while (shotPortal2)
-			{
-				if ((map[cord2.X - 1][cord2.Y - 1] != 'x') && (map[cord2.X - 1][cord2.Y - 1] != 'e') && (map[cord2.X - 1][cord2.Y - 1] != 'd'))
-				{
-					cord2.X--;
-					g_Console.writeToBuffer(cord2, RenderPortal.LeftRightProjectile, 0x81);
-				}
-				else
-				{
-					portal2.X = cord2.X;
-					portal2.Y = cord2.Y;
-					shotPortal2 = false;
-					PortActive2 = true;
-				}
-			}
-		}
-		if (direction2 == 'l')
-		{
-			while (shotPortal3)
-			{
-				if ((map[cord3.X - 1][cord3.Y - 1] != 'x') && (map[cord3.X - 1][cord3.Y - 1] != 'e') && (map[cord3.X - 1][cord3.Y - 1] != 'd'))
-				{
-					cord3.X--;
-					g_Console.writeToBuffer(cord3, RenderPortal.LeftRightProjectile, 0x8D);
-				}
-				else
-				{
-					portal3.X = cord3.X;
-					portal3.Y = cord3.Y;
-					shotPortal3 = false;
-					PortActive3 = true;
-				}
-			}
-			while (shotPortal4)
-			{
-				if ((map[cord4.X - 1][cord4.Y - 1] != 'x') && (map[cord4.X - 1][cord4.Y - 1] != 'e') && (map[cord4.X - 1][cord4.Y - 1] != 'd'))
-				{
-					cord4.X--;
-					g_Console.writeToBuffer(cord4, RenderPortal.LeftRightProjectile, 0x8B);
-				}
-				else
-				{
-					portal4.X = cord4.X;
-					portal4.Y = cord4.Y;
-					shotPortal4 = false;
-					PortActive4 = true;
-				}
-			}
-		}
-	if (direction == 'r')
+	if (shotPortal3)
 	{
-		while (shotPortal)
-		{
-			if ((map[cord1.X + 1][cord1.Y - 1] != 'x') && (map[cord1.X + 1][cord1.Y - 1] != 'e') && (map[cord1.X + 1][cord1.Y - 1] != 'd'))
-			{
-				cord1.X++;
-				g_Console.writeToBuffer(cord1, RenderPortal.LeftRightProjectile, 0x8C);
-			}
-			else
-			{
-				portal1.X = cord1.X;
-				portal1.Y = cord1.Y;
-				shotPortal = false;
-				PortActive1 = true;
-			}
-		}
-		while (shotPortal2)
-		{
-			if ((map[cord2.X + 1][cord2.Y - 1] != 'x') && (map[cord2.X + 1][cord2.Y - 1] != 'e') && (map[cord2.X + 1][cord2.Y - 1] != 'd'))
-			{
-				cord2.X++;
-				g_Console.writeToBuffer(cord2, RenderPortal.LeftRightProjectile, 0x81);
-			}
-			else
-			{
-				portal2.X = cord2.X;
-				portal2.Y = cord2.Y;
-				shotPortal2 = false;
-				PortActive2 = true;
-			}
-		}
+		Portalgun(g_sChar2.m_cLocation, direction2, portal3, PortActive3);
+		shotPortal3 = false;
 	}
-	if (direction2 == 'r')
+	if (shotPortal4)
 	{
-		while (shotPortal3)
-		{
-			if ((map[cord3.X + 1][cord3.Y - 1] != 'x') && (map[cord3.X + 1][cord3.Y - 1] != 'e') && (map[cord3.X + 1][cord3.Y - 1] != 'd'))
-			{
-				cord3.X++;
-				g_Console.writeToBuffer(cord3, RenderPortal.LeftRightProjectile, 0x8D);
-			}
-			else
-			{
-				portal3.X = cord3.X;
-				portal3.Y = cord3.Y;
-				shotPortal3 = false;
-				PortActive3 = true;
-			}
-		}
-		while (shotPortal4)
-		{
-			if ((map[cord4.X + 1][cord4.Y - 1] != 'x') && (map[cord4.X + 1][cord4.Y - 1] != 'e') && (map[cord4.X + 1][cord4.Y - 1] != 'd'))
-			{
-				cord4.X++;
-				g_Console.writeToBuffer(cord4, RenderPortal.LeftRightProjectile, 0x8B);
-			}
-			else
-			{
-				portal4.X = cord4.X;
-				portal4.Y = cord4.Y;
-				shotPortal4 = false;
-				PortActive4 = true;
-			}
-		}
+		Portalgun(g_sChar2.m_cLocation, direction2, portal4, PortActive4);
+		shotPortal4 = false;
 	}
 }
 
@@ -1670,7 +1373,7 @@ void mainmenuchoice()
 		}
 	}
 
-	if (g_abKeyPressed[K_ESCAPE])
+	if (g_abKeyPressed[K_ESCAPE])		
 		g_bQuitGame = true;
 }
 
