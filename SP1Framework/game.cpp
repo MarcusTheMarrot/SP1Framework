@@ -1366,7 +1366,7 @@ void mainmenuchoice()
 			g_sChar.m_cLocation.Y = 19;
 			g_sChar2.m_cLocation.X = 1;
 			g_sChar2.m_cLocation.Y = 19;
-			level = 0;
+			level = 51;
 			load_game(level);
 
 			g_eGameState = S_GAME;
